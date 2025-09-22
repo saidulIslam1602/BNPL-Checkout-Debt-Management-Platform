@@ -7,11 +7,10 @@ using FluentValidation;
 using Hangfire;
 using Hangfire.SqlServer;
 using Serilog;
-using RivertyBNPL.Services.Notification.API.Data;
-using RivertyBNPL.Services.Notification.API.Services;
-using RivertyBNPL.Services.Notification.API.Providers;
-using RivertyBNPL.Services.Notification.API.Validators;
-using RivertyBNPL.Services.Notification.API.Mappings;
+using AutoMapper;
+using RivertyBNPL.Notification.API.Data;
+using RivertyBNPL.Notification.API.Services;
+using RivertyBNPL.Notification.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +68,7 @@ builder.Services.AddDbContext<NotificationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // AutoMapper
-builder.Services.AddAutoMapper(typeof(NotificationMappingProfile));
+builder.Services.AddAutoMapper(typeof(Program));
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<SendNotificationRequestValidator>();
@@ -93,21 +92,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Configure notification provider options
-builder.Services.Configure<NotificationProviderOptions>(
-    builder.Configuration.GetSection("NotificationProviders"));
+// Configure service settings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Email"));
+builder.Services.Configure<SmsSettings>(builder.Configuration.GetSection("Sms"));
+builder.Services.Configure<PushSettings>(builder.Configuration.GetSection("Push"));
 
-// Register notification services
+// Register services
 builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<INotificationTemplateService, NotificationTemplateService>();
-builder.Services.AddScoped<INotificationPreferenceService, NotificationPreferenceService>();
-builder.Services.AddScoped<INotificationQueueService, NotificationQueueService>();
-
-// Register notification providers
-builder.Services.AddScoped<EmailProvider>();
-builder.Services.AddScoped<SmsProvider>();
-builder.Services.AddScoped<PushProvider>();
-builder.Services.AddScoped<INotificationProviderFactory, NotificationProviderFactory>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ISmsService, SmsService>();
+builder.Services.AddScoped<IPushNotificationService, PushNotificationService>();
+builder.Services.AddScoped<ITemplateService, TemplateService>();
+builder.Services.AddScoped<IPreferenceService, PreferenceService>();
+builder.Services.AddScoped<ICampaignService, CampaignService>();
 
 // Hangfire for background jobs
 builder.Services.AddHangfire(configuration => configuration
@@ -117,18 +114,11 @@ builder.Services.AddHangfire(configuration => configuration
     .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddHangfireServer();
-builder.Services.AddScoped<NotificationQueueProcessor>();
-
-// Register health check services
-builder.Services.AddScoped<RivertyBNPL.Services.Notification.API.HealthChecks.NotificationHealthCheck>();
-builder.Services.AddScoped<RivertyBNPL.Services.Notification.API.HealthChecks.NotificationProviderHealthCheck>();
 
 // Health checks
 builder.Services.AddHealthChecks()
     .AddDbContext<NotificationDbContext>()
-    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty)
-    .AddCheck<RivertyBNPL.Services.Notification.API.HealthChecks.NotificationHealthCheck>("notification_service")
-    .AddCheck<RivertyBNPL.Services.Notification.API.HealthChecks.NotificationProviderHealthCheck>("notification_providers");
+    .AddSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? string.Empty);
 
 // CORS
 builder.Services.AddCors(options =>
@@ -194,11 +184,16 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Start background job for processing queued notifications
-RecurringJob.AddOrUpdate<NotificationQueueService>(
-    "process-queued-notifications",
-    service => service.ProcessQueuedNotificationsAsync(CancellationToken.None),
-    "*/30 * * * * *"); // Every 30 seconds
+// Start background jobs for processing notifications
+RecurringJob.AddOrUpdate<INotificationService>(
+    "process-scheduled-notifications",
+    service => service.ProcessScheduledNotificationsAsync(CancellationToken.None),
+    "*/5 * * * *"); // Every 5 minutes
+
+RecurringJob.AddOrUpdate<INotificationService>(
+    "process-retry-notifications",
+    service => service.ProcessRetryNotificationsAsync(CancellationToken.None),
+    "*/10 * * * *"); // Every 10 minutes
 
 Log.Information("Notification API starting up...");
 

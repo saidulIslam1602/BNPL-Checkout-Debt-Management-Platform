@@ -1,13 +1,11 @@
-using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using RivertyBNPL.Services.Notification.API.Data;
-using RivertyBNPL.Services.Notification.API.DTOs;
-using RivertyBNPL.Services.Notification.API.Models;
-using RivertyBNPL.Services.Notification.API.Providers;
-using RivertyBNPL.Shared.Common.Enums;
+using RivertyBNPL.Notification.API.Data;
+using RivertyBNPL.Notification.API.DTOs;
+using RivertyBNPL.Notification.API.Models;
+using RivertyBNPL.Common.Models;
 
-namespace RivertyBNPL.Services.Notification.API.Services;
+namespace RivertyBNPL.Notification.API.Services;
 
 /// <summary>
 /// Implementation of notification service
@@ -15,435 +13,433 @@ namespace RivertyBNPL.Services.Notification.API.Services;
 public class NotificationService : INotificationService
 {
     private readonly NotificationDbContext _context;
-    private readonly IMapper _mapper;
-    private readonly INotificationTemplateService _templateService;
-    private readonly INotificationPreferenceService _preferenceService;
-    private readonly INotificationQueueService _queueService;
-    private readonly INotificationProviderFactory _providerFactory;
+    private readonly IEmailService _emailService;
+    private readonly ISmsService _smsService;
+    private readonly IPushNotificationService _pushService;
+    private readonly ITemplateService _templateService;
+    private readonly IPreferenceService _preferenceService;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
         NotificationDbContext context,
-        IMapper mapper,
-        INotificationTemplateService templateService,
-        INotificationPreferenceService preferenceService,
-        INotificationQueueService queueService,
-        INotificationProviderFactory providerFactory,
+        IEmailService emailService,
+        ISmsService smsService,
+        IPushNotificationService pushService,
+        ITemplateService templateService,
+        IPreferenceService preferenceService,
         ILogger<NotificationService> logger)
     {
         _context = context;
-        _mapper = mapper;
+        _emailService = emailService;
+        _smsService = smsService;
+        _pushService = pushService;
         _templateService = templateService;
         _preferenceService = preferenceService;
-        _queueService = queueService;
-        _providerFactory = providerFactory;
         _logger = logger;
     }
 
-    public async Task<NotificationResponse> SendNotificationAsync(SendNotificationRequest request, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<NotificationResponse>> SendNotificationAsync(SendNotificationRequest request, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Sending notification to {RecipientId} via {Channel}", request.RecipientId, request.Channel);
-
-        // Check user preferences
-        var isAllowed = await _preferenceService.IsNotificationAllowedAsync(request.RecipientId, request.Type, request.Channel, cancellationToken);
-        if (!isAllowed)
+        try
         {
-            _logger.LogWarning("Notification blocked by user preferences for {RecipientId}", request.RecipientId);
-            throw new InvalidOperationException("Notification blocked by user preferences");
-        }
+            _logger.LogInformation("Sending notification of type {Type} via {Channel} to {Recipient}", 
+                request.Type, request.Channel, request.Recipient);
 
-        // Create notification entity
-        var notification = await CreateNotificationEntityAsync(request, cancellationToken);
-
-        // Save to database
-        _context.Notifications.Add(notification);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        // Queue for processing if scheduled, otherwise send immediately
-        if (request.ScheduledAt.HasValue)
-        {
-            var optimalTime = await _preferenceService.GetOptimalSendTimeAsync(request.RecipientId, request.ScheduledAt.Value, cancellationToken);
-            notification.ScheduledAt = optimalTime ?? request.ScheduledAt.Value;
-            await _queueService.QueueNotificationAsync(notification, cancellationToken);
-            notification.Status = NotificationStatus.Queued;
-        }
-        else
-        {
-            await SendNotificationImmediatelyAsync(notification, cancellationToken);
-        }
-
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<NotificationResponse>(notification);
-    }
-
-    public async Task<BulkNotificationResponse> SendBulkNotificationAsync(SendBulkNotificationRequest request, CancellationToken cancellationToken = default)
-    {
-        _logger.LogInformation("Sending bulk notification to {Count} recipients", request.Recipients.Count);
-
-        var response = new BulkNotificationResponse
-        {
-            BatchId = request.BatchId ?? Guid.NewGuid().ToString(),
-            TotalCount = request.Recipients.Count
-        };
-
-        var notifications = new List<Models.Notification>();
-
-        foreach (var recipient in request.Recipients)
-        {
-            try
+            // Check user preferences if customer ID is provided
+            if (request.CustomerId.HasValue)
             {
-                // Check user preferences
-                var isAllowed = await _preferenceService.IsNotificationAllowedAsync(recipient.RecipientId, request.Type, request.Channel, cancellationToken);
-                if (!isAllowed)
+                var isOptedIn = await _preferenceService.IsOptedInAsync(request.CustomerId.Value, request.Type, request.Channel, cancellationToken);
+                if (!isOptedIn)
                 {
-                    response.Errors.Add($"Notification blocked by user preferences for {recipient.RecipientId}");
-                    response.FailedCount++;
-                    continue;
+                    return ApiResponse<NotificationResponse>.Failure("Customer has opted out of this notification type");
+                }
+            }
+
+            // Create notification entity
+            var notification = new Models.Notification
+            {
+                Id = Guid.NewGuid(),
+                Type = request.Type,
+                Channel = request.Channel,
+                Recipient = request.Recipient,
+                Subject = request.Subject ?? string.Empty,
+                Content = request.Content ?? string.Empty,
+                TemplateId = request.TemplateId?.ToString(),
+                TemplateData = request.TemplateData != null ? JsonSerializer.Serialize(request.TemplateData) : null,
+                Status = NotificationStatus.Pending,
+                Priority = request.Priority,
+                ScheduledAt = request.ScheduledAt,
+                CustomerId = request.CustomerId,
+                MerchantId = request.MerchantId,
+                PaymentId = request.PaymentId,
+                InstallmentId = request.InstallmentId,
+                Metadata = request.Metadata != null ? JsonSerializer.Serialize(request.Metadata) : null,
+                Tags = request.Tags != null ? JsonSerializer.Serialize(request.Tags) : null,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            // Render template if specified
+            if (request.TemplateId.HasValue)
+            {
+                var templateResponse = await _templateService.RenderTemplateAsync(request.TemplateId.Value, request.TemplateData ?? new(), cancellationToken);
+                if (!templateResponse.IsSuccess)
+                {
+                    return ApiResponse<NotificationResponse>.Failure($"Failed to render template: {templateResponse.Message}");
                 }
 
-                // Merge template data
-                var templateData = new Dictionary<string, object>(request.CommonTemplateData ?? new Dictionary<string, object>());
-                if (recipient.TemplateData != null)
+                notification.Subject = templateResponse.Data.Subject;
+                notification.Content = request.Channel switch
                 {
-                    foreach (var kvp in recipient.TemplateData)
-                    {
-                        templateData[kvp.Key] = kvp.Value;
-                    }
-                }
-
-                // Create individual notification request
-                var individualRequest = new SendNotificationRequest
-                {
-                    RecipientId = recipient.RecipientId,
-                    RecipientEmail = recipient.RecipientEmail,
-                    RecipientPhone = recipient.RecipientPhone,
-                    RecipientDeviceToken = recipient.RecipientDeviceToken,
-                    Type = request.Type,
-                    Channel = request.Channel,
-                    Subject = request.Subject,
-                    Content = request.Content,
-                    TemplateName = request.TemplateName,
-                    TemplateData = templateData,
-                    Priority = request.Priority,
-                    ScheduledAt = request.ScheduledAt,
-                    CorrelationId = recipient.CorrelationId,
-                    Metadata = request.Metadata
+                    NotificationChannel.Email => templateResponse.Data.HtmlContent ?? templateResponse.Data.TextContent ?? string.Empty,
+                    NotificationChannel.Sms => templateResponse.Data.SmsContent ?? templateResponse.Data.TextContent ?? string.Empty,
+                    NotificationChannel.Push => templateResponse.Data.PushContent ?? templateResponse.Data.TextContent ?? string.Empty,
+                    _ => templateResponse.Data.TextContent ?? string.Empty
                 };
+            }
 
-                var notification = await CreateNotificationEntityAsync(individualRequest, cancellationToken);
-                notification.BatchId = response.BatchId;
-                notifications.Add(notification);
-                response.SuccessCount++;
-            }
-            catch (Exception ex)
+            // Save to database
+            _context.Notifications.Add(notification);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            // Send immediately if not scheduled
+            if (!request.ScheduledAt.HasValue)
             {
-                _logger.LogError(ex, "Failed to create notification for recipient {RecipientId}", recipient.RecipientId);
-                response.Errors.Add($"Failed to create notification for {recipient.RecipientId}: {ex.Message}");
-                response.FailedCount++;
+                await SendNotificationNowAsync(notification, cancellationToken);
+                await _context.SaveChangesAsync(cancellationToken);
             }
+
+            var response = MapToResponse(notification);
+            return ApiResponse<NotificationResponse>.Success(response, "Notification sent successfully");
         }
-
-        // Save all notifications
-        _context.Notifications.AddRange(notifications);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        // Process notifications
-        foreach (var notification in notifications)
+        catch (Exception ex)
         {
-            try
+            _logger.LogError(ex, "Failed to send notification");
+            return ApiResponse<NotificationResponse>.Failure($"Failed to send notification: {ex.Message}");
+        }
+    }
+
+    public async Task<ApiResponse<List<NotificationResponse>>> SendBulkNotificationAsync(SendBulkNotificationRequest request, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var responses = new List<NotificationResponse>();
+            var batchId = request.BatchId ?? Guid.NewGuid().ToString();
+
+            foreach (var notificationRequest in request.Notifications)
             {
-                if (request.ScheduledAt.HasValue)
+                var result = await SendNotificationAsync(notificationRequest, cancellationToken);
+                if (result.IsSuccess && result.Data != null)
                 {
-                    var optimalTime = await _preferenceService.GetOptimalSendTimeAsync(notification.RecipientId, request.ScheduledAt.Value, cancellationToken);
-                    notification.ScheduledAt = optimalTime ?? request.ScheduledAt.Value;
-                    await _queueService.QueueNotificationAsync(notification, cancellationToken);
-                    notification.Status = NotificationStatus.Queued;
+                    // Update batch ID
+                    var notification = await _context.Notifications.FindAsync(result.Data.Id);
+                    if (notification != null)
+                    {
+                        notification.BatchId = batchId;
+                        await _context.SaveChangesAsync(cancellationToken);
+                    }
+                    responses.Add(result.Data);
                 }
-                else
-                {
-                    await SendNotificationImmediatelyAsync(notification, cancellationToken);
-                }
-
-                response.Notifications.Add(_mapper.Map<NotificationResponse>(notification));
             }
-            catch (Exception ex)
+
+            return ApiResponse<List<NotificationResponse>>.Success(responses, $"Sent {responses.Count} notifications");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to send bulk notifications");
+            return ApiResponse<List<NotificationResponse>>.Failure($"Failed to send bulk notifications: {ex.Message}");
+        }
+    }
+
+    public async Task<ApiResponse<NotificationResponse>> GetNotificationAsync(Guid notificationId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            if (notification == null)
             {
-                _logger.LogError(ex, "Failed to process notification {NotificationId}", notification.Id);
-                notification.Status = NotificationStatus.Failed;
-                notification.ErrorMessage = ex.Message;
+                return ApiResponse<NotificationResponse>.Failure("Notification not found");
             }
+
+            var response = MapToResponse(notification);
+            return ApiResponse<NotificationResponse>.Success(response);
         }
-
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return response;
-    }
-
-    public async Task<NotificationResponse?> GetNotificationAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
-
-        return notification != null ? _mapper.Map<NotificationResponse>(notification) : null;
-    }
-
-    public async Task<(List<NotificationResponse> Notifications, int TotalCount)> GetNotificationsAsync(NotificationQueryParams queryParams, CancellationToken cancellationToken = default)
-    {
-        var query = _context.Notifications.AsQueryable();
-
-        // Apply filters
-        if (!string.IsNullOrEmpty(queryParams.RecipientId))
-            query = query.Where(n => n.RecipientId == queryParams.RecipientId);
-
-        if (queryParams.Type.HasValue)
-            query = query.Where(n => n.Type == queryParams.Type.Value);
-
-        if (queryParams.Channel.HasValue)
-            query = query.Where(n => n.Channel == queryParams.Channel.Value);
-
-        if (queryParams.Status.HasValue)
-            query = query.Where(n => n.Status == queryParams.Status.Value);
-
-        if (queryParams.FromDate.HasValue)
-            query = query.Where(n => n.CreatedAt >= queryParams.FromDate.Value);
-
-        if (queryParams.ToDate.HasValue)
-            query = query.Where(n => n.CreatedAt <= queryParams.ToDate.Value);
-
-        if (!string.IsNullOrEmpty(queryParams.BatchId))
-            query = query.Where(n => n.BatchId == queryParams.BatchId);
-
-        if (!string.IsNullOrEmpty(queryParams.CorrelationId))
-            query = query.Where(n => n.CorrelationId == queryParams.CorrelationId);
-
-        // Apply sorting
-        query = queryParams.SortBy?.ToLower() switch
+        catch (Exception ex)
         {
-            "updatedat" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.UpdatedAt) : query.OrderByDescending(n => n.UpdatedAt),
-            "sentat" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.SentAt) : query.OrderByDescending(n => n.SentAt),
-            "deliveredat" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.DeliveredAt) : query.OrderByDescending(n => n.DeliveredAt),
-            "type" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.Type) : query.OrderByDescending(n => n.Type),
-            "channel" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.Channel) : query.OrderByDescending(n => n.Channel),
-            "status" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.Status) : query.OrderByDescending(n => n.Status),
-            "priority" => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.Priority) : query.OrderByDescending(n => n.Priority),
-            _ => queryParams.SortOrder == "asc" ? query.OrderBy(n => n.CreatedAt) : query.OrderByDescending(n => n.CreatedAt)
-        };
-
-        var totalCount = await query.CountAsync(cancellationToken);
-
-        // Apply pagination
-        var notifications = await query
-            .Skip((queryParams.Page - 1) * queryParams.PageSize)
-            .Take(queryParams.PageSize)
-            .ToListAsync(cancellationToken);
-
-        return (_mapper.Map<List<NotificationResponse>>(notifications), totalCount);
-    }
-
-    public async Task<bool> UpdateNotificationStatusAsync(Guid id, UpdateNotificationStatusRequest request, CancellationToken cancellationToken = default)
-    {
-        var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
-
-        if (notification == null)
-            return false;
-
-        notification.Status = request.Status;
-        notification.ErrorMessage = request.ErrorMessage;
-        notification.ExternalId = request.ExternalId;
-        notification.UpdatedAt = DateTime.UtcNow;
-
-        if (request.Status == NotificationStatus.Sent && !notification.SentAt.HasValue)
-            notification.SentAt = DateTime.UtcNow;
-
-        if (request.Status == NotificationStatus.Delivered && !notification.DeliveredAt.HasValue)
-            notification.DeliveredAt = DateTime.UtcNow;
-
-        if (request.Metadata != null)
-        {
-            notification.Metadata = JsonSerializer.Serialize(request.Metadata);
+            _logger.LogError(ex, "Failed to get notification {NotificationId}", notificationId);
+            return ApiResponse<NotificationResponse>.Failure($"Failed to get notification: {ex.Message}");
         }
-
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
     }
 
-    public async Task<bool> RecordDeliveryEventAsync(Guid id, NotificationDeliveryEventRequest request, CancellationToken cancellationToken = default)
+    public async Task<PagedApiResponse<NotificationResponse>> SearchNotificationsAsync(NotificationSearchRequest request, CancellationToken cancellationToken = default)
     {
-        var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
-
-        if (notification == null)
-            return false;
-
-        var notificationEvent = new NotificationEvent
+        try
         {
-            Id = Guid.NewGuid(),
-            NotificationId = id,
-            EventType = request.EventType,
-            EventTime = request.EventTime,
-            ExternalId = request.ExternalId,
-            EventData = request.EventData != null ? JsonSerializer.Serialize(request.EventData) : null,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+            var query = _context.Notifications.AsQueryable();
 
-        _context.NotificationEvents.Add(notificationEvent);
+            // Apply filters
+            if (!string.IsNullOrEmpty(request.Type))
+                query = query.Where(n => n.Type == request.Type);
 
-        // Update notification status based on event type
-        switch (request.EventType.ToLower())
-        {
-            case "delivered":
-                notification.Status = NotificationStatus.Delivered;
-                notification.DeliveredAt = request.EventTime;
-                break;
-            case "opened":
-            case "read":
-                notification.ReadAt = request.EventTime;
-                break;
-            case "bounced":
-            case "failed":
-                notification.Status = NotificationStatus.Failed;
-                break;
+            if (request.Channel.HasValue)
+                query = query.Where(n => n.Channel == request.Channel.Value);
+
+            if (request.Status.HasValue)
+                query = query.Where(n => n.Status == request.Status.Value);
+
+            if (request.CustomerId.HasValue)
+                query = query.Where(n => n.CustomerId == request.CustomerId.Value);
+
+            if (request.MerchantId.HasValue)
+                query = query.Where(n => n.MerchantId == request.MerchantId.Value);
+
+            if (request.FromDate.HasValue)
+                query = query.Where(n => n.CreatedAt >= request.FromDate.Value);
+
+            if (request.ToDate.HasValue)
+                query = query.Where(n => n.CreatedAt <= request.ToDate.Value);
+
+            if (!string.IsNullOrEmpty(request.BatchId))
+                query = query.Where(n => n.BatchId == request.BatchId);
+
+            var totalCount = await query.CountAsync(cancellationToken);
+
+            var notifications = await query
+                .OrderByDescending(n => n.CreatedAt)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .ToListAsync(cancellationToken);
+
+            var responses = notifications.Select(MapToResponse).ToList();
+
+            return PagedApiResponse<NotificationResponse>.Success(responses, totalCount, request.Page, request.PageSize);
         }
-
-        notification.UpdatedAt = DateTime.UtcNow;
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    public async Task<bool> CancelNotificationAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
-
-        if (notification == null || notification.Status != NotificationStatus.Queued)
-            return false;
-
-        notification.Status = NotificationStatus.Cancelled;
-        notification.UpdatedAt = DateTime.UtcNow;
-
-        await _context.SaveChangesAsync(cancellationToken);
-        return true;
-    }
-
-    public async Task<NotificationResponse?> RetryNotificationAsync(Guid id, CancellationToken cancellationToken = default)
-    {
-        var notification = await _context.Notifications
-            .FirstOrDefaultAsync(n => n.Id == id, cancellationToken);
-
-        if (notification == null || notification.Status != NotificationStatus.Failed)
-            return null;
-
-        if (notification.RetryCount >= notification.MaxRetries)
+        catch (Exception ex)
         {
-            _logger.LogWarning("Maximum retry attempts reached for notification {NotificationId}", id);
-            return null;
+            _logger.LogError(ex, "Failed to search notifications");
+            return PagedApiResponse<NotificationResponse>.Failure($"Failed to search notifications: {ex.Message}");
         }
-
-        notification.RetryCount++;
-        notification.Status = NotificationStatus.Pending;
-        notification.ErrorMessage = null;
-        notification.UpdatedAt = DateTime.UtcNow;
-
-        await SendNotificationImmediatelyAsync(notification, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
-
-        return _mapper.Map<NotificationResponse>(notification);
     }
 
-    public async Task<NotificationStatsDto> GetNotificationStatsAsync(DateTime fromDate, DateTime toDate, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<NotificationResponse>> RetryNotificationAsync(Guid notificationId, CancellationToken cancellationToken = default)
     {
-        var notifications = await _context.Notifications
-            .Where(n => n.CreatedAt >= fromDate && n.CreatedAt <= toDate)
-            .ToListAsync(cancellationToken);
-
-        var stats = new NotificationStatsDto
+        try
         {
-            FromDate = fromDate,
-            ToDate = toDate,
-            TotalSent = notifications.Count(n => n.Status == NotificationStatus.Sent || n.Status == NotificationStatus.Delivered),
-            TotalDelivered = notifications.Count(n => n.Status == NotificationStatus.Delivered),
-            TotalFailed = notifications.Count(n => n.Status == NotificationStatus.Failed),
-            ByChannel = notifications.GroupBy(n => n.Channel).ToDictionary(g => g.Key, g => g.Count()),
-            ByType = notifications.GroupBy(n => n.Type).ToDictionary(g => g.Key, g => g.Count()),
-            ByStatus = notifications.GroupBy(n => n.Status).ToDictionary(g => g.Key, g => g.Count())
-        };
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            if (notification == null)
+            {
+                return ApiResponse<NotificationResponse>.Failure("Notification not found");
+            }
 
-        stats.DeliveryRate = stats.TotalSent > 0 ? (decimal)stats.TotalDelivered / stats.TotalSent * 100 : 0;
+            if (notification.Status != NotificationStatus.Failed)
+            {
+                return ApiResponse<NotificationResponse>.Failure("Only failed notifications can be retried");
+            }
 
-        return stats;
-    }
+            if (notification.RetryCount >= notification.MaxRetries)
+            {
+                return ApiResponse<NotificationResponse>.Failure("Maximum retry attempts exceeded");
+            }
 
-    private async Task<Models.Notification> CreateNotificationEntityAsync(SendNotificationRequest request, CancellationToken cancellationToken)
-    {
-        string subject = request.Subject ?? string.Empty;
-        string content = request.Content ?? string.Empty;
-        string? htmlContent = null;
+            notification.Status = NotificationStatus.Pending;
+            notification.RetryCount++;
+            notification.ErrorMessage = null;
+            notification.UpdatedAt = DateTime.UtcNow;
 
-        // Use template if specified
-        if (!string.IsNullOrEmpty(request.TemplateName))
-        {
-            var templateData = request.TemplateData ?? new Dictionary<string, object>();
-            var (templateSubject, templateBody, templateHtml) = await _templateService.RenderTemplateAsync(request.TemplateName, templateData, cancellationToken);
-            
-            subject = templateSubject;
-            content = templateBody;
-            htmlContent = templateHtml;
+            await SendNotificationNowAsync(notification, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var response = MapToResponse(notification);
+            return ApiResponse<NotificationResponse>.Success(response, "Notification retry initiated");
         }
-
-        var notification = new Models.Notification
+        catch (Exception ex)
         {
-            Id = Guid.NewGuid(),
-            RecipientId = request.RecipientId,
-            RecipientEmail = request.RecipientEmail,
-            RecipientPhone = request.RecipientPhone,
-            RecipientDeviceToken = request.RecipientDeviceToken,
-            Type = request.Type,
-            Channel = request.Channel,
-            Subject = subject,
-            Content = htmlContent ?? content,
-            TemplateData = request.TemplateData != null ? JsonSerializer.Serialize(request.TemplateData) : null,
-            Status = NotificationStatus.Pending,
-            Priority = request.Priority,
-            ScheduledAt = request.ScheduledAt,
-            CorrelationId = request.CorrelationId,
-            Metadata = request.Metadata != null ? JsonSerializer.Serialize(request.Metadata) : null,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
-
-        return notification;
+            _logger.LogError(ex, "Failed to retry notification {NotificationId}", notificationId);
+            return ApiResponse<NotificationResponse>.Failure($"Failed to retry notification: {ex.Message}");
+        }
     }
 
-    private async Task SendNotificationImmediatelyAsync(Models.Notification notification, CancellationToken cancellationToken)
+    public async Task<ApiResponse> CancelNotificationAsync(Guid notificationId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            if (notification == null)
+            {
+                return ApiResponse.Failure("Notification not found");
+            }
+
+            if (notification.Status != NotificationStatus.Pending && notification.Status != NotificationStatus.Scheduled)
+            {
+                return ApiResponse.Failure("Only pending or scheduled notifications can be cancelled");
+            }
+
+            notification.Status = NotificationStatus.Cancelled;
+            notification.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return ApiResponse.Success("Notification cancelled successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to cancel notification {NotificationId}", notificationId);
+            return ApiResponse.Failure($"Failed to cancel notification: {ex.Message}");
+        }
+    }
+
+    public async Task<ApiResponse<NotificationAnalytics>> GetAnalyticsAsync(DateTime fromDate, DateTime toDate, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var notifications = await _context.Notifications
+                .Where(n => n.CreatedAt >= fromDate && n.CreatedAt <= toDate)
+                .ToListAsync(cancellationToken);
+
+            var analytics = new NotificationAnalytics
+            {
+                FromDate = fromDate,
+                ToDate = toDate,
+                TotalSent = notifications.Count(n => n.Status == NotificationStatus.Sent || n.Status == NotificationStatus.Delivered),
+                TotalDelivered = notifications.Count(n => n.Status == NotificationStatus.Delivered),
+                TotalFailed = notifications.Count(n => n.Status == NotificationStatus.Failed),
+                TotalOpened = notifications.Count(n => n.ReadAt.HasValue),
+                ByChannel = notifications.GroupBy(n => n.Channel).ToDictionary(g => g.Key, g => g.Count()),
+                ByType = notifications.GroupBy(n => n.Type).ToDictionary(g => g.Key, g => g.Count()),
+                ByStatus = notifications.GroupBy(n => n.Status).ToDictionary(g => g.Key, g => g.Count())
+            };
+
+            if (analytics.TotalSent > 0)
+            {
+                analytics.DeliveryRate = (decimal)analytics.TotalDelivered / analytics.TotalSent * 100;
+                analytics.OpenRate = (decimal)analytics.TotalOpened / analytics.TotalSent * 100;
+            }
+
+            return ApiResponse<NotificationAnalytics>.Success(analytics);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to get analytics");
+            return ApiResponse<NotificationAnalytics>.Failure($"Failed to get analytics: {ex.Message}");
+        }
+    }
+
+    public async Task<ApiResponse<int>> ProcessScheduledNotificationsAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var scheduledNotifications = await _context.Notifications
+                .Where(n => n.Status == NotificationStatus.Scheduled && n.ScheduledAt <= DateTime.UtcNow)
+                .ToListAsync(cancellationToken);
+
+            var processedCount = 0;
+            foreach (var notification in scheduledNotifications)
+            {
+                await SendNotificationNowAsync(notification, cancellationToken);
+                processedCount++;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return ApiResponse<int>.Success(processedCount, $"Processed {processedCount} scheduled notifications");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to process scheduled notifications");
+            return ApiResponse<int>.Failure($"Failed to process scheduled notifications: {ex.Message}");
+        }
+    }
+
+    public async Task<ApiResponse<int>> ProcessRetryNotificationsAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var retryNotifications = await _context.Notifications
+                .Where(n => n.Status == NotificationStatus.Failed && n.RetryCount < n.MaxRetries)
+                .ToListAsync(cancellationToken);
+
+            var processedCount = 0;
+            foreach (var notification in retryNotifications)
+            {
+                notification.RetryCount++;
+                notification.Status = NotificationStatus.Pending;
+                await SendNotificationNowAsync(notification, cancellationToken);
+                processedCount++;
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return ApiResponse<int>.Success(processedCount, $"Processed {processedCount} retry notifications");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to process retry notifications");
+            return ApiResponse<int>.Failure($"Failed to process retry notifications: {ex.Message}");
+        }
+    }
+
+    private async Task SendNotificationNowAsync(Models.Notification notification, CancellationToken cancellationToken)
     {
         try
         {
             notification.Status = NotificationStatus.Sending;
-            
-            var provider = _providerFactory.GetProvider(notification.Channel);
-            var success = await provider.SendAsync(notification, cancellationToken);
+
+            (bool success, string? externalId, string? errorMessage) = notification.Channel switch
+            {
+                NotificationChannel.Email => await _emailService.SendEmailAsync(notification.Recipient, notification.Subject, notification.Content, cancellationToken: cancellationToken),
+                NotificationChannel.Sms => await _smsService.SendSmsAsync(notification.Recipient, notification.Content, cancellationToken),
+                NotificationChannel.Push => await _pushService.SendPushNotificationAsync(notification.Recipient, notification.Subject, notification.Content, cancellationToken: cancellationToken),
+                _ => (false, null, "Unsupported notification channel")
+            };
 
             if (success)
             {
                 notification.Status = NotificationStatus.Sent;
                 notification.SentAt = DateTime.UtcNow;
+                notification.ExternalId = externalId;
             }
             else
             {
                 notification.Status = NotificationStatus.Failed;
-                notification.ErrorMessage = "Failed to send notification";
+                notification.ErrorMessage = errorMessage;
             }
+
+            notification.UpdatedAt = DateTime.UtcNow;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send notification {NotificationId}", notification.Id);
             notification.Status = NotificationStatus.Failed;
             notification.ErrorMessage = ex.Message;
+            notification.UpdatedAt = DateTime.UtcNow;
         }
+    }
 
-        notification.UpdatedAt = DateTime.UtcNow;
+    private static NotificationResponse MapToResponse(Models.Notification notification)
+    {
+        return new NotificationResponse
+        {
+            Id = notification.Id,
+            Type = notification.Type,
+            Channel = notification.Channel,
+            Recipient = notification.Recipient,
+            Subject = notification.Subject,
+            Content = notification.Content,
+            Status = notification.Status,
+            Priority = notification.Priority,
+            ScheduledAt = notification.ScheduledAt,
+            SentAt = notification.SentAt,
+            DeliveredAt = notification.DeliveredAt,
+            ReadAt = notification.ReadAt,
+            RetryCount = notification.RetryCount,
+            ErrorMessage = notification.ErrorMessage,
+            ExternalId = notification.ExternalId,
+            CustomerId = notification.CustomerId,
+            MerchantId = notification.MerchantId,
+            PaymentId = notification.PaymentId,
+            InstallmentId = notification.InstallmentId,
+            CreatedAt = notification.CreatedAt,
+            UpdatedAt = notification.UpdatedAt
+        };
     }
 }

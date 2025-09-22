@@ -1,27 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FluentValidation;
-using RivertyBNPL.Services.Notification.API.DTOs;
-using RivertyBNPL.Services.Notification.API.Services;
-using RivertyBNPL.Shared.Common.Models;
+using RivertyBNPL.Notification.API.DTOs;
+using RivertyBNPL.Notification.API.Services;
+using RivertyBNPL.Common.Models;
 
-namespace RivertyBNPL.Services.Notification.API.Controllers;
+namespace RivertyBNPL.Notification.API.Controllers;
 
 /// <summary>
-/// Controller for notification template operations
+/// Controller for template operations
 /// </summary>
 [ApiController]
 [Route("api/v1/[controller]")]
 [Authorize]
 public class TemplatesController : ControllerBase
 {
-    private readonly INotificationTemplateService _templateService;
-    private readonly IValidator<CreateNotificationTemplateRequest> _validator;
+    private readonly ITemplateService _templateService;
+    private readonly IValidator<CreateTemplateRequest> _validator;
     private readonly ILogger<TemplatesController> _logger;
 
     public TemplatesController(
-        INotificationTemplateService templateService,
-        IValidator<CreateNotificationTemplateRequest> validator,
+        ITemplateService templateService,
+        IValidator<CreateTemplateRequest> validator,
         ILogger<TemplatesController> logger)
     {
         _templateService = templateService;
@@ -30,183 +30,174 @@ public class TemplatesController : ControllerBase
     }
 
     /// <summary>
-    /// Get all notification templates
-    /// </summary>
-    [HttpGet]
-    public async Task<ActionResult<ApiResponse<List<NotificationTemplateDto>>>> GetTemplatesAsync(
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var templates = await _templateService.GetTemplatesAsync(cancellationToken);
-            return Ok(ApiResponse<List<NotificationTemplateDto>>.Success(templates));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get notification templates");
-            return StatusCode(500, ApiResponse<List<NotificationTemplateDto>>.Failure("Failed to get templates", new[] { ex.Message }));
-        }
-    }
-
-    /// <summary>
-    /// Get notification template by name
-    /// </summary>
-    [HttpGet("{name}")]
-    public async Task<ActionResult<ApiResponse<NotificationTemplateDto>>> GetTemplateAsync(
-        string name,
-        CancellationToken cancellationToken = default)
-    {
-        try
-        {
-            var template = await _templateService.GetTemplateAsync(name, cancellationToken);
-            
-            if (template == null)
-            {
-                return NotFound(ApiResponse<NotificationTemplateDto>.Failure("Template not found"));
-            }
-            
-            return Ok(ApiResponse<NotificationTemplateDto>.Success(template));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get notification template {TemplateName}", name);
-            return StatusCode(500, ApiResponse<NotificationTemplateDto>.Failure("Failed to get template", new[] { ex.Message }));
-        }
-    }
-
-    /// <summary>
-    /// Create new notification template
+    /// Create new template
     /// </summary>
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<NotificationTemplateDto>>> CreateTemplateAsync(
-        [FromBody] CreateNotificationTemplateRequest request,
+    public async Task<ActionResult<ApiResponse<TemplateResponse>>> CreateTemplateAsync(
+        [FromBody] CreateTemplateRequest request,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return BadRequest(ApiResponse<NotificationTemplateDto>.Failure(
+            return BadRequest(ApiResponse<TemplateResponse>.Failure(
                 "Validation failed",
                 validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
         }
 
-        try
+        var result = await _templateService.CreateTemplateAsync(request, cancellationToken);
+        
+        if (result.IsSuccess)
         {
-            var template = await _templateService.CreateTemplateAsync(request, cancellationToken);
-            
-            _logger.LogInformation("Created notification template: {TemplateName}", request.Name);
-            
-            return CreatedAtAction(
-                nameof(GetTemplateAsync),
-                new { name = template.Name },
-                ApiResponse<NotificationTemplateDto>.Success(template, "Template created successfully"));
+            return CreatedAtAction(nameof(GetTemplateAsync), new { id = result.Data?.Id }, result);
         }
-        catch (InvalidOperationException ex)
+        else
         {
-            return Conflict(ApiResponse<NotificationTemplateDto>.Failure(ex.Message));
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to create notification template");
-            return StatusCode(500, ApiResponse<NotificationTemplateDto>.Failure("Failed to create template", new[] { ex.Message }));
+            return BadRequest(result);
         }
     }
 
     /// <summary>
-    /// Update existing notification template
+    /// Update existing template
     /// </summary>
-    [HttpPut("{name}")]
-    public async Task<ActionResult<ApiResponse<NotificationTemplateDto>>> UpdateTemplateAsync(
-        string name,
-        [FromBody] CreateNotificationTemplateRequest request,
+    [HttpPut("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<TemplateResponse>>> UpdateTemplateAsync(
+        Guid id,
+        [FromBody] CreateTemplateRequest request,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return BadRequest(ApiResponse<NotificationTemplateDto>.Failure(
+            return BadRequest(ApiResponse<TemplateResponse>.Failure(
                 "Validation failed",
                 validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
         }
 
-        try
+        var result = await _templateService.UpdateTemplateAsync(id, request, cancellationToken);
+        
+        if (result.IsSuccess)
         {
-            var template = await _templateService.UpdateTemplateAsync(name, request, cancellationToken);
-            
-            if (template == null)
-            {
-                return NotFound(ApiResponse<NotificationTemplateDto>.Failure("Template not found"));
-            }
-            
-            _logger.LogInformation("Updated notification template: {TemplateName}", name);
-            
-            return Ok(ApiResponse<NotificationTemplateDto>.Success(template, "Template updated successfully"));
+            return Ok(result);
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "Failed to update notification template {TemplateName}", name);
-            return StatusCode(500, ApiResponse<NotificationTemplateDto>.Failure("Failed to update template", new[] { ex.Message }));
+            return NotFound(result);
         }
     }
 
     /// <summary>
-    /// Delete notification template
+    /// Get template by ID
     /// </summary>
-    [HttpDelete("{name}")]
-    public async Task<ActionResult<ApiResponse<bool>>> DeleteTemplateAsync(
-        string name,
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<ApiResponse<TemplateResponse>>> GetTemplateAsync(
+        Guid id,
         CancellationToken cancellationToken = default)
     {
-        try
+        var result = await _templateService.GetTemplateAsync(id, cancellationToken);
+        
+        if (result.IsSuccess)
         {
-            var result = await _templateService.DeleteTemplateAsync(name, cancellationToken);
-            
-            if (!result)
-            {
-                return NotFound(ApiResponse<bool>.Failure("Template not found"));
-            }
-            
-            _logger.LogInformation("Deleted notification template: {TemplateName}", name);
-            
-            return Ok(ApiResponse<bool>.Success(result, "Template deleted successfully"));
+            return Ok(result);
         }
-        catch (Exception ex)
+        else
         {
-            _logger.LogError(ex, "Failed to delete notification template {TemplateName}", name);
-            return StatusCode(500, ApiResponse<bool>.Failure("Failed to delete template", new[] { ex.Message }));
+            return NotFound(result);
         }
     }
 
     /// <summary>
-    /// Render template with test data
+    /// Get template by name and language
     /// </summary>
-    [HttpPost("{name}/render")]
+    [HttpGet("by-name/{name}")]
+    public async Task<ActionResult<ApiResponse<TemplateResponse>>> GetTemplateByNameAsync(
+        string name,
+        [FromQuery] string language = "en",
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _templateService.GetTemplateByNameAsync(name, language, cancellationToken);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound(result);
+        }
+    }
+
+    /// <summary>
+    /// List templates with filtering
+    /// </summary>
+    [HttpGet]
+    public async Task<ActionResult<PagedApiResponse<TemplateResponse>>> ListTemplatesAsync(
+        [FromQuery] string? type = null,
+        [FromQuery] string? language = null,
+        [FromQuery] bool? isActive = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _templateService.ListTemplatesAsync(type, language, isActive, page, pageSize, cancellationToken);
+        
+        if (result.IsSuccess)
+        {
+            return Ok(result);
+        }
+        else
+        {
+            return BadRequest(result);
+        }
+    }
+
+    /// <summary>
+    /// Render template with data
+    /// </summary>
+    [HttpPost("{id:guid}/render")]
     public async Task<ActionResult<ApiResponse<TemplateRenderResult>>> RenderTemplateAsync(
-        string name,
+        Guid id,
         [FromBody] Dictionary<string, object> data,
         CancellationToken cancellationToken = default)
     {
-        try
+        var result = await _templateService.RenderTemplateAsync(id, data, cancellationToken);
+        
+        if (result.IsSuccess)
         {
-            var (subject, body, htmlBody) = await _templateService.RenderTemplateAsync(name, data, cancellationToken);
-            
-            var result = new TemplateRenderResult
+            var renderResult = new TemplateRenderResult
             {
-                Subject = subject,
-                Body = body,
-                HtmlBody = htmlBody
+                Subject = result.Data.Subject,
+                HtmlContent = result.Data.HtmlContent,
+                TextContent = result.Data.TextContent,
+                SmsContent = result.Data.SmsContent,
+                PushContent = result.Data.PushContent
             };
             
-            return Ok(ApiResponse<TemplateRenderResult>.Success(result, "Template rendered successfully"));
+            return Ok(ApiResponse<TemplateRenderResult>.Success(renderResult, "Template rendered successfully"));
         }
-        catch (InvalidOperationException ex)
+        else
         {
-            return BadRequest(ApiResponse<TemplateRenderResult>.Failure(ex.Message));
+            return BadRequest(result);
         }
-        catch (Exception ex)
+    }
+
+    /// <summary>
+    /// Delete template
+    /// </summary>
+    [HttpDelete("{id:guid}")]
+    public async Task<ActionResult<ApiResponse>> DeleteTemplateAsync(
+        Guid id,
+        CancellationToken cancellationToken = default)
+    {
+        var result = await _templateService.DeleteTemplateAsync(id, cancellationToken);
+        
+        if (result.IsSuccess)
         {
-            _logger.LogError(ex, "Failed to render template {TemplateName}", name);
-            return StatusCode(500, ApiResponse<TemplateRenderResult>.Failure("Failed to render template", new[] { ex.Message }));
+            return Ok(result);
+        }
+        else
+        {
+            return NotFound(result);
         }
     }
 }
@@ -217,6 +208,8 @@ public class TemplatesController : ControllerBase
 public class TemplateRenderResult
 {
     public string Subject { get; set; } = string.Empty;
-    public string Body { get; set; } = string.Empty;
-    public string? HtmlBody { get; set; }
+    public string HtmlContent { get; set; } = string.Empty;
+    public string? TextContent { get; set; }
+    public string? SmsContent { get; set; }
+    public string? PushContent { get; set; }
 }

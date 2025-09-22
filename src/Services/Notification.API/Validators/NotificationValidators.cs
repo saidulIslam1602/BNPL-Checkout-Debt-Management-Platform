@@ -1,8 +1,8 @@
 using FluentValidation;
-using RivertyBNPL.Services.Notification.API.DTOs;
-using RivertyBNPL.Shared.Common.Enums;
+using RivertyBNPL.Notification.API.DTOs;
+using RivertyBNPL.Notification.API.Models;
 
-namespace RivertyBNPL.Services.Notification.API.Validators;
+namespace RivertyBNPL.Notification.API.Validators;
 
 /// <summary>
 /// Validator for SendNotificationRequest
@@ -11,41 +11,30 @@ public class SendNotificationRequestValidator : AbstractValidator<SendNotificati
 {
     public SendNotificationRequestValidator()
     {
-        RuleFor(x => x.RecipientId)
+        RuleFor(x => x.Type)
             .NotEmpty()
             .MaximumLength(100);
-
-        RuleFor(x => x.RecipientEmail)
-            .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(200);
-
-        RuleFor(x => x.RecipientPhone)
-            .Matches(@"^\+?[1-9]\d{1,14}$")
-            .When(x => !string.IsNullOrEmpty(x.RecipientPhone))
-            .WithMessage("Phone number must be in valid international format");
-
-        RuleFor(x => x.Type)
-            .IsInEnum();
 
         RuleFor(x => x.Channel)
             .IsInEnum();
 
-        RuleFor(x => x.Subject)
+        RuleFor(x => x.Recipient)
             .NotEmpty()
+            .MaximumLength(500);
+
+        RuleFor(x => x.Subject)
             .MaximumLength(200)
             .When(x => x.Channel == NotificationChannel.Email);
 
         RuleFor(x => x.Content)
             .NotEmpty()
-            .When(x => string.IsNullOrEmpty(x.TemplateName))
+            .When(x => !x.TemplateId.HasValue)
             .WithMessage("Content is required when no template is specified");
 
-        RuleFor(x => x.TemplateName)
+        RuleFor(x => x.TemplateId)
             .NotEmpty()
-            .MaximumLength(100)
             .When(x => string.IsNullOrEmpty(x.Content))
-            .WithMessage("Template name is required when no content is specified");
+            .WithMessage("Template ID is required when no content is specified");
 
         RuleFor(x => x.Priority)
             .IsInEnum();
@@ -54,16 +43,6 @@ public class SendNotificationRequestValidator : AbstractValidator<SendNotificati
             .GreaterThan(DateTime.UtcNow)
             .When(x => x.ScheduledAt.HasValue)
             .WithMessage("Scheduled time must be in the future");
-
-        RuleFor(x => x.RecipientPhone)
-            .NotEmpty()
-            .When(x => x.Channel == NotificationChannel.SMS)
-            .WithMessage("Phone number is required for SMS notifications");
-
-        RuleFor(x => x.RecipientDeviceToken)
-            .NotEmpty()
-            .When(x => x.Channel == NotificationChannel.Push)
-            .WithMessage("Device token is required for push notifications");
     }
 }
 
@@ -74,75 +53,25 @@ public class SendBulkNotificationRequestValidator : AbstractValidator<SendBulkNo
 {
     public SendBulkNotificationRequestValidator()
     {
-        RuleFor(x => x.Recipients)
+        RuleFor(x => x.Notifications)
             .NotEmpty()
             .Must(x => x.Count <= 1000)
-            .WithMessage("Maximum 1000 recipients allowed per bulk request");
+            .WithMessage("Maximum 1000 notifications allowed per bulk request");
 
-        RuleForEach(x => x.Recipients)
-            .SetValidator(new BulkNotificationRecipientValidator());
+        RuleForEach(x => x.Notifications)
+            .SetValidator(new SendNotificationRequestValidator());
 
-        RuleFor(x => x.Type)
-            .IsInEnum();
-
-        RuleFor(x => x.Channel)
-            .IsInEnum();
-
-        RuleFor(x => x.Subject)
-            .NotEmpty()
-            .MaximumLength(200)
-            .When(x => x.Channel == NotificationChannel.Email);
-
-        RuleFor(x => x.Content)
-            .NotEmpty()
-            .When(x => string.IsNullOrEmpty(x.TemplateName))
-            .WithMessage("Content is required when no template is specified");
-
-        RuleFor(x => x.TemplateName)
-            .NotEmpty()
-            .MaximumLength(100)
-            .When(x => string.IsNullOrEmpty(x.Content))
-            .WithMessage("Template name is required when no content is specified");
-
-        RuleFor(x => x.Priority)
-            .IsInEnum();
-
-        RuleFor(x => x.ScheduledAt)
-            .GreaterThan(DateTime.UtcNow)
-            .When(x => x.ScheduledAt.HasValue)
-            .WithMessage("Scheduled time must be in the future");
-    }
-}
-
-/// <summary>
-/// Validator for BulkNotificationRecipient
-/// </summary>
-public class BulkNotificationRecipientValidator : AbstractValidator<BulkNotificationRecipient>
-{
-    public BulkNotificationRecipientValidator()
-    {
-        RuleFor(x => x.RecipientId)
-            .NotEmpty()
+        RuleFor(x => x.BatchId)
             .MaximumLength(100);
-
-        RuleFor(x => x.RecipientEmail)
-            .NotEmpty()
-            .EmailAddress()
-            .MaximumLength(200);
-
-        RuleFor(x => x.RecipientPhone)
-            .Matches(@"^\+?[1-9]\d{1,14}$")
-            .When(x => !string.IsNullOrEmpty(x.RecipientPhone))
-            .WithMessage("Phone number must be in valid international format");
     }
 }
 
 /// <summary>
-/// Validator for CreateNotificationTemplateRequest
+/// Validator for CreateTemplateRequest
 /// </summary>
-public class CreateNotificationTemplateRequestValidator : AbstractValidator<CreateNotificationTemplateRequest>
+public class CreateTemplateRequestValidator : AbstractValidator<CreateTemplateRequest>
 {
-    public CreateNotificationTemplateRequestValidator()
+    public CreateTemplateRequestValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()
@@ -158,7 +87,8 @@ public class CreateNotificationTemplateRequestValidator : AbstractValidator<Crea
             .MaximumLength(500);
 
         RuleFor(x => x.Type)
-            .IsInEnum();
+            .NotEmpty()
+            .MaximumLength(100);
 
         RuleFor(x => x.Channel)
             .IsInEnum();
@@ -167,82 +97,38 @@ public class CreateNotificationTemplateRequestValidator : AbstractValidator<Crea
             .NotEmpty()
             .MaximumLength(200);
 
-        RuleFor(x => x.BodyTemplate)
+        RuleFor(x => x.HtmlContent)
             .NotEmpty()
-            .Must(BeValidTemplate)
-            .WithMessage("Template must contain valid placeholder syntax");
+            .When(x => x.Channel == NotificationChannel.Email)
+            .WithMessage("HTML content is required for email templates");
 
-        RuleFor(x => x.HtmlTemplate)
-            .Must(BeValidHtmlTemplate)
-            .When(x => !string.IsNullOrEmpty(x.HtmlTemplate))
-            .WithMessage("HTML template must be valid HTML");
+        RuleFor(x => x.SmsContent)
+            .NotEmpty()
+            .When(x => x.Channel == NotificationChannel.Sms)
+            .WithMessage("SMS content is required for SMS templates");
+
+        RuleFor(x => x.PushContent)
+            .NotEmpty()
+            .When(x => x.Channel == NotificationChannel.Push)
+            .WithMessage("Push content is required for push notification templates");
 
         RuleFor(x => x.Language)
             .NotEmpty()
             .MaximumLength(10)
-            .Matches(@"^[a-z]{2}-[A-Z]{2}$")
-            .WithMessage("Language must be in format 'xx-XX' (e.g., 'nb-NO')");
-    }
-
-    private static bool BeValidTemplate(string template)
-    {
-        // Basic validation for template placeholders
-        if (string.IsNullOrEmpty(template))
-            return false;
-
-        // Check for balanced braces
-        var openBraces = template.Count(c => c == '{');
-        var closeBraces = template.Count(c => c == '}');
-        
-        return openBraces == closeBraces && openBraces % 2 == 0;
-    }
-
-    private static bool BeValidHtmlTemplate(string? htmlTemplate)
-    {
-        if (string.IsNullOrEmpty(htmlTemplate))
-            return true;
-
-        // Basic HTML validation - check for balanced tags
-        try
-        {
-            var doc = new System.Xml.XmlDocument();
-            doc.LoadXml($"<root>{htmlTemplate}</root>");
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
+            .Matches(@"^[a-z]{2}(-[A-Z]{2})?$")
+            .WithMessage("Language must be in format 'xx' or 'xx-XX' (e.g., 'en' or 'en-US')");
     }
 }
 
 /// <summary>
-/// Validator for UpdateNotificationPreferencesRequest
+/// Validator for UpdatePreferencesRequest
 /// </summary>
-public class UpdateNotificationPreferencesRequestValidator : AbstractValidator<UpdateNotificationPreferencesRequest>
+public class UpdatePreferencesRequestValidator : AbstractValidator<UpdatePreferencesRequest>
 {
-    public UpdateNotificationPreferencesRequestValidator()
+    public UpdatePreferencesRequestValidator()
     {
         RuleFor(x => x.Preferences)
-            .NotEmpty();
-
-        RuleForEach(x => x.Preferences)
-            .SetValidator(new NotificationPreferenceUpdateValidator());
-    }
-}
-
-/// <summary>
-/// Validator for NotificationPreferenceUpdate
-/// </summary>
-public class NotificationPreferenceUpdateValidator : AbstractValidator<NotificationPreferenceUpdate>
-{
-    public NotificationPreferenceUpdateValidator()
-    {
-        RuleFor(x => x.NotificationType)
-            .IsInEnum();
-
-        RuleFor(x => x.Channel)
-            .IsInEnum();
+            .NotNull();
 
         RuleFor(x => x.QuietHoursStart)
             .LessThan(x => x.QuietHoursEnd)
@@ -273,37 +159,32 @@ public class NotificationPreferenceUpdateValidator : AbstractValidator<Notificat
 }
 
 /// <summary>
-/// Validator for NotificationQueryParams
+/// Validator for CreateCampaignRequest
 /// </summary>
-public class NotificationQueryParamsValidator : AbstractValidator<NotificationQueryParams>
+public class CreateCampaignRequestValidator : AbstractValidator<CreateCampaignRequest>
 {
-    public NotificationQueryParamsValidator()
+    public CreateCampaignRequestValidator()
     {
-        RuleFor(x => x.Page)
-            .GreaterThan(0);
+        RuleFor(x => x.Name)
+            .NotEmpty()
+            .MaximumLength(200);
 
-        RuleFor(x => x.PageSize)
-            .InclusiveBetween(1, 100);
+        RuleFor(x => x.Description)
+            .MaximumLength(500);
 
-        RuleFor(x => x.FromDate)
-            .LessThanOrEqualTo(x => x.ToDate)
-            .When(x => x.FromDate.HasValue && x.ToDate.HasValue)
-            .WithMessage("From date must be before or equal to to date");
+        RuleFor(x => x.Type)
+            .NotEmpty()
+            .MaximumLength(100);
 
-        RuleFor(x => x.SortBy)
-            .Must(BeValidSortField)
-            .When(x => !string.IsNullOrEmpty(x.SortBy))
-            .WithMessage("Invalid sort field");
+        RuleFor(x => x.Channel)
+            .IsInEnum();
 
-        RuleFor(x => x.SortOrder)
-            .Must(x => x == "asc" || x == "desc")
-            .When(x => !string.IsNullOrEmpty(x.SortOrder))
-            .WithMessage("Sort order must be 'asc' or 'desc'");
-    }
+        RuleFor(x => x.TemplateId)
+            .NotEmpty();
 
-    private static bool BeValidSortField(string? sortBy)
-    {
-        var validFields = new[] { "CreatedAt", "UpdatedAt", "SentAt", "DeliveredAt", "Type", "Channel", "Status", "Priority" };
-        return validFields.Contains(sortBy);
+        RuleFor(x => x.ScheduledAt)
+            .GreaterThan(DateTime.UtcNow)
+            .When(x => x.ScheduledAt.HasValue)
+            .WithMessage("Scheduled time must be in the future");
     }
 }

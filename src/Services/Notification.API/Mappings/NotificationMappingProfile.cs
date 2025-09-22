@@ -1,9 +1,9 @@
 using AutoMapper;
 using System.Text.Json;
-using RivertyBNPL.Services.Notification.API.DTOs;
-using RivertyBNPL.Services.Notification.API.Models;
+using RivertyBNPL.Notification.API.DTOs;
+using RivertyBNPL.Notification.API.Models;
 
-namespace RivertyBNPL.Services.Notification.API.Mappings;
+namespace RivertyBNPL.Notification.API.Mappings;
 
 /// <summary>
 /// AutoMapper profile for notification mappings
@@ -15,83 +15,54 @@ public class NotificationMappingProfile : Profile
         // Notification mappings
         CreateMap<Models.Notification, NotificationResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.RecipientId, opt => opt.MapFrom(src => src.RecipientId))
-            .ForMember(dest => dest.RecipientEmail, opt => opt.MapFrom(src => src.RecipientEmail))
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
             .ForMember(dest => dest.Channel, opt => opt.MapFrom(src => src.Channel))
+            .ForMember(dest => dest.Recipient, opt => opt.MapFrom(src => src.Recipient))
             .ForMember(dest => dest.Subject, opt => opt.MapFrom(src => src.Subject))
+            .ForMember(dest => dest.Content, opt => opt.MapFrom(src => src.Content))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
             .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
             .ForMember(dest => dest.ScheduledAt, opt => opt.MapFrom(src => src.ScheduledAt))
             .ForMember(dest => dest.SentAt, opt => opt.MapFrom(src => src.SentAt))
             .ForMember(dest => dest.DeliveredAt, opt => opt.MapFrom(src => src.DeliveredAt))
+            .ForMember(dest => dest.ReadAt, opt => opt.MapFrom(src => src.ReadAt))
+            .ForMember(dest => dest.RetryCount, opt => opt.MapFrom(src => src.RetryCount))
+            .ForMember(dest => dest.ErrorMessage, opt => opt.MapFrom(src => src.ErrorMessage))
+            .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.ExternalId))
+            .ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.CustomerId))
+            .ForMember(dest => dest.MerchantId, opt => opt.MapFrom(src => src.MerchantId))
+            .ForMember(dest => dest.PaymentId, opt => opt.MapFrom(src => src.PaymentId))
+            .ForMember(dest => dest.InstallmentId, opt => opt.MapFrom(src => src.InstallmentId))
             .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
-            .ForMember(dest => dest.CorrelationId, opt => opt.MapFrom(src => src.CorrelationId))
-            .ForMember(dest => dest.BatchId, opt => opt.MapFrom(src => src.BatchId));
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt));
 
         // Template mappings
-        CreateMap<NotificationTemplate, NotificationTemplateDto>()
+        CreateMap<NotificationTemplate, TemplateResponse>()
             .ForMember(dest => dest.Variables, opt => opt.MapFrom(src => 
                 !string.IsNullOrEmpty(src.Variables) 
                     ? JsonSerializer.Deserialize<List<string>>(src.Variables) 
                     : new List<string>()));
 
-        CreateMap<CreateNotificationTemplateRequest, NotificationTemplate>()
+        CreateMap<CreateTemplateRequest, NotificationTemplate>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true))
+            .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
             .ForMember(dest => dest.Version, opt => opt.MapFrom(src => 1))
             .ForMember(dest => dest.Variables, opt => opt.MapFrom(src => 
                 src.Variables != null ? JsonSerializer.Serialize(src.Variables) : null))
+            .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => 
+                src.Metadata != null ? JsonSerializer.Serialize(src.Metadata) : null))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.Versions, opt => opt.Ignore());
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
-        // Preference mappings
-        CreateMap<NotificationPreference, NotificationPreferenceDto>();
+        // Campaign mappings
+        CreateMap<Campaign, CampaignResponse>();
 
-        CreateMap<NotificationPreferenceUpdate, NotificationPreference>()
+        CreateMap<CreateCampaignRequest, Campaign>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => CampaignStatus.Draft))
+            .ForMember(dest => dest.Settings, opt => opt.MapFrom(src => 
+                src.Settings != null ? JsonSerializer.Serialize(src.Settings) : null))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.Metadata, opt => opt.Ignore());
-
-        // Delivery attempt mappings
-        CreateMap<NotificationDeliveryAttempt, NotificationDeliveryAttemptDto>();
-
-        // Event mappings
-        CreateMap<NotificationEvent, NotificationEventDto>()
-            .ForMember(dest => dest.EventData, opt => opt.MapFrom(src => 
-                !string.IsNullOrEmpty(src.EventData) 
-                    ? JsonSerializer.Deserialize<Dictionary<string, object>>(src.EventData) 
-                    : new Dictionary<string, object>()));
+            .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
     }
-}
-
-/// <summary>
-/// DTO for notification delivery attempt
-/// </summary>
-public class NotificationDeliveryAttemptDto
-{
-    public Guid Id { get; set; }
-    public Guid NotificationId { get; set; }
-    public DateTime AttemptedAt { get; set; }
-    public NotificationDeliveryStatus Status { get; set; }
-    public string? ErrorMessage { get; set; }
-    public string? ExternalId { get; set; }
-    public string? Response { get; set; }
-    public TimeSpan? ResponseTime { get; set; }
-}
-
-/// <summary>
-/// DTO for notification event
-/// </summary>
-public class NotificationEventDto
-{
-    public Guid Id { get; set; }
-    public Guid NotificationId { get; set; }
-    public string EventType { get; set; } = string.Empty;
-    public DateTime EventTime { get; set; }
-    public Dictionary<string, object>? EventData { get; set; }
-    public string? ExternalId { get; set; }
 }
