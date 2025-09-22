@@ -1,0 +1,287 @@
+// Norwegian-inspired color palette
+:root {
+  --riverty-primary: #1e3a8a;
+  --riverty-secondary: #dc2626;
+  --riverty-accent: #059669;
+  --riverty-warn: #ea580c;
+  --riverty-success: #16a34a;
+  --riverty-background: #f8fafc;
+  --riverty-surface: #ffffff;
+  --riverty-text: #1e293b;
+  --riverty-text-secondary: #64748b;
+  --norway-blue: #002868;
+  --norway-red: #ed2939;
+}
+
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  height: 4px;
+}
+
+.sidenav-container {
+  flex: 1;
+  background-color: var(--riverty-background);
+}
+
+.sidenav {
+  width: 280px;
+  background-color: var(--riverty-surface);
+  border-right: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  .sidenav-header {
+    padding: 24px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    background: linear-gradient(135deg, var(--riverty-primary) 0%, #3b82f6 100%);
+    color: white;
+    text-align: center;
+
+    .logo {
+      height: 40px;
+      margin-bottom: 12px;
+      filter: brightness(0) invert(1);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .nav-list {
+    padding-top: 16px;
+
+    a[mat-list-item] {
+      height: 56px;
+      margin: 4px 12px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      color: var(--riverty-text);
+
+      &:hover {
+        background-color: #f1f5f9;
+        transform: translateX(4px);
+      }
+
+      &.active {
+        background-color: #dbeafe;
+        color: var(--riverty-primary);
+        font-weight: 500;
+        border-left: 4px solid var(--riverty-primary);
+        margin-left: 8px;
+
+        mat-icon {
+          color: var(--riverty-primary);
+        }
+      }
+
+      mat-icon[matListItemIcon] {
+        color: var(--riverty-text-secondary);
+        margin-right: 16px;
+      }
+
+      span[matListItemTitle] {
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    mat-divider {
+      margin: 16px 12px;
+      border-color: #e2e8f0;
+    }
+  }
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(90deg, var(--riverty-primary) 0%, #3b82f6 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 64px;
+
+  .toolbar-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-left: 16px;
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
+
+  .market-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    margin-right: 16px;
+
+    .flag-icon {
+      width: 20px;
+      height: 15px;
+      border-radius: 2px;
+    }
+
+    .market-text {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  button[mat-icon-button] {
+    color: white;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.content-container {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: var(--riverty-background);
+}
+
+// User menu styling
+.user-info {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  min-width: 200px;
+
+  .user-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--riverty-text);
+    margin-bottom: 4px;
+  }
+
+  .user-email {
+    font-size: 14px;
+    color: var(--riverty-text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .merchant-name {
+    font-size: 12px;
+    color: var(--riverty-primary);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Badge styling for notifications
+::ng-deep .mat-badge-content {
+  background-color: var(--riverty-warn);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .sidenav {
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+  }
+
+  .toolbar {
+    .market-indicator {
+      display: none;
+    }
+
+    .toolbar-title {
+      font-size: 18px;
+      margin-left: 8px;
+    }
+  }
+
+  .content-container {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .content-container {
+    padding: 12px;
+  }
+
+  .toolbar {
+    height: 56px;
+
+    .toolbar-title {
+      font-size: 16px;
+    }
+  }
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+// Animation for smooth transitions
+* {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+// Norwegian flag colors for accents
+.norway-accent {
+  background: linear-gradient(90deg, var(--norway-blue) 0%, var(--norway-red) 100%);
+}
+
+// Loading states
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}

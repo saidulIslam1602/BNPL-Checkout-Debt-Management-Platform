@@ -1,0 +1,75 @@
+{
+  "version": "2.0",
+  "logging": {
+    "applicationInsights": {
+      "samplingSettings": {
+        "isEnabled": true,
+        "excludedTypes": "Request"
+      }
+    },
+    "logLevel": {
+      "default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information",
+      "Microsoft.EntityFrameworkCore": "Warning"
+    }
+  },
+  "functionTimeout": "00:10:00",
+  "healthMonitor": {
+    "enabled": true,
+    "healthCheckInterval": "00:00:30",
+    "healthCheckWindow": "00:02:00",
+    "healthCheckThreshold": 6,
+    "counterThreshold": 0.80
+  },
+  "singleton": {
+    "lockPeriod": "00:00:15",
+    "listenerLockPeriod": "00:01:00",
+    "listenerLockRecoveryPollingInterval": "00:01:00",
+    "lockAcquisitionTimeout": "00:01:00",
+    "lockAcquisitionPollingInterval": "00:00:03"
+  },
+  "retry": {
+    "strategy": "exponentialBackoff",
+    "maxRetryCount": 3,
+    "minimumInterval": "00:00:05",
+    "maximumInterval": "00:15:00"
+  },
+  "concurrency": {
+    "dynamicConcurrencyEnabled": true,
+    "snapshotPersistenceEnabled": true
+  },
+  "extensions": {
+    "serviceBus": {
+      "prefetchCount": 100,
+      "messageHandlerOptions": {
+        "autoComplete": false,
+        "maxConcurrentCalls": 32,
+        "maxAutoRenewDuration": "00:05:00"
+      },
+      "sessionHandlerOptions": {
+        "autoComplete": false,
+        "messageWaitTimeout": "00:00:30",
+        "maxAutoRenewDuration": "00:05:00",
+        "maxConcurrentSessions": 16
+      }
+    },
+    "timers": {
+      "maxDelay": "00:00:30"
+    },
+    "http": {
+      "routePrefix": "api",
+      "maxOutstandingRequests": 200,
+      "maxConcurrentRequests": 100,
+      "dynamicThrottlesEnabled": true
+    }
+  },
+  "customHandler": {
+    "description": {
+      "defaultExecutablePath": "RivertyBNPL.Functions.PaymentProcessor.exe",
+      "workingDirectory": "",
+      "arguments": []
+    },
+    "enableForwardingHttpRequest": false
+  }
+}

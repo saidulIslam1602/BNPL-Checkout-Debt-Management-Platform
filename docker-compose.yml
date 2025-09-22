@@ -1,0 +1,293 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: riverty-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=RivertyBNPL123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - riverty-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P RivertyBNPL123! -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: riverty-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - riverty-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Payment API Service
+  payment-api:
+    build:
+      context: .
+      dockerfile: src/Services/Payment.API/Dockerfile
+    container_name: riverty-payment-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Payment;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.riverty.com
+      - Jwt__Audience=https://api.riverty.com
+    ports:
+      - "5001:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - riverty-network
+    volumes:
+      - ./logs/payment-api:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Risk Assessment API Service
+  risk-api:
+    build:
+      context: .
+      dockerfile: src/Services/Risk.API/Dockerfile
+    container_name: riverty-risk-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Risk;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.riverty.com
+      - Jwt__Audience=https://api.riverty.com
+    ports:
+      - "5002:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - riverty-network
+    volumes:
+      - ./logs/risk-api:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Settlement API Service
+  settlement-api:
+    build:
+      context: .
+      dockerfile: src/Services/Settlement.API/Dockerfile
+    container_name: riverty-settlement-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Settlement;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.riverty.com
+      - Jwt__Audience=https://api.riverty.com
+    ports:
+      - "5004:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - riverty-network
+    volumes:
+      - ./logs/settlement-api:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Notification API Service
+  notification-api:
+    build:
+      context: .
+      dockerfile: src/Services/Notification.API/Dockerfile
+    container_name: riverty-notification-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Notification;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.riverty.com
+      - Jwt__Audience=https://api.riverty.com
+    ports:
+      - "5003:8080"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - riverty-network
+    volumes:
+      - ./logs/notification-api:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: src/Gateway/API.Gateway/Dockerfile
+    container_name: riverty-api-gateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.riverty.com
+      - Jwt__Audience=https://api.riverty.com
+    ports:
+      - "5000:8080"
+    depends_on:
+      - payment-api
+      - risk-api
+      - settlement-api
+      - notification-api
+    networks:
+      - riverty-network
+    volumes:
+      - ./logs/api-gateway:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Merchant Portal (Angular)
+  merchant-portal:
+    build:
+      context: .
+      dockerfile: src/Web/MerchantPortal/Dockerfile
+    container_name: riverty-merchant-portal
+    environment:
+      - NODE_ENV=development
+      - API_BASE_URL=http://localhost:5000
+    ports:
+      - "4200:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - riverty-network
+    volumes:
+      - ./src/Web/MerchantPortal/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  # Consumer Portal (Angular)
+  consumer-portal:
+    build:
+      context: .
+      dockerfile: src/Web/ConsumerPortal/Dockerfile
+    container_name: riverty-consumer-portal
+    environment:
+      - NODE_ENV=development
+      - API_BASE_URL=http://localhost:5000
+    ports:
+      - "4201:80"
+    depends_on:
+      - api-gateway
+    networks:
+      - riverty-network
+    volumes:
+      - ./src/Web/ConsumerPortal/nginx.conf:/etc/nginx/nginx.conf:ro
+
+  # Seq Log Server (for centralized logging)
+  seq:
+    image: datalust/seq:latest
+    container_name: riverty-seq
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - "5341:80"
+    volumes:
+      - seq_data:/data
+    networks:
+      - riverty-network
+
+  # Prometheus (for metrics)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: riverty-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - riverty-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  # Grafana (for dashboards)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: riverty-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - riverty-network
+    depends_on:
+      - prometheus
+
+volumes:
+  sqlserver_data:
+  redis_data:
+  seq_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  riverty-network:
+    driver: bridge
