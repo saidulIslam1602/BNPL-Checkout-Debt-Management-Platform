@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
-namespace RivertyBNPL.Shared.Infrastructure.ServiceBus;
+namespace YourCompanyBNPL.Shared.Infrastructure.ServiceBus;
 
 /// <summary>
 /// Azure Service Bus service for event-driven architecture
@@ -72,7 +72,7 @@ public class ServiceBusService : IServiceBusService, IAsyncDisposable
                 ApplicationProperties =
                 {
                     ["EventType"] = typeof(T).Name,
-                    ["Source"] = "RivertyBNPL",
+                    ["Source"] = "YourCompanyBNPL",
                     ["Version"] = "1.0",
                     ["Country"] = "NO",
                     ["Timestamp"] = DateTimeOffset.UtcNow.ToString("O")
@@ -119,7 +119,7 @@ public class ServiceBusService : IServiceBusService, IAsyncDisposable
                 TimeToLive = TimeSpan.FromDays(7),
                 ApplicationProperties =
                 {
-                    ["Source"] = "RivertyBNPL",
+                    ["Source"] = "YourCompanyBNPL",
                     ["Country"] = "NO",
                     ["Timestamp"] = DateTimeOffset.UtcNow.ToString("O")
                 }
@@ -181,7 +181,7 @@ public class ServiceBusService : IServiceBusService, IAsyncDisposable
                         ApplicationProperties =
                         {
                             ["EventType"] = typeof(T).Name,
-                            ["Source"] = "RivertyBNPL",
+                            ["Source"] = "YourCompanyBNPL",
                             ["Version"] = "1.0",
                             ["Country"] = "NO",
                             ["Timestamp"] = DateTimeOffset.UtcNow.ToString("O")
@@ -241,8 +241,7 @@ public class ServiceBusService : IServiceBusService, IAsyncDisposable
                 var receiver = _client.CreateReceiver(topicName, subscriptionName, new ServiceBusReceiverOptions
                 {
                     ReceiveMode = ServiceBusReceiveMode.PeekLock, // Ensure message processing reliability
-                    PrefetchCount = 10, // Optimize throughput
-                    MaxAutoLockRenewalDuration = TimeSpan.FromMinutes(5) // Handle long-running processes
+                    PrefetchCount = 10 // Optimize throughput
                 });
 
                 _receivers[receiverKey] = receiver;
@@ -399,13 +398,13 @@ public abstract class NorwegianBNPLEvent : INorwegianEvent
     public string EventId { get; set; } = Guid.NewGuid().ToString();
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
     public string CorrelationId { get; set; } = string.Empty;
-    public string Source { get; set; } = "RivertyBNPL";
+    public string Source { get; set; } = "YourCompanyBNPL";
     public string Version { get; set; } = "1.0";
     
     // Norwegian-specific properties
-    public abstract string CustomerId { get; }
-    public abstract string SocialSecurityNumber { get; }
-    public abstract decimal Amount { get; }
+    public abstract string CustomerId { get; set; }
+    public abstract string SocialSecurityNumber { get; set; }
+    public abstract decimal Amount { get; set; }
     public string Currency { get; set; } = "NOK";
     public string Country { get; set; } = "NO";
 }
@@ -485,7 +484,7 @@ public class RiskAssessmentCompletedEvent : NorwegianBNPLEvent
     
     public override string CustomerId { get; set; } = string.Empty;
     public override string SocialSecurityNumber { get; set; } = string.Empty;
-    public override decimal Amount => RequestedAmount;
+    public override decimal Amount { get; set; }
 }
 
 /// <summary>

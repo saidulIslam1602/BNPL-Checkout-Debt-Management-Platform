@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>RivertyBNPL.API.Gateway</AssemblyName>
-    <RootNamespace>RivertyBNPL.API.Gateway</RootNamespace>
+    <AssemblyName>BNPL.API.Gateway</AssemblyName>
+    <RootNamespace>BNPL.API.Gateway</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,7 +18,7 @@
     <PackageReference Include="Ocelot.Provider.Consul" Version="23.2.2" />
     <PackageReference Include="Ocelot.Provider.Polly" Version="23.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.RateLimiting" Version="8.0.0" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="8.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="8.0.0" />

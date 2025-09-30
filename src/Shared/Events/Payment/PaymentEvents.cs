@@ -1,8 +1,8 @@
-using RivertyBNPL.Events.Base;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Events.Base;
+using YourCompanyBNPL.Common.Enums;
 using System.Text.Json.Serialization;
 
-namespace RivertyBNPL.Events.Payment;
+namespace YourCompanyBNPL.Events.Payment;
 
 /// <summary>
 /// Event raised when a payment is initiated

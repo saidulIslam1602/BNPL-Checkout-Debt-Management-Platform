@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace RivertyBNPL.Common.Models;
+namespace YourCompanyBNPL.Common.Models;
 
 /// <summary>
 /// Standard API response wrapper for consistent response format across all services
@@ -59,7 +59,7 @@ public class ApiResponse<T>
 /// </summary>
 public class ApiResponse : ApiResponse<object>
 {
-    public static ApiResponse Success(string? message = null)
+    public static ApiResponse SuccessResponse(string? message = null)
     {
         return new ApiResponse
         {
@@ -110,9 +110,9 @@ public class PagedApiResponse<T> : ApiResponse<List<T>>
 
     public static PagedApiResponse<T> SuccessResult(
         List<T> data, 
+        int totalCount, 
         int page, 
         int pageSize, 
-        int totalCount, 
         string? message = null)
     {
         return new PagedApiResponse<T>
@@ -124,6 +124,32 @@ public class PagedApiResponse<T> : ApiResponse<List<T>>
             PageSize = pageSize,
             TotalCount = totalCount,
             StatusCode = 200
+        };
+    }
+
+    public new static PagedApiResponse<T> ErrorResult(string error, int statusCode = 400)
+    {
+        return new PagedApiResponse<T>
+        {
+            Success = false,
+            Errors = new List<string> { error },
+            StatusCode = statusCode,
+            Page = 1,
+            PageSize = 0,
+            TotalCount = 0
+        };
+    }
+
+    public new static PagedApiResponse<T> ErrorResult(List<string> errors, int statusCode = 400)
+    {
+        return new PagedApiResponse<T>
+        {
+            Success = false,
+            Errors = errors,
+            StatusCode = statusCode,
+            Page = 1,
+            PageSize = 0,
+            TotalCount = 0
         };
     }
 }

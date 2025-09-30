@@ -1,0 +1,105 @@
+{
+  "name": "YourCompany BNPL - Kjøp nå, betal senere",
+  "short_name": "YourCompany BNPL",
+  "description": "Trygg og enkel BNPL-løsning for norske forbrukere",
+  "theme_color": "#1976d2",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "orientation": "portrait-primary",
+  "lang": "no",
+  "categories": ["finance", "shopping"],
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mine betalinger",
+      "short_name": "Betalinger",
+      "description": "Se dine aktive BNPL-betalinger",
+      "url": "/my-payments",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-payments.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Betalingskalkulator",
+      "short_name": "Kalkulator",
+      "description": "Beregn dine BNPL-betalinger",
+      "url": "/calculator",
+      "icons": [
+        {
+          "src": "assets/icons/shortcut-calculator.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/desktop-home.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "YourCompany BNPL hjemmeside på desktop"
+    },
+    {
+      "src": "assets/screenshots/mobile-checkout.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "BNPL checkout på mobil"
+    }
+  ]
+}

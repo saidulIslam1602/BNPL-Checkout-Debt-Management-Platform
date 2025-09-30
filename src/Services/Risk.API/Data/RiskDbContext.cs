@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using RivertyBNPL.Risk.API.Models;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Risk.API.Models;
+using YourCompanyBNPL.Common.Enums;
 using System.Text.Json;
 
-namespace RivertyBNPL.Risk.API.Data;
+namespace YourCompanyBNPL.Risk.API.Data;
 
 /// <summary>
 /// Database context for the Risk Assessment service
@@ -357,12 +357,12 @@ public class RiskDbContext : DbContext
     {
         // Update audit fields
         var entries = ChangeTracker.Entries()
-            .Where(e => e.Entity is RivertyBNPL.Common.Models.BaseEntity && 
+            .Where(e => e.Entity is YourCompanyBNPL.Common.Models.BaseEntity && 
                        (e.State == EntityState.Added || e.State == EntityState.Modified));
 
         foreach (var entry in entries)
         {
-            var entity = (RivertyBNPL.Common.Models.BaseEntity)entry.Entity;
+            var entity = (YourCompanyBNPL.Common.Models.BaseEntity)entry.Entity;
             
             if (entry.State == EntityState.Added)
             {

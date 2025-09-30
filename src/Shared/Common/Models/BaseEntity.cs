@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace RivertyBNPL.Common.Models;
+namespace YourCompanyBNPL.Common.Models;
 
 /// <summary>
 /// Base entity class providing common properties for all domain entities

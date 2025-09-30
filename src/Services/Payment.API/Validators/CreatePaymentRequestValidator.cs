@@ -1,9 +1,10 @@
+using YourCompanyBNPL.Common.Enums;
 using FluentValidation;
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Common.Enums;
-using RivertyBNPL.Common.Constants;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Constants;
 
-namespace RivertyBNPL.Payment.API.Validators;
+namespace YourCompanyBNPL.Payment.API.Validators;
 
 /// <summary>
 /// Validator for CreatePaymentRequest

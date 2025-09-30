@@ -1,9 +1,9 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
-using RivertyBNPL.Payment.API.Models;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Payment.API.Models;
 using System.Text.Json;
 
-namespace RivertyBNPL.Payment.API.Data;
+namespace YourCompanyBNPL.Payment.API.Data;
 
 /// <summary>
 /// Database context for the Payment service
@@ -25,7 +25,24 @@ public class PaymentDbContext : DbContext
     public DbSet<PaymentRefund> PaymentRefunds { get; set; }
     public DbSet<PaymentEvent> PaymentEvents { get; set; }
     public DbSet<Settlement> Settlements { get; set; }
+    public DbSet<SettlementBatch> SettlementBatches { get; set; }
     public DbSet<SettlementTransaction> SettlementTransactions { get; set; }
+    public DbSet<SettlementEvent> SettlementEvents { get; set; }
+    public DbSet<SettlementSchedule> SettlementSchedules { get; set; }
+    public DbSet<SettlementItem> SettlementItems { get; set; }
+    
+    // Enhanced Payment API entities
+    public DbSet<PaymentToken> PaymentTokens { get; set; }
+    public DbSet<WebhookEndpoint> WebhookEndpoints { get; set; }
+    public DbSet<WebhookDelivery> WebhookDeliveries { get; set; }
+    public DbSet<WebhookLog> WebhookLogs { get; set; }
+    public DbSet<IdempotencyRecord> IdempotencyRecords { get; set; }
+    public DbSet<FraudAssessment> FraudAssessments { get; set; }
+    public DbSet<FraudReport> FraudReports { get; set; }
+    public DbSet<FraudRule> FraudRules { get; set; }
+    
+    // Alias for BNPL installments to avoid conflicts
+    public DbSet<Installment> BNPLInstallments => Installments;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -300,8 +317,211 @@ public class PaymentDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
+        // Configure enhanced entities
+        ConfigureEnhancedEntities(modelBuilder);
+
         // Seed data
         SeedData(modelBuilder);
+    }
+
+    private static void ConfigureEnhancedEntities(ModelBuilder modelBuilder)
+    {
+        // Configure PaymentToken entity
+        modelBuilder.Entity<PaymentToken>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Token).IsUnique();
+            entity.HasIndex(e => e.CustomerId);
+            entity.HasIndex(e => e.PaymentMethod);
+            entity.HasIndex(e => e.ExpiresAt);
+            
+            entity.Property(e => e.PaymentMethod)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.Customer)
+                .WithMany(c => c.PaymentTokens)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure WebhookEndpoint entity
+        modelBuilder.Entity<WebhookEndpoint>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.MerchantId);
+            entity.HasIndex(e => e.IsActive);
+            
+            entity.Property(e => e.Events)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, (JsonSerializerOptions?)null),
+                    v => JsonSerializer.Deserialize<List<string>>(v, (JsonSerializerOptions?)null) ?? new List<string>());
+
+            entity.HasOne(e => e.Merchant)
+                .WithMany(m => m.WebhookEndpoints)
+                .HasForeignKey(e => e.MerchantId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure WebhookDelivery entity
+        modelBuilder.Entity<WebhookDelivery>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.WebhookEndpointId);
+            entity.HasIndex(e => e.PaymentId);
+            entity.HasIndex(e => e.Success);
+            entity.HasIndex(e => e.NextRetryAt);
+
+            entity.HasOne(e => e.WebhookEndpoint)
+                .WithMany(w => w.Deliveries)
+                .HasForeignKey(e => e.WebhookEndpointId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Payment)
+                .WithMany()
+                .HasForeignKey(e => e.PaymentId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configure WebhookLog entity
+        modelBuilder.Entity<WebhookLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Provider);
+            entity.HasIndex(e => e.EventType);
+            entity.HasIndex(e => e.PaymentId);
+            entity.HasIndex(e => e.ProcessedAt);
+
+            entity.HasOne(e => e.Payment)
+                .WithMany()
+                .HasForeignKey(e => e.PaymentId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Configure IdempotencyRecord entity
+        modelBuilder.Entity<IdempotencyRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.IdempotencyKey).IsUnique();
+            entity.HasIndex(e => e.ExpiresAt);
+        });
+
+        // Configure FraudAssessment entity
+        modelBuilder.Entity<FraudAssessment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.CustomerId);
+            entity.HasIndex(e => e.RiskLevel);
+            entity.HasIndex(e => e.AssessedAt);
+            
+            entity.Property(e => e.PaymentMethod)
+                .HasConversion<int>();
+            
+            entity.Property(e => e.RiskLevel)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.Customer)
+                .WithMany(c => c.FraudAssessments)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure FraudReport entity
+        modelBuilder.Entity<FraudReport>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.CustomerId);
+            entity.HasIndex(e => e.PaymentId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.ReportedAt);
+            
+            entity.Property(e => e.Status)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.Customer)
+                .WithMany(c => c.FraudReports)
+                .HasForeignKey(e => e.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(e => e.Payment)
+                .WithMany()
+                .HasForeignKey(e => e.PaymentId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Configure FraudRule entity
+        modelBuilder.Entity<FraudRule>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Name);
+            entity.HasIndex(e => e.IsActive);
+        });
+
+        // Configure SettlementBatch entity
+        modelBuilder.Entity<SettlementBatch>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.MerchantId);
+            entity.HasIndex(e => e.BatchReference).IsUnique();
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.SettlementDate);
+            
+            entity.Property(e => e.Currency)
+                .HasConversion<int>();
+            
+            entity.Property(e => e.Status)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.Merchant)
+                .WithMany(m => m.SettlementBatches)
+                .HasForeignKey(e => e.MerchantId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Configure SettlementItem entity
+        modelBuilder.Entity<SettlementItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.SettlementBatchId);
+            entity.HasIndex(e => e.PaymentId);
+            entity.HasIndex(e => e.RefundId);
+            
+            entity.Property(e => e.TransactionType)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.SettlementBatch)
+                .WithMany(sb => sb.Items)
+                .HasForeignKey(e => e.SettlementBatchId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Payment)
+                .WithMany()
+                .HasForeignKey(e => e.PaymentId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.Refund)
+                .WithMany()
+                .HasForeignKey(e => e.RefundId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Update Payment entity configuration for new properties
+        modelBuilder.Entity<Models.Payment>(entity =>
+        {
+            entity.Property(e => e.SettlementStatus)
+                .HasConversion<int>();
+
+            entity.HasOne(e => e.PaymentToken)
+                .WithMany(pt => pt.Payments)
+                .HasForeignKey(e => e.PaymentTokenId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Update PaymentRefund entity configuration for new properties
+        modelBuilder.Entity<PaymentRefund>(entity =>
+        {
+            entity.Property(e => e.SettlementStatus)
+                .HasConversion<int>();
+        });
     }
 
     private static void SeedData(ModelBuilder modelBuilder)
@@ -441,12 +661,12 @@ public class PaymentDbContext : DbContext
     {
         // Update audit fields
         var entries = ChangeTracker.Entries()
-            .Where(e => e.Entity is RivertyBNPL.Common.Models.BaseEntity && 
+            .Where(e => e.Entity is YourCompanyBNPL.Common.Models.BaseEntity && 
                        (e.State == EntityState.Added || e.State == EntityState.Modified));
 
         foreach (var entry in entries)
         {
-            var entity = (RivertyBNPL.Common.Models.BaseEntity)entry.Entity;
+            var entity = (YourCompanyBNPL.Common.Models.BaseEntity)entry.Entity;
             
             if (entry.State == EntityState.Added)
             {

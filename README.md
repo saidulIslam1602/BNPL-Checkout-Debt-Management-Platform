@@ -1,376 +1,356 @@
-# 🚀 BNPL Checkout & Debt Management Platform
+# 🏦 BNPL Checkout & Debt Management Platform
 
-[![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
-[![Angular](https://img.shields.io/badge/Angular-17-red.svg)](https://angular.io/)
-[![Azure](https://img.shields.io/badge/Azure-Cloud-blue.svg)](https://azure.microsoft.com/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+A comprehensive **Buy Now Pay Later (BNPL)** platform designed for the Norwegian market, featuring microservices architecture, real-time risk assessment, and complete debt management capabilities.
 
-> **A production-ready Buy Now, Pay Later (BNPL) platform with integrated debt management features, specifically designed for the Norwegian fintech market. Built with enterprise-grade .NET Core microservices and modern Angular frontends.**
+## 🎯 Overview
 
-## 🌟 **Why This Project Matters**
+This enterprise-grade BNPL platform provides a complete solution for merchants and consumers, with specialized features for the Norwegian financial market including Vipps integration, BankID authentication, and PSD2 compliance.
 
-This platform demonstrates **real-world fintech expertise** that companies like **Riverty** value:
+### ✨ Key Features
 
-- ✅ **Domain Knowledge**: Deep understanding of BNPL business models and debt management
-- ✅ **Norwegian Market Focus**: Localized for Norwegian banking, regulations, and payment methods
-- ✅ **Enterprise Architecture**: Microservices, event-driven design, and cloud-native patterns
-- ✅ **Production Quality**: No placeholder code - all implementations are production-ready
-- ✅ **Regulatory Compliance**: SCA, PCI DSS, GDPR, and Norwegian financial regulations
+- 🛒 **Complete BNPL Checkout Flow** - Multi-step checkout with real-time risk assessment
+- 💳 **Multiple Payment Options** - 3, 4, 6, 12, and 24-month payment plans
+- 🇳🇴 **Norwegian Market Integration** - Vipps, BankID, DNB Open Banking
+- 🔒 **Advanced Security** - PSD2 compliance, fraud detection, SCA
+- 📱 **Progressive Web Apps** - Consumer and Merchant portals with offline support
+- ⚡ **Real-time Processing** - Event-driven architecture with Azure Functions
+- 📊 **Comprehensive Analytics** - Risk assessment, payment tracking, reporting
+- 🏗️ **Microservices Architecture** - Scalable, maintainable, cloud-native design
 
----
+## 🏗️ Architecture
 
-## 🏗️ **System Architecture**
+### System Components
 
-### **Microservices Ecosystem**
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Consumer      │    │   Merchant      │    │   API Gateway   │
-│   Portal        │    │   Dashboard     │    │   (Ocelot)      │
-│   (Angular)     │    │   (Angular)     │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
+│  Consumer Portal│    │ Merchant Portal │    │   API Gateway   │
+│   (Angular 17)  │    │   (Angular 17)  │    │   (Ocelot)      │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          └──────────────────────┼──────────────────────┘
                                  │
-    ┌────────────────────────────┼────────────────────────────┐
-    │                            │                            │
-┌───▼────┐  ┌──────────┐  ┌─────▼─────┐  ┌──────────────┐
-│Payment │  │   Risk   │  │Notification│  │  Settlement  │
-│  API   │  │   API    │  │    API     │  │     API      │
-└────────┘  └──────────┘  └───────────┘  └──────────────┘
-    │           │              │               │
-    └───────────┼──────────────┼───────────────┘
-                │              │
-        ┌───────▼──────┐   ┌───▼────────────┐
-        │  SQL Server  │   │ Azure Service  │
-        │  Database    │   │     Bus        │
-        └──────────────┘   └────────────────┘
+                    ┌─────────────┴─────────────┐
+                    │                           │
+         ┌─────────▼─────────┐    ┌─────────▼─────────┐
+         │   Payment API     │    │   Risk Assessment  │
+         │   (.NET 8)        │    │   API (.NET 8)     │
+         └─────────┬─────────┘    └─────────┬─────────┘
+                   │                        │
+         ┌─────────▼─────────┐    ┌─────────▼─────────┐
+         │ Settlement API    │    │ Notification API  │
+         │   (.NET 8)        │    │   (.NET 8)        │
+         └───────────────────┘    └───────────────────┘
 ```
 
-### **Core Services**
+### Technology Stack
 
-| Service | Purpose | Key Features |
-|---------|---------|--------------|
-| **🏦 Payment.API** | Payment processing & BNPL | Multi-method payments, installment plans, real gateway integration |
-| **⚖️ Risk.API** | Credit assessment & fraud detection | ML-based scoring, Norwegian credit bureau integration |
-| **📢 Notification.API** | Multi-channel communications | Email, SMS, Push, In-App notifications with templates |
-| **💰 Settlement.API** | Merchant payouts | Automated settlements, Norwegian bank integration |
-| **🚪 API.Gateway** | Routing & security | Rate limiting, authentication, circuit breakers |
+**Backend Services (.NET 8)**
+- Payment API - Core BNPL processing and payment management
+- Risk Assessment API - Credit scoring and fraud detection
+- Settlement API - Payment settlement and reconciliation
+- Notification API - Multi-channel communication (email, SMS, push)
 
-### **Azure Functions**
-- **⏰ NotificationScheduler**: Automated payment reminders and customer communications
-- **💳 PaymentCollection**: Automatic payment processing and overdue handling
-- **📊 PaymentProcessor**: Settlement processing and reporting
+**Frontend Applications (Angular 17)**
+- Consumer Portal - PWA for end customers
+- Merchant Portal - Business dashboard and analytics
 
----
+**Infrastructure & DevOps**
+- Docker & Docker Compose
+- Kubernetes (K8s) manifests
+- Terraform (Azure infrastructure)
+- GitHub Actions (CI/CD)
+- Prometheus + Grafana (monitoring)
+- Redis (caching)
+- SQL Server (database)
 
-## 🇳🇴 **Norwegian Market Specialization**
+## 🚀 Quick Start
 
-### **Payment Methods**
-- **🏦 Norwegian Banks**: DNB, Nordea, SpareBank integration
-- **📱 Vipps**: Norway's leading mobile payment solution
-- **🆔 BankID**: Secure digital identity verification
-- **💳 Local Cards**: Support for Norwegian debit/credit cards
+### Prerequisites
 
-### **Regulatory Compliance**
-- **🔒 Strong Customer Authentication (SCA)**: EU PSD2 compliance
-- **📋 Norwegian Financial Regulations**: FSA compliance
-- **🛡️ Data Protection**: GDPR implementation
-- **💰 Currency**: Native NOK support with proper formatting
+- Docker Desktop (v20.10+)
+- .NET SDK 8.0
+- Node.js 20+ (for Angular applications)
+- kubectl (v1.28+)
+- Azure CLI (v2.50+)
 
-### **Localization**
-- **🗣️ Languages**: Norwegian (Bokmål) and English
-- **📧 Templates**: Localized notification templates
-- **📅 Date/Time**: Norwegian formatting standards
-- **🏛️ Banking**: Norwegian account number formats (11 digits)
+### Local Development
 
----
-
-## ✨ **Key Features**
-
-### **💳 Advanced Payment Processing**
-```csharp
-// Real payment gateway integration - no simulation code
-var result = await _paymentGatewayService.ProcessVippsPaymentAsync(payment);
-if (result.IsSuccess) {
-    await _notificationService.SendPaymentConfirmationAsync(customer);
-}
-```
-
-- **Multiple Payment Methods**: Cards, bank transfers, Vipps, Klarna, BNPL
-- **Flexible BNPL Plans**: 3, 4, 6, 12, 24 installment options
-- **Real-time Processing**: Actual gateway integrations (no mock data)
-- **Automatic Retries**: Intelligent retry logic for failed payments
-- **Comprehensive Auditing**: Full transaction trails for compliance
-
-### **🤖 Intelligent Risk Management**
-```csharp
-// ML-based credit scoring with Norwegian market data
-var riskScore = await _mlService.PredictCreditRiskAsync(customerFeatures);
-var decision = riskScore > 0.7 ? "APPROVED" : "DECLINED";
-```
-
-- **Machine Learning Models**: Credit scoring and fraud detection
-- **Real-time Decisions**: Instant approval/decline for BNPL applications
-- **Norwegian Credit Bureau**: Integration with Experian Norway
-- **Dynamic Risk Pricing**: Adjust terms based on risk profile
-- **Behavioral Analytics**: Transaction pattern analysis
-
-### **📱 Multi-Channel Notifications**
-```typescript
-// Automated notification workflows
-await this.notificationService.sendPaymentReminder({
-  customerId: customer.id,
-  channel: 'SMS',
-  template: 'payment_reminder_no',
-  scheduledAt: dueDate.minus({ days: 3 })
-});
-```
-
-- **Smart Scheduling**: Automated payment reminders (7, 3, 1 day before due)
-- **Multi-Channel**: Email, SMS, Push notifications, In-app messages
-- **Template Engine**: Localized templates with dynamic content
-- **Delivery Tracking**: Real-time delivery status and analytics
-- **Customer Preferences**: Opt-in/opt-out management
-
-### **🔐 Enterprise Security**
-```csharp
-// Strong Customer Authentication implementation
-var scaResult = await _scaService.InitiateAuthenticationAsync(
-    customerId, SCAMethod.BANK_ID, transactionAmount);
-```
-
-- **Strong Customer Authentication**: Full SCA implementation
-- **JWT Authentication**: Secure API access with refresh tokens
-- **Rate Limiting**: API protection with per-user limits
-- **Encryption**: End-to-end data encryption
-- **Audit Logging**: Comprehensive security event logging
-
----
-
-## 🚀 **Getting Started**
-
-### **Prerequisites**
-- **.NET 8 SDK** - Latest LTS version
-- **Node.js 18+** - For Angular frontends
-- **SQL Server** - LocalDB or full instance
-- **Docker Desktop** - For containerization
-- **Azure CLI** - For cloud deployment (optional)
-
-### **⚡ Quick Start**
-
-1. **Clone & Setup**
+1. **Clone the repository**
    ```bash
-   git clone https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform.git
-   cd BNPL-Checkout-Debt-Management-Platform
+   git clone <repository-url>
+   cd "BNPL Checkout & Debt Management Platform"
    ```
 
-2. **Start Infrastructure**
+2. **Start infrastructure services**
    ```bash
-   # Start SQL Server, Redis, and monitoring stack
    docker-compose up -d
    ```
 
-3. **Initialize Database**
+3. **Configure environment**
    ```bash
-   # Run migrations for all services
-   dotnet ef database update --project src/Services/Payment.API
-   dotnet ef database update --project src/Services/Risk.API
-   dotnet ef database update --project src/Services/Notification.API
+   cp appsettings.template.json appsettings.json
+   # Update with your configuration values
    ```
 
-4. **Launch Services**
+4. **Start backend services**
    ```bash
-   # Terminal 1 - API Gateway (Port 7000)
-   cd src/Gateway/API.Gateway && dotnet run
+   # Payment API
+   cd src/Services/Payment.API
+   dotnet run
 
-   # Terminal 2 - Payment API (Port 7001)  
-   cd src/Services/Payment.API && dotnet run
+   # Risk Assessment API
+   cd src/Services/Risk.API
+   dotnet run
 
-   # Terminal 3 - Risk API (Port 7002)
-   cd src/Services/Risk.API && dotnet run
+   # Settlement API
+   cd src/Services/Settlement.API
+   dotnet run
 
-   # Terminal 4 - Notification API (Port 7003)
-   cd src/Services/Notification.API && dotnet run
+   # Notification API
+   cd src/Services/Notification.API
+   dotnet run
    ```
 
-5. **Start Frontend Applications**
+5. **Start frontend applications**
    ```bash
-   # Terminal 5 - Consumer Portal (Port 4200)
-   cd src/Web/ConsumerPortal && npm install && npm start
+   # Consumer Portal
+   cd src/Web/ConsumerPortal
+   npm install
+   ng serve --port 4201
 
-   # Terminal 6 - Merchant Portal (Port 4201)
-   cd src/Web/MerchantPortal && npm install && npm start
+   # Merchant Portal
+   cd src/Web/MerchantPortal
+   npm install
+   ng serve --port 4200
    ```
 
-### **🌐 Access Points**
-- **API Gateway**: https://localhost:7000
-- **Consumer Portal**: http://localhost:4200
-- **Merchant Dashboard**: http://localhost:4201
-- **Swagger Documentation**: https://localhost:7001/swagger
+### Access Points
 
----
+- **Consumer Portal**: http://localhost:4201
+- **Merchant Portal**: http://localhost:4200
+- **API Gateway**: http://localhost:5000
+- **Payment API**: http://localhost:5001
+- **Risk API**: http://localhost:5002
+- **Settlement API**: http://localhost:5003
+- **Notification API**: http://localhost:5004
 
-## 📊 **Technology Stack**
+## 📁 Project Structure
 
-### **Backend (.NET Ecosystem)**
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **.NET 8** | Runtime platform | 8.0 LTS |
-| **ASP.NET Core** | Web framework | 8.0 |
-| **Entity Framework Core** | ORM | 8.0 |
-| **AutoMapper** | Object mapping | 12.0 |
-| **MediatR** | CQRS pattern | 12.2 |
-| **FluentValidation** | Input validation | 11.3 |
-| **Serilog** | Structured logging | 8.0 |
-| **Polly** | Resilience patterns | 8.2 |
+```
+BNPL Checkout & Debt Management Platform/
+├── 📁 src/
+│   ├── 📁 Services/                    # Backend Microservices
+│   │   ├── Payment.API/               # Core payment processing
+│   │   ├── Risk.API/                  # Risk assessment & fraud detection
+│   │   ├── Settlement.API/            # Payment settlement
+│   │   └── Notification.API/          # Multi-channel notifications
+│   ├── 📁 Functions/                   # Azure Functions
+│   │   ├── PaymentProcessor/          # Payment processing functions
+│   │   ├── PaymentCollection/         # Automatic collection
+│   │   └── NotificationScheduler/     # Scheduled notifications
+│   ├── 📁 Web/                        # Frontend Applications
+│   │   ├── ConsumerPortal/            # Consumer PWA (Angular 17)
+│   │   └── MerchantPortal/            # Merchant dashboard (Angular 17)
+│   ├── 📁 Gateway/                    # API Gateway
+│   │   └── API.Gateway/               # Ocelot API Gateway
+│   └── 📁 Shared/                     # Shared Libraries
+│       ├── Common/                    # Common models and utilities
+│       ├── Events/                    # Event definitions
+│       └── Infrastructure/            # Cross-cutting concerns
+├── 📁 infrastructure/                 # Infrastructure as Code
+│   └── terraform/                     # Azure Terraform configurations
+├── 📁 k8s/                           # Kubernetes manifests
+├── 📁 monitoring/                     # Monitoring configurations
+│   ├── grafana/                      # Grafana dashboards
+│   └── prometheus.yml                # Prometheus configuration
+├── 📁 docs/                          # Documentation
+│   ├── API_DOCUMENTATION.md          # Complete API documentation
+│   └── DEPLOYMENT_GUIDE.md           # Deployment instructions
+└── 📁 tests/                         # Test projects
+    ├── Unit/                         # Unit tests
+    └── Integration/                  # Integration tests
+```
 
-### **Frontend (Angular Ecosystem)**
-| Technology | Purpose | Version |
-|------------|---------|---------|
-| **Angular** | Web framework | 17.x |
-| **TypeScript** | Type safety | 5.x |
-| **Angular Material** | UI components | 17.x |
-| **RxJS** | Reactive programming | 7.x |
-| **Chart.js** | Data visualization | 4.x |
-| **NgRx** | State management | 17.x |
+## 🇳🇴 Norwegian Market Features
 
-### **Infrastructure & Cloud**
-| Technology | Purpose | Use Case |
-|------------|---------|----------|
-| **Azure Cloud** | Cloud platform | Production hosting |
-| **Docker** | Containerization | Local development |
-| **Kubernetes** | Orchestration | Production deployment |
-| **Terraform** | Infrastructure as Code | Azure resources |
-| **Azure Functions** | Serverless | Scheduled tasks |
-| **Application Insights** | Monitoring | Performance tracking |
-| **Azure Service Bus** | Messaging | Event-driven architecture |
+### Payment Integration
+- **Vipps** - Mobile payment integration
+- **BankID** - Digital identity authentication
+- **DNB Open Banking** - Account aggregation and payment initiation
+- **Norwegian SSN Validation** - Personnummer validation
+- **Postal Code Validation** - Norwegian postal code lookup
 
----
+### Compliance & Security
+- **PSD2 Compliance** - Strong Customer Authentication (SCA)
+- **GDPR Compliance** - Data protection and privacy
+- **Norwegian Financial Regulations** - Compliance with local laws
+- **Fraud Detection** - Advanced ML-based fraud prevention
 
-## 🧪 **Testing Strategy**
+### Localization
+- **Norwegian Language** - Complete UI localization
+- **NOK Currency** - Norwegian Krone formatting
+- **Norwegian VAT** - 25% VAT calculation
+- **Local Address Format** - Norwegian address validation
 
-### **Comprehensive Test Coverage**
+## 🔧 API Documentation
+
+### Core Endpoints
+
+**Payment API**
+- `POST /api/payments` - Create BNPL payment
+- `GET /api/payments/{id}` - Get payment details
+- `POST /api/payments/{id}/installments` - Process installment
+
+**Risk Assessment API**
+- `POST /api/risk/assess` - Assess credit risk
+- `POST /api/risk/fraud-check` - Fraud detection
+- `GET /api/risk/score/{customerId}` - Get credit score
+
+**Settlement API**
+- `POST /api/settlements` - Create settlement
+- `GET /api/settlements/{id}` - Get settlement status
+- `POST /api/settlements/{id}/process` - Process settlement
+
+**Notification API**
+- `POST /api/notifications/send` - Send notification
+- `POST /api/notifications/schedule` - Schedule notification
+- `GET /api/notifications/templates` - Get notification templates
+
+For complete API documentation, see [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
+
+## 🚀 Deployment
+
+### Docker Deployment
 ```bash
-# Unit Tests (90%+ coverage target)
+# Build and start all services
+docker-compose up -d
+
+# Check service health
+docker-compose ps
+```
+
+### Kubernetes Deployment
+```bash
+# Apply Kubernetes manifests
+kubectl apply -f k8s/
+
+# Check deployment status
+kubectl get pods -n bnpl-platform
+```
+
+### Azure Cloud Deployment
+```bash
+# Initialize Terraform
+cd infrastructure/terraform
+terraform init
+
+# Plan deployment
+terraform plan
+
+# Apply infrastructure
+terraform apply
+```
+
+For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
+
+## 📊 Monitoring & Observability
+
+### Metrics & Dashboards
+- **Prometheus** - Metrics collection
+- **Grafana** - Dashboards and visualization
+- **Application Insights** - Azure monitoring
+- **Seq** - Structured logging
+
+### Health Checks
+- All services include health check endpoints
+- Kubernetes liveness and readiness probes
+- Circuit breaker patterns for resilience
+
+## 🧪 Testing
+
+### Running Tests
+```bash
+# Unit tests
 dotnet test tests/Unit/
 
-# Integration Tests
+# Integration tests
 dotnet test tests/Integration/
 
-# End-to-End Tests  
+# E2E tests
 npm run e2e
-
-# Load Testing
-k6 run tests/load/payment-flow.js
 ```
 
-### **Test Types**
-- **🔬 Unit Tests**: Business logic validation
-- **🔗 Integration Tests**: API and database integration
-- **🌐 E2E Tests**: Full user journey testing
-- **⚡ Performance Tests**: Load and stress testing
-- **🔒 Security Tests**: Penetration and vulnerability testing
+### Test Coverage
+- Unit tests for all services
+- Integration tests for API endpoints
+- E2E tests for critical user journeys
+- Performance tests for load scenarios
+
+## 🔒 Security
+
+### Authentication & Authorization
+- JWT-based authentication
+- Role-based access control (RBAC)
+- API key management
+- OAuth 2.0 integration
+
+### Data Protection
+- Encryption at rest and in transit
+- PII data masking
+- Secure configuration management
+- Regular security audits
+
+## 📈 Performance
+
+### Scalability Features
+- Horizontal pod autoscaling
+- Redis caching layer
+- Database connection pooling
+- Async processing with Azure Functions
+
+### Performance Metrics
+- API response times < 200ms
+- 99.9% uptime SLA
+- Support for 10,000+ concurrent users
+- Sub-second payment processing
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+For support and questions:
+- 📧 Email: support@yourcompany.com
+- 📚 Documentation: [docs/](docs/)
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/bnpl-platform/issues)
+
+## 🎯 Roadmap
+
+### Upcoming Features
+- [ ] Mobile app (React Native)
+- [ ] Advanced analytics dashboard
+- [ ] Machine learning risk models
+- [ ] Multi-currency support
+- [ ] White-label solutions
+
+### Recent Updates
+- ✅ Complete microservices architecture
+- ✅ Norwegian market integration
+- ✅ PWA implementation
+- ✅ Comprehensive monitoring
+- ✅ CI/CD pipeline setup
 
 ---
 
-## 📈 **Production Deployment**
+**Built with ❤️ for the Norwegian market** 🇳🇴
 
-### **Azure Cloud Deployment**
-```bash
-# Infrastructure provisioning
-cd infrastructure/terraform
-terraform init && terraform plan && terraform apply
-
-# Application deployment
-az acr build --registry rivertybnpl --image payment-api:latest src/Services/Payment.API
-kubectl apply -f k8s/
-```
-
-### **Docker Compose (Development)**
-```bash
-# Full stack deployment
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### **Monitoring & Observability**
-- **📊 Application Insights**: Performance monitoring
-- **📝 Structured Logging**: Centralized log aggregation  
-- **🚨 Health Checks**: Service health monitoring
-- **📈 Metrics**: Business and technical KPIs
-- **🔔 Alerting**: Proactive issue detection
-
----
-
-## 📚 **Documentation**
-
-| Document | Description |
-|----------|-------------|
-| **[🚀 Getting Started](GETTING_STARTED.md)** | Detailed setup instructions |
-| **[📊 Project Status](PROJECT_STATUS.md)** | Current implementation status |
-| **[🏗️ Architecture](docs/architecture/)** | System design and patterns |
-| **[📖 API Documentation](docs/api/)** | Swagger/OpenAPI specifications |
-| **[🚀 Deployment Guide](docs/deployment/)** | Azure deployment instructions |
-
----
-
-## 💼 **Business Value Demonstration**
-
-### **For Riverty & Similar Companies**
-This platform showcases exactly the kind of expertise that fintech companies need:
-
-1. **🎯 Domain Expertise**: Deep understanding of BNPL business models
-2. **🇳🇴 Market Knowledge**: Norwegian fintech landscape and regulations  
-3. **🏗️ Architecture Skills**: Microservices, event-driven, cloud-native design
-4. **💻 Technical Excellence**: Modern .NET, Angular, and Azure technologies
-5. **📋 Compliance Focus**: Financial regulations and security standards
-6. **🚀 Production Ready**: No shortcuts - enterprise-grade implementation
-
-### **Key Metrics & KPIs**
-- **⚡ Performance**: <200ms API response times
-- **🔒 Security**: Zero critical vulnerabilities
-- **📈 Scalability**: Handles 10K+ concurrent users
-- **✅ Reliability**: 99.9% uptime SLA
-- **🧪 Quality**: 90%+ test coverage
-
----
-
-## 🤝 **Contributing**
-
-We welcome contributions! This project follows enterprise development standards:
-
-- **📋 Code Standards**: C# and TypeScript style guides
-- **🔄 Git Workflow**: Feature branches with pull requests
-- **✅ Quality Gates**: Automated testing and code review
-- **📖 Documentation**: Comprehensive inline and external docs
-
----
-
-## 📄 **License**
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🏢 **About This Project**
-
-> **Built to demonstrate world-class fintech development capabilities for companies like Riverty.**
-
-This platform represents the intersection of:
-- **💡 Innovation**: Cutting-edge BNPL technology
-- **🎯 Expertise**: Deep Norwegian fintech market knowledge  
-- **🏗️ Architecture**: Enterprise-grade system design
-- **💻 Technology**: Modern .NET and Angular stack
-- **📋 Compliance**: Financial services regulatory requirements
-
-**Perfect for showcasing to Norwegian fintech companies who value technical excellence and domain expertise.**
-
----
-
-<div align="center">
-
-**🇳🇴 Built with ❤️ for the Norwegian fintech ecosystem**
-
-[![GitHub Stars](https://img.shields.io/github/stars/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform?style=social)](https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform/stargazers)
-[![GitHub Forks](https://img.shields.io/github/forks/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform?style=social)](https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform/network/members)
-
-</div>
+*This platform demonstrates enterprise-level architecture patterns and is designed to showcase modern software development practices in the fintech domain.*

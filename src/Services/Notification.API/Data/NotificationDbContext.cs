@@ -1,8 +1,9 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
-using RivertyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Notification.API.Models;
 using System.Text.Json;
 
-namespace RivertyBNPL.Notification.API.Data;
+namespace YourCompanyBNPL.Notification.API.Data;
 
 /// <summary>
 /// Database context for notification service
@@ -18,6 +19,8 @@ public class NotificationDbContext : DbContext
     public DbSet<NotificationPreference> NotificationPreferences { get; set; }
     public DbSet<NotificationDelivery> NotificationDeliveries { get; set; }
     public DbSet<Campaign> Campaigns { get; set; }
+    public DbSet<WebhookConfig> WebhookConfigs { get; set; }
+    public DbSet<WebhookDelivery> WebhookDeliveries { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -159,8 +162,8 @@ public class NotificationDbContext : DbContext
                 Type = "PaymentReminder",
                 Channel = NotificationChannel.Email,
                 Subject = "Påminnelse: Betaling forfaller snart",
-                HtmlContent = "<h2>Påminnelse: Betaling forfaller snart</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> forfaller <strong>{{DueDate}}</strong>.</p><p>Vennlig hilsen,<br>Riverty BNPL</p>",
-                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK forfaller {{DueDate}}.\n\nVennlig hilsen,\nRiverty BNPL",
+                HtmlContent = "<h2>Påminnelse: Betaling forfaller snart</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> forfaller <strong>{{DueDate}}</strong>.</p><p>Vennlig hilsen,<br>YourCompany BNPL</p>",
+                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK forfaller {{DueDate}}.\n\nVennlig hilsen,\nYourCompany BNPL",
                 Language = "nb-NO",
                 IsActive = true,
                 Version = 1,
@@ -177,8 +180,8 @@ public class NotificationDbContext : DbContext
                 Type = "PaymentConfirmation",
                 Channel = NotificationChannel.Email,
                 Subject = "Betalingsbekreftelse",
-                HtmlContent = "<h2>Betalingsbekreftelse</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> er mottatt.</p><p>Vennlig hilsen,<br>Riverty BNPL</p>",
-                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK er mottatt.\n\nVennlig hilsen,\nRiverty BNPL",
+                HtmlContent = "<h2>Betalingsbekreftelse</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> er mottatt.</p><p>Vennlig hilsen,<br>YourCompany BNPL</p>",
+                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK er mottatt.\n\nVennlig hilsen,\nYourCompany BNPL",
                 Language = "nb-NO",
                 IsActive = true,
                 Version = 1,
@@ -195,8 +198,8 @@ public class NotificationDbContext : DbContext
                 Type = "PaymentOverdue",
                 Channel = NotificationChannel.Email,
                 Subject = "Forfalt betaling - Handling kreves",
-                HtmlContent = "<h2>Forfalt betaling - Handling kreves</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> forfalt {{DueDate}}. Vennligst betal så snart som mulig.</p><p>Vennlig hilsen,<br>Riverty BNPL</p>",
-                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK forfalt {{DueDate}}. Vennligst betal så snart som mulig.\n\nVennlig hilsen,\nRiverty BNPL",
+                HtmlContent = "<h2>Forfalt betaling - Handling kreves</h2><p>Hei {{CustomerName}},</p><p>Din betaling på <strong>{{Amount}} NOK</strong> forfalt {{DueDate}}. Vennligst betal så snart som mulig.</p><p>Vennlig hilsen,<br>YourCompany BNPL</p>",
+                TextContent = "Hei {{CustomerName}},\n\nDin betaling på {{Amount}} NOK forfalt {{DueDate}}. Vennligst betal så snart som mulig.\n\nVennlig hilsen,\nYourCompany BNPL",
                 Language = "nb-NO",
                 IsActive = true,
                 Version = 1,
@@ -207,5 +210,53 @@ public class NotificationDbContext : DbContext
         };
 
         modelBuilder.Entity<NotificationTemplate>().HasData(templates);
+
+        // Configure WebhookConfig entity
+        modelBuilder.Entity<WebhookConfig>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(e => e.CustomerId);
+            entity.HasIndex(e => e.IsActive);
+
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+            entity.Property(e => e.Url).IsRequired().HasMaxLength(2000);
+            entity.Property(e => e.Secret).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Events).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.Headers).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.Description).HasMaxLength(500);
+        });
+
+        // Configure WebhookDelivery entity
+        modelBuilder.Entity<WebhookDelivery>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+            entity.HasIndex(e => e.WebhookConfigId);
+            entity.HasIndex(e => e.NotificationId);
+            entity.HasIndex(e => e.Status);
+            entity.HasIndex(e => e.NextRetryAt);
+
+            entity.Property(e => e.WebhookConfigId).IsRequired();
+            entity.Property(e => e.NotificationId).IsRequired();
+            entity.Property(e => e.Event).IsRequired();
+            entity.Property(e => e.Payload).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.Status).IsRequired();
+            entity.Property(e => e.ResponseBody).HasColumnType("nvarchar(max)");
+            entity.Property(e => e.ErrorMessage).HasColumnType("nvarchar(max)");
+
+            // Configure relationships
+            entity.HasOne(e => e.WebhookConfig)
+                .WithMany()
+                .HasForeignKey(e => e.WebhookConfigId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Notification)
+                .WithMany()
+                .HasForeignKey(e => e.NotificationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }

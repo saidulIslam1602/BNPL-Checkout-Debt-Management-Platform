@@ -1,0 +1,295 @@
+/* Global Styles for Riverty Merchant Portal */
+
+/* Import Angular Material theme */
+@use '@angular/material' as mat;
+
+/* Include the common styles for Angular Material */
+@include mat.core();
+
+/* Define Norwegian-inspired color palette */
+$riverty-primary: mat.define-palette(mat.$blue-palette, 800);
+$riverty-accent: mat.define-palette(mat.$green-palette, 600);
+$riverty-warn: mat.define-palette(mat.$red-palette, 600);
+
+/* Create the theme object */
+$riverty-theme: mat.define-light-theme((
+  color: (
+    primary: $riverty-primary,
+    accent: $riverty-accent,
+    warn: $riverty-warn,
+  )
+));
+
+/* Include theme styles for core and each component used in your app */
+@include mat.all-component-themes($riverty-theme);
+
+/* Global CSS Variables */
+:root {
+  --riverty-primary: #1e3a8a;
+  --riverty-secondary: #dc2626;
+  --riverty-accent: #059669;
+  --riverty-warn: #ea580c;
+  --riverty-success: #16a34a;
+  --riverty-background: #f8fafc;
+  --riverty-surface: #ffffff;
+  --riverty-text: #1e293b;
+  --riverty-text-secondary: #64748b;
+  --norway-blue: #002868;
+  --norway-red: #ed2939;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--riverty-background);
+  color: var(--riverty-text);
+  line-height: 1.6;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.875rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-bottom: 1rem;
+}
+
+/* Utility classes */
+.full-width {
+  width: 100% !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+
+/* Custom Material Design overrides */
+.mat-mdc-card {
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-md) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.mat-mdc-button {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+}
+
+.mat-mdc-raised-button {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.mat-mdc-form-field {
+  .mat-mdc-form-field-outline {
+    border-radius: 8px !important;
+  }
+}
+
+/* Snackbar customization */
+.success-snackbar {
+  --mdc-snackbar-container-color: var(--riverty-success) !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+.error-snackbar {
+  --mdc-snackbar-container-color: var(--riverty-warn) !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+.warning-snackbar {
+  --mdc-snackbar-container-color: #f59e0b !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+.info-snackbar {
+  --mdc-snackbar-container-color: var(--riverty-primary) !important;
+  --mdc-snackbar-supporting-text-color: white !important;
+}
+
+/* Loading spinner customization */
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--riverty-primary) !important;
+}
+
+/* Table customization */
+.mat-mdc-table {
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.mat-mdc-header-row {
+  background-color: #f1f5f9 !important;
+}
+
+.mat-mdc-row:hover {
+  background-color: #f8fafc !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+  
+  .mat-mdc-card {
+    margin: 8px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Norwegian flag accent */
+.norway-accent {
+  background: linear-gradient(90deg, var(--norway-blue) 0%, var(--norway-red) 100%);
+  color: white;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  
+  &.approved {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  &.pending {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  &.declined {
+    background-color: #fecaca;
+    color: #991b1b;
+  }
+}
+
+.risk-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  
+  &.low {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+  
+  &.medium {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+  
+  &.high {
+    background-color: #fecaca;
+    color: #991b1b;
+  }
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .mat-mdc-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}

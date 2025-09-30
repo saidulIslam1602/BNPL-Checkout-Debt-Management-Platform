@@ -1,4 +1,4 @@
-namespace RivertyBNPL.Common.Constants;
+namespace YourCompanyBNPL.Common.Constants;
 
 /// <summary>
 /// Validation constants for consistent validation across the platform

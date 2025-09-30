@@ -1,8 +1,9 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Notification.API.Controllers;
+namespace YourCompanyBNPL.Notification.API.Controllers;
 
 /// <summary>
 /// Controller for health check endpoints
@@ -53,12 +54,12 @@ public class HealthController : ControllerBase
                 _ => 503
             };
 
-            return StatusCode(statusCode, ApiResponse<HealthStatus>.Success(response));
+            return StatusCode(statusCode, ApiResponse<HealthStatus>.SuccessResult(response));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Health check failed");
-            return StatusCode(503, ApiResponse<HealthStatus>.Failure("Health check failed", new[] { ex.Message }));
+            return StatusCode(503, ApiResponse<HealthStatus>.ErrorResult(new[] { ex.Message }.ToList()));
         }
     }
 

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/YourCompanyBNPL.Notification.API.props" />
+</Project>

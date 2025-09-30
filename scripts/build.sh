@@ -80,8 +80,8 @@ build_dotnet() {
 build_docker() {
     print_status "Building Docker images..."
     
-    # Build only the services that have Dockerfiles
-    docker-compose build payment-api
+    # Build all services
+    docker-compose build payment-api risk-api settlement-api notification-api api-gateway merchant-portal consumer-portal
     
     print_success "Docker images built successfully"
 }
@@ -98,7 +98,7 @@ start_services() {
     sleep 30
     
     # Start application services
-    docker-compose up -d payment-api
+    docker-compose up -d payment-api risk-api settlement-api notification-api api-gateway merchant-portal consumer-portal
     
     print_success "Services started successfully"
     
@@ -136,9 +136,25 @@ run_migrations() {
         exit 1
     fi
     
-    # Run migrations for Payment API
+    # Run migrations for all services
+    print_status "Running Payment API migrations..."
     cd src/Services/Payment.API
     dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Payment;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    cd ../../..
+    
+    print_status "Running Risk API migrations..."
+    cd src/Services/Risk.API
+    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Risk;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    cd ../../..
+    
+    print_status "Running Settlement API migrations..."
+    cd src/Services/Settlement.API
+    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Settlement;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    cd ../../..
+    
+    print_status "Running Notification API migrations..."
+    cd src/Services/Notification.API
+    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Notification;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
     cd ../../..
     
     print_success "Database migrations completed"
@@ -220,10 +236,15 @@ start_dev() {
     print_success "Development environment is ready!"
     print_status "Access points:"
     echo "  - API Gateway: http://localhost:5000"
-    echo "  - Payment API: http://localhost:5001"
-    echo "  - Swagger UI: http://localhost:5001"
+    echo "  - Payment API: http://localhost:5001/swagger"
+    echo "  - Risk API: http://localhost:5002/swagger"
+    echo "  - Notification API: http://localhost:5003/swagger"
+    echo "  - Settlement API: http://localhost:5004/swagger"
+    echo "  - Consumer Portal: http://localhost:4200"
+    echo "  - Merchant Portal: http://localhost:4201"
     echo "  - Seq Logs: http://localhost:5341"
     echo "  - Grafana: http://localhost:3000 (admin/admin)"
+    echo "  - Prometheus: http://localhost:9090"
     echo ""
     print_status "To view logs: $0 logs"
     print_status "To stop services: $0 stop"

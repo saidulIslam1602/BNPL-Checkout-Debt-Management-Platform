@@ -2,11 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using RivertyBNPL.Functions.PaymentProcessor.Data;
-using RivertyBNPL.Functions.PaymentProcessor.Configuration;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Functions.PaymentProcessor.Data;
+using YourCompanyBNPL.Functions.PaymentProcessor.Configuration;
+using YourCompanyBNPL.Common.Enums;
 
-namespace RivertyBNPL.Functions.PaymentProcessor.Services;
+namespace YourCompanyBNPL.Functions.PaymentProcessor.Services;
 
 /// <summary>
 /// Service for processing BNPL installment payments using real Norwegian banking APIs

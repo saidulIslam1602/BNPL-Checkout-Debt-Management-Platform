@@ -1,9 +1,10 @@
+using YourCompanyBNPL.Common.Enums;
 using AutoMapper;
 using System.Text.Json;
-using RivertyBNPL.Notification.API.DTOs;
-using RivertyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Notification.API.DTOs;
+using YourCompanyBNPL.Notification.API.Models;
 
-namespace RivertyBNPL.Notification.API.Mappings;
+namespace YourCompanyBNPL.Notification.API.Mappings;
 
 /// <summary>
 /// AutoMapper profile for notification mappings
@@ -40,7 +41,7 @@ public class NotificationMappingProfile : Profile
         CreateMap<NotificationTemplate, TemplateResponse>()
             .ForMember(dest => dest.Variables, opt => opt.MapFrom(src => 
                 !string.IsNullOrEmpty(src.Variables) 
-                    ? JsonSerializer.Deserialize<List<string>>(src.Variables) 
+                    ? JsonSerializer.Deserialize<List<string>>(src.Variables, (JsonSerializerOptions?)null) 
                     : new List<string>()));
 
         CreateMap<CreateTemplateRequest, NotificationTemplate>()
@@ -48,9 +49,9 @@ public class NotificationMappingProfile : Profile
             .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
             .ForMember(dest => dest.Version, opt => opt.MapFrom(src => 1))
             .ForMember(dest => dest.Variables, opt => opt.MapFrom(src => 
-                src.Variables != null ? JsonSerializer.Serialize(src.Variables) : null))
+                src.Variables != null ? JsonSerializer.Serialize(src.Variables, (JsonSerializerOptions?)null) : null))
             .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => 
-                src.Metadata != null ? JsonSerializer.Serialize(src.Metadata) : null))
+                src.Metadata != null ? JsonSerializer.Serialize(src.Metadata, (JsonSerializerOptions?)null) : null))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
 
@@ -61,7 +62,7 @@ public class NotificationMappingProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => CampaignStatus.Draft))
             .ForMember(dest => dest.Settings, opt => opt.MapFrom(src => 
-                src.Settings != null ? JsonSerializer.Serialize(src.Settings) : null))
+                src.Settings != null ? JsonSerializer.Serialize(src.Settings, (JsonSerializerOptions?)null) : null))
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore());
     }

@@ -1,12 +1,15 @@
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Payment.API.Models;
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
-using RivertyBNPL.Payment.API.Data;
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Payment.API.Models;
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Payment.API.Data;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Payment.API.Models;
+using YourCompanyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Enums;
 
-namespace RivertyBNPL.Payment.API.Services;
+namespace YourCompanyBNPL.Payment.API.Services;
 
 /// <summary>
 /// Implementation of settlement operations for merchant payouts
@@ -27,21 +30,35 @@ public class SettlementService : ISettlementService
         _logger = logger;
     }
 
-    public async Task<ApiResponse<List<SettlementSummary>>> CreateSettlementsAsync(DateTime settlementDate, CancellationToken cancellationToken = default)
+    public async Task<ApiResponse<List<SettlementSummary>>> CreateSettlementsAsync(CreateSettlementRequest request, CancellationToken cancellationToken = default)
     {
         try
         {
-            _logger.LogInformation("Creating settlements for date {SettlementDate}", settlementDate);
+            _logger.LogInformation("Creating settlements for date {SettlementDate}", request.SettlementDate);
+
+            // Validate request
+            var validationResult = await ValidateCreateSettlementRequestAsync(request, cancellationToken);
+            if (!validationResult.Success)
+            {
+                return ApiResponse<List<SettlementSummary>>.ErrorResult(validationResult.Errors.First(), 400);
+            }
 
             // Get all merchants with eligible transactions
             var eligiblePayments = await _context.Payments
                 .Include(p => p.Merchant)
                 .Where(p => p.Status == PaymentStatus.Completed &&
                            p.ProcessedAt.HasValue &&
-                           p.ProcessedAt.Value.Date <= settlementDate.Date &&
+                           p.ProcessedAt.Value.Date <= request.SettlementDate.Date &&
                            !_context.SettlementTransactions.Any(st => st.PaymentId == p.Id))
                 .GroupBy(p => p.MerchantId)
                 .ToListAsync(cancellationToken);
+
+            // Apply merchant filter if specified
+            if (request.MerchantIds != null && request.MerchantIds.Any())
+            {
+                var filteredPayments = eligiblePayments.Where(g => request.MerchantIds.Contains(g.Key)).ToList();
+                eligiblePayments = filteredPayments;
+            }
 
             var settlements = new List<Settlement>();
 
@@ -59,17 +76,26 @@ public class SettlementService : ISettlementService
                 var totalFees = payments.Sum(p => p.Fees);
                 var netAmount = grossAmount - totalFees;
 
+                // Apply minimum amount threshold
+                if (request.MinimumAmount.HasValue && netAmount < request.MinimumAmount.Value)
+                {
+                    _logger.LogInformation("Settlement amount {Amount} below minimum threshold {MinAmount} for merchant {MerchantId}", 
+                        netAmount, request.MinimumAmount.Value, merchantId);
+                    continue;
+                }
+
                 // Create settlement
                 var settlement = new Settlement
                 {
                     MerchantId = merchantId,
-                    SettlementDate = settlementDate,
+                    SettlementDate = request.SettlementDate,
                     GrossAmount = grossAmount,
                     Fees = totalFees,
                     NetAmount = netAmount,
                     Currency = payments.First().Currency, // Assuming single currency per merchant
-                    Status = SettlementStatus.Pending,
-                    TransactionCount = payments.Count
+                    Status = request.ProcessImmediately ? SettlementStatus.Processing : SettlementStatus.Pending,
+                    TransactionCount = payments.Count,
+                    RetryCount = 0
                 };
 
                 _context.Settlements.Add(settlement);
@@ -92,35 +118,43 @@ public class SettlementService : ISettlementService
 
             var responses = settlements.Select(s => _mapper.Map<SettlementSummary>(s)).ToList();
 
-            _logger.LogInformation("Created {Count} settlements for date {SettlementDate}", settlements.Count, settlementDate);
+            _logger.LogInformation("Created {Count} settlements for date {SettlementDate}", settlements.Count, request.SettlementDate);
 
             return ApiResponse<List<SettlementSummary>>.SuccessResult(responses, $"Created {settlements.Count} settlements");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating settlements for date {SettlementDate}", settlementDate);
+            _logger.LogError(ex, "Error creating settlements for date {SettlementDate}", request.SettlementDate);
             return ApiResponse<List<SettlementSummary>>.ErrorResult("An error occurred while creating settlements", 500);
         }
     }
 
-    public async Task<PagedApiResponse<SettlementSummary>> GetMerchantSettlementsAsync(Guid merchantId, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default)
+    public async Task<PagedApiResponse<SettlementSummary>> GetMerchantSettlementsAsync(Guid merchantId, SettlementFilterRequest request, CancellationToken cancellationToken = default)
     {
         try
         {
             var query = _context.Settlements
-                .Where(s => s.MerchantId == merchantId)
-                .OrderByDescending(s => s.SettlementDate);
+                .Include(s => s.Merchant)
+                .Where(s => s.MerchantId == merchantId);
+
+            query = ApplySettlementFilters(query, request);
+            query = ApplySettlementSorting(query, request.SortBy, request.SortDirection);
 
             var totalCount = await query.CountAsync(cancellationToken);
 
             var settlements = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .ToListAsync(cancellationToken);
 
-            var responses = settlements.Select(s => _mapper.Map<SettlementSummary>(s)).ToList();
+            var responses = settlements.Select(s => 
+            {
+                var summary = _mapper.Map<SettlementSummary>(s);
+                summary.MerchantName = s.Merchant?.Name ?? "";
+                return summary;
+            }).ToList();
 
-            return PagedApiResponse<SettlementSummary>.SuccessResult(responses, page, pageSize, totalCount);
+            return PagedApiResponse<SettlementSummary>.SuccessResult(responses, request.Page, request.PageSize, totalCount);
         }
         catch (Exception ex)
         {
@@ -190,7 +224,7 @@ public class SettlementService : ISettlementService
             var message = $"Processed {processedCount} settlements successfully, {failedCount} failed";
             _logger.LogInformation(message);
 
-            return ApiResponse.Success(message);
+            return ApiResponse.SuccessResponse(message);
         }
         catch (Exception ex)
         {
@@ -252,5 +286,166 @@ public class SettlementService : ISettlementService
         }
     }
 
+    private async Task<ApiResponse> ValidateCreateSettlementRequestAsync(CreateSettlementRequest request, CancellationToken cancellationToken)
+    {
+        var errors = new List<string>();
+
+        if (request.SettlementDate > DateTime.UtcNow.Date)
+        {
+            errors.Add("Settlement date cannot be in the future");
+        }
+
+        if (request.MerchantIds != null && request.MerchantIds.Any())
+        {
+            var existingMerchants = await _context.Merchants
+                .Where(m => request.MerchantIds.Contains(m.Id))
+                .CountAsync(cancellationToken);
+
+            if (existingMerchants != request.MerchantIds.Count)
+            {
+                errors.Add("One or more merchant IDs are invalid");
+            }
+        }
+
+        return errors.Any() ? 
+            ApiResponse.ErrorResult(string.Join("; ", errors), 400) : 
+            ApiResponse.SuccessResponse();
+    }
+
+    private IQueryable<Settlement> ApplySettlementFilters(IQueryable<Settlement> query, SettlementFilterRequest request)
+    {
+        if (request.FromDate.HasValue)
+        {
+            query = query.Where(s => s.SettlementDate >= request.FromDate.Value);
+        }
+
+        if (request.ToDate.HasValue)
+        {
+            query = query.Where(s => s.SettlementDate <= request.ToDate.Value);
+        }
+
+        if (request.Statuses != null && request.Statuses.Any())
+        {
+            query = query.Where(s => request.Statuses.Contains(s.Status));
+        }
+
+        if (request.MerchantIds != null && request.MerchantIds.Any())
+        {
+            query = query.Where(s => request.MerchantIds.Contains(s.MerchantId));
+        }
+
+        if (request.Currencies != null && request.Currencies.Any())
+        {
+            query = query.Where(s => request.Currencies.Contains(s.Currency));
+        }
+
+        if (request.MinAmount.HasValue)
+        {
+            query = query.Where(s => s.NetAmount >= request.MinAmount.Value);
+        }
+
+        if (request.MaxAmount.HasValue)
+        {
+            query = query.Where(s => s.NetAmount <= request.MaxAmount.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        {
+            query = query.Where(s => s.Merchant!.Name.Contains(request.SearchTerm) ||
+                                    s.BankTransactionId!.Contains(request.SearchTerm));
+        }
+
+        return query;
+    }
+
+    private IQueryable<Settlement> ApplySettlementSorting(IQueryable<Settlement> query, SettlementSortBy sortBy, SortDirection direction)
+    {
+        System.Linq.Expressions.Expression<Func<Settlement, object>> sortExpression = sortBy switch
+        {
+            SettlementSortBy.SettlementDate => s => s.SettlementDate,
+            SettlementSortBy.CreatedAt => s => s.CreatedAt,
+            SettlementSortBy.ProcessedAt => s => s.ProcessedAt ?? DateTime.MinValue,
+            SettlementSortBy.GrossAmount => s => s.GrossAmount,
+            SettlementSortBy.Amount => s => s.GrossAmount, // Alias for GrossAmount
+            SettlementSortBy.NetAmount => s => s.NetAmount,
+            SettlementSortBy.Status => s => s.Status,
+            SettlementSortBy.MerchantName => s => s.Merchant!.Name,
+            SettlementSortBy.MerchantId => s => s.MerchantId,
+            SettlementSortBy.Currency => s => s.Currency,
+            SettlementSortBy.TransactionCount => s => s.TransactionCount,
+            _ => s => s.SettlementDate
+        };
+
+        return direction == SortDirection.Ascending ? 
+            query.OrderBy(sortExpression) : 
+            query.OrderByDescending(sortExpression);
+    }
+
     #endregion
+
+    // Placeholder implementations for new interface methods
+    public Task<PagedApiResponse<SettlementSummary>> GetAllSettlementsAsync(SettlementFilterRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementDetails>> GetSettlementDetailsAsync(Guid settlementId, bool includeTransactions = false, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementProcessingResult>> ProcessPendingSettlementsAsync(ProcessSettlementsRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementSummary>> ProcessSettlementAsync(Guid settlementId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementSummary>> CancelSettlementAsync(Guid settlementId, CancelSettlementRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementSummary>> RetrySettlementAsync(Guid settlementId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Implementation in progress");
+    }
+
+    public Task<ApiResponse<SettlementAnalytics>> GetSettlementAnalyticsAsync(SettlementAnalyticsRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Analytics implementation coming next");
+    }
+
+    public Task<ApiResponse<byte[]>> ExportSettlementsAsync(SettlementExportRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Export implementation coming next");
+    }
+
+    public Task<ApiResponse<SettlementReconciliationReport>> GetReconciliationReportAsync(SettlementReconciliationRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Reconciliation implementation coming next");
+    }
+
+    public Task<ApiResponse<SettlementScheduleConfig>> ConfigureSettlementScheduleAsync(Guid merchantId, SettlementScheduleConfigRequest request, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Scheduling implementation coming next");
+    }
+
+    public Task<ApiResponse<SettlementScheduleConfig>> GetSettlementScheduleAsync(Guid merchantId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Scheduling implementation coming next");
+    }
+
+    public Task<ApiResponse> UpdateSettlementStatusAsync(Guid settlementId, SettlementStatus status, string? bankTransactionId = null, string? correlationId = null, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Status update implementation coming next");
+    }
+
+    public Task<ApiResponse<bool>> ValidateSettlementEligibilityAsync(Guid merchantId, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException("Eligibility validation implementation coming next");
+    }
 }

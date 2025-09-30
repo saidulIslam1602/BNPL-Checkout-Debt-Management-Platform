@@ -5,24 +5,27 @@ export interface User {
   lastName: string;
   merchantId: string;
   merchantName: string;
-  role: UserRole;
-  permissions: Permission[];
-  isActive: boolean;
+  role: 'admin' | 'manager' | 'operator' | 'viewer';
+  permissions: string[];
   lastLoginAt?: Date;
   createdAt: Date;
-  updatedAt: Date;
+  isActive: boolean;
+  preferences?: UserPreferences;
 }
 
-export enum UserRole {
-  ADMIN = 'ADMIN',
-  MANAGER = 'MANAGER',
-  OPERATOR = 'OPERATOR',
-  VIEWER = 'VIEWER'
-}
-
-export interface Permission {
-  resource: string;
-  actions: string[];
+export interface UserPreferences {
+  language: 'en' | 'no';
+  timezone: string;
+  currency: string;
+  notifications: {
+    email: boolean;
+    sms: boolean;
+    push: boolean;
+  };
+  dashboard: {
+    defaultView: string;
+    refreshInterval: number;
+  };
 }
 
 export interface LoginRequest {
@@ -33,14 +36,14 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   user: User;
-  accessToken: string;
+  token: string;
   refreshToken: string;
   expiresIn: number;
 }
 
 export interface AuthState {
-  user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+  user: User | null;
+  token: string | null;
+  refreshToken: string | null;
 }

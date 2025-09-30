@@ -1,4 +1,4 @@
-# Riverty Merchant Portal
+# YourCompany Merchant Portal
 
 A modern, Norwegian-focused BNPL merchant dashboard built with Angular 17 and real-time analytics.
 
@@ -145,10 +145,10 @@ All API calls are made through dedicated services that:
 
 ```scss
 :root {
-  --riverty-primary: #1e3a8a;      // Norwegian blue
-  --riverty-secondary: #dc2626;     // Norwegian red
-  --riverty-accent: #059669;        // Success green
-  --riverty-warn: #ea580c;          // Warning orange
+  --yourcompany-primary: #1e3a8a;      // Norwegian blue
+  --yourcompany-secondary: #dc2626;     // Norwegian red
+  --yourcompany-accent: #059669;        // Success green
+  --yourcompany-warn: #ea580c;          // Warning orange
   --norway-blue: #002868;           // Official Norway blue
   --norway-red: #ed2939;            // Official Norway red
 }
@@ -299,12 +299,12 @@ The application is configured for deployment on:
 ## 📞 Support
 
 For technical support or questions:
-- **Email**: support@riverty.com
-- **Documentation**: https://docs.riverty.com
-- **Status Page**: https://status.riverty.com
+- **Email**: support@yourcompany.com
+- **Documentation**: https://docs.yourcompany.com
+- **Status Page**: https://status.yourcompany.com
 
 ## 📄 License
 
-Copyright © 2024 Riverty. All rights reserved.
+Copyright © 2024 YourCompany. All rights reserved.
 
 This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.

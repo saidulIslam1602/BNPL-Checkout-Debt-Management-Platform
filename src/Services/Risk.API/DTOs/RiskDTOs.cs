@@ -1,7 +1,7 @@
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace RivertyBNPL.Risk.API.DTOs;
+namespace YourCompanyBNPL.Risk.API.DTOs;
 
 /// <summary>
 /// Request DTO for credit assessment

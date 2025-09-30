@@ -3,8 +3,9 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using YourCompanyBNPL.Shared.Infrastructure.Security;
 
-namespace RivertyBNPL.Shared.Infrastructure.Idempotency;
+namespace YourCompanyBNPL.Shared.Infrastructure.Idempotency;
 
 /// <summary>
 /// Idempotency service for Norwegian BNPL operations
@@ -15,7 +16,7 @@ public interface IIdempotencyService
     Task<IdempotencyResult<T>> ExecuteAsync<T>(string idempotencyKey, Func<Task<T>> operation, TimeSpan? expiry = null);
     Task<IdempotencyResult<T>> ExecuteAsync<T>(string idempotencyKey, Func<Task<T>> operation, IdempotencyOptions options);
     Task<bool> IsProcessedAsync(string idempotencyKey);
-    Task<T?> GetResultAsync<T>(string idempotencyKey);
+    Task<T> GetResultAsync<T>(string idempotencyKey);
     Task InvalidateAsync(string idempotencyKey);
     Task<string> GenerateKeyAsync(object request, string? customerId = null);
 }
@@ -172,13 +173,20 @@ public class IdempotencyService : IIdempotencyService
         return status == IdempotencyStatus.COMPLETED;
     }
 
-    public async Task<T?> GetResultAsync<T>(string idempotencyKey)
+    public async Task<T> GetResultAsync<T>(string idempotencyKey)
     {
         var normalizedKey = NormalizeKey(idempotencyKey);
         var resultKey = $"result:{normalizedKey}";
         
         var result = await _redisService.GetAsync<IdempotencyResult<T>>(resultKey);
-        return result?.Result;
+        if (result != null && result.Result != null)
+        {
+            return result.Result;
+        }
+        
+        #pragma warning disable CS8603
+        return default;
+        #pragma warning restore CS8603
     }
 
     public async Task InvalidateAsync(string idempotencyKey)

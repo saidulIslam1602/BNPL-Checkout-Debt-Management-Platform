@@ -1,9 +1,9 @@
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RivertyBNPL.Risk.API.Models;
+namespace YourCompanyBNPL.Risk.API.Models;
 
 /// <summary>
 /// Credit assessment record for a customer

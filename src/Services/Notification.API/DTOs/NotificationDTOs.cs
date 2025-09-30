@@ -1,7 +1,20 @@
+using YourCompanyBNPL.Common.Enums;
 using System.ComponentModel.DataAnnotations;
-using RivertyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Notification.API.Models;
 
-namespace RivertyBNPL.Notification.API.DTOs;
+namespace YourCompanyBNPL.Notification.API.DTOs;
+
+/// <summary>
+/// Template render result
+/// </summary>
+public class TemplateRenderResult
+{
+    public string Subject { get; set; } = string.Empty;
+    public string? HtmlContent { get; set; }
+    public string? TextContent { get; set; }
+    public string? SmsContent { get; set; }
+    public string? PushContent { get; set; }
+}
 
 /// <summary>
 /// Request to send a single notification
@@ -263,4 +276,218 @@ public class CampaignResponse
     public string? Currency { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// Webhook creation request
+/// </summary>
+public class CreateWebhookRequest
+{
+    [Required]
+    [MaxLength(200)]
+    public string Name { get; set; } = string.Empty;
+
+    [Required]
+    [Url]
+    public string Url { get; set; } = string.Empty;
+
+    [MaxLength(100)]
+    public string? Secret { get; set; }
+
+    [Required]
+    public List<WebhookEvent> Events { get; set; } = new();
+
+    public bool IsActive { get; set; } = true;
+
+    [Range(1, 10)]
+    public int MaxRetries { get; set; } = 3;
+
+    [Range(1, 1440)]
+    public int RetryDelayMinutes { get; set; } = 5;
+
+    public Dictionary<string, string>? Headers { get; set; }
+
+    public Guid? CustomerId { get; set; }
+
+    [MaxLength(500)]
+    public string? Description { get; set; }
+}
+
+/// <summary>
+/// Webhook configuration response
+/// </summary>
+public class WebhookConfigResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public List<WebhookEvent> Events { get; set; } = new();
+    public bool IsActive { get; set; }
+    public int MaxRetries { get; set; }
+    public int RetryDelayMinutes { get; set; }
+    public Dictionary<string, string> Headers { get; set; } = new();
+    public Guid? CustomerId { get; set; }
+    public string? Description { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// Webhook delivery response
+/// </summary>
+public class WebhookDeliveryResponse
+{
+    public Guid Id { get; set; }
+    public Guid WebhookConfigId { get; set; }
+    public string WebhookName { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public List<Models.WebhookEvent> Events { get; set; } = new();
+    public bool IsActive { get; set; } = true;
+    public Guid NotificationId { get; set; }
+    public WebhookEvent Event { get; set; }
+    public Common.Enums.WebhookDeliveryStatus Status { get; set; }
+    public int AttemptCount { get; set; }
+    public DateTime? DeliveredAt { get; set; }
+    public DateTime? NextRetryAt { get; set; }
+    public int? ResponseStatusCode { get; set; }
+    public string? ErrorMessage { get; set; }
+    public TimeSpan? ResponseTime { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// Schedule notification request
+/// </summary>
+public class ScheduleNotificationRequest
+{
+    [Required]
+    public Guid NotificationId { get; set; }
+
+    [Required]
+    public DateTime ScheduledAt { get; set; }
+
+    public bool RespectBusinessHours { get; set; } = false;
+    public TimeSpan BusinessHoursStart { get; set; } = new(9, 0, 0);
+    public TimeSpan BusinessHoursEnd { get; set; } = new(17, 0, 0);
+    public bool SkipWeekends { get; set; } = false;
+    public bool SkipHolidays { get; set; } = false;
+    public List<DateTime>? Holidays { get; set; }
+    public string? TimeZone { get; set; }
+}
+
+/// <summary>
+/// Schedule notification response
+/// </summary>
+public class ScheduleNotificationResponse
+{
+    public string JobId { get; set; } = string.Empty;
+    public Guid NotificationId { get; set; }
+    public DateTime ScheduledAt { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Schedule recurring notification request
+/// </summary>
+public class ScheduleRecurringNotificationRequest
+{
+    [Required]
+    public Guid TemplateId { get; set; }
+
+    [Required]
+    public Infrastructure.RecurringType RecurringType { get; set; }
+
+    [Range(0, 23)]
+    public int Hour { get; set; } = 9;
+
+    [Range(0, 59)]
+    public int Minute { get; set; } = 0;
+
+    public DayOfWeek DayOfWeek { get; set; } = DayOfWeek.Monday;
+
+    [Range(1, 31)]
+    public int DayOfMonth { get; set; } = 1;
+
+    [Range(1, 12)]
+    public int Month { get; set; } = 1;
+
+    public string? CronExpression { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+
+    [Required]
+    public Dictionary<string, object> Data { get; set; } = new();
+}
+
+/// <summary>
+/// Schedule recurring notification response
+/// </summary>
+public class ScheduleRecurringNotificationResponse
+{
+    public string JobId { get; set; } = string.Empty;
+    public Guid TemplateId { get; set; }
+    public Infrastructure.RecurringType RecurringType { get; set; }
+    public string Message { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Reschedule notification request
+/// </summary>
+public class RescheduleNotificationRequest
+{
+    [Required]
+    public DateTime NewScheduledAt { get; set; }
+}
+// ABTest DTOs
+public class CreateABTestExperimentRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+}
+
+public class ABTestExperimentResponse  
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+public class ABTestVariantResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
+
+// Template DTOs
+public class NotificationTemplateResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+}
+
+public class CreateNotificationTemplateRequest
+{
+    public string Name { get; set; } = string.Empty;
+    public string Subject { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+}
+
+// Preference DTOs
+public class NotificationPreferenceRequest
+{
+    public bool EmailEnabled { get; set; } = true;
+    public bool SmsEnabled { get; set; } = true;
+    public bool PushEnabled { get; set; } = true;
+}
+
+
+// Campaign DTOs
+
+// Notification Preferences
+public class NotificationPreferences
+{
+    public Guid UserId { get; set; }
+    public Dictionary<string, bool> Preferences { get; set; } = new();
 }

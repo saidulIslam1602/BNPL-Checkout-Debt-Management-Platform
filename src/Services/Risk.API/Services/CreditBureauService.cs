@@ -1,10 +1,10 @@
 using System.Text;
 using System.Text.Json;
-using RivertyBNPL.Risk.API.DTOs;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Risk.API.DTOs;
+using YourCompanyBNPL.Common.Models;
 using Microsoft.Extensions.Options;
 
-namespace RivertyBNPL.Risk.API.Services;
+namespace YourCompanyBNPL.Risk.API.Services;
 
 /// <summary>
 /// Real integration with Norwegian credit bureaus (Experian, Bisnode, etc.)
@@ -105,7 +105,7 @@ public class CreditBureauService : ICreditBureauService
 
             var response = await _httpClient.PostAsync($"{_options.FolkeregisterBaseUrl}/validate-ssn", content, cancellationToken);
 
-            if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var validationResult = JsonSerializer.Deserialize<FolkeregisterValidationResponse>(responseContent);
@@ -148,7 +148,7 @@ public class CreditBureauService : ICreditBureauService
 
             var response = await _httpClient.PostAsync($"{_options.KonkursregisterBaseUrl}/check-bankruptcy", content, cancellationToken);
 
-            if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var bankruptcyResult = JsonSerializer.Deserialize<BankruptcyCheckResponse>(responseContent);
@@ -195,7 +195,7 @@ public class CreditBureauService : ICreditBureauService
 
             var response = await _httpClient.PostAsync($"{_options.CreditHistoryBaseUrl}/payment-history", content, cancellationToken);
 
-            if (response.IsSuccessStatusCode)
+                if (response.IsSuccessStatusCode)
             {
                 var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
                 var historyData = JsonSerializer.Deserialize<Dictionary<string, object>>(responseContent);

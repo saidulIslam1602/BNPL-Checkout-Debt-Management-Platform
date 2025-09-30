@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-api
+  namespace: bnpl-platform
+  labels:
+    app: payment-api
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: payment-api
+  template:
+    metadata:
+      labels:
+        app: payment-api
+        tier: backend
+    spec:
+      containers:
+      - name: payment-api
+        image: ${ACR_NAME}.azurecr.io/payment-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: bnpl-config
+              key: ASPNETCORE_ENVIRONMENT
+        - name: ASPNETCORE_URLS
+          valueFrom:
+            configMapKeyRef:
+              name: bnpl-config
+              key: ASPNETCORE_URLS
+        - name: Jwt__Key
+          valueFrom:
+            secretKeyRef:
+              name: bnpl-secrets
+              key: JWT_KEY
+        - name: Jwt__Issuer
+          valueFrom:
+            configMapKeyRef:
+              name: bnpl-config
+              key: JWT_ISSUER
+        - name: Jwt__Audience
+          valueFrom:
+            configMapKeyRef:
+              name: bnpl-config
+              key: JWT_AUDIENCE
+        - name: ConnectionStrings__DefaultConnection
+          valueFrom:
+            secretKeyRef:
+              name: bnpl-secrets
+              key: DB_PAYMENT
+        - name: Redis__ConnectionString
+          valueFrom:
+            secretKeyRef:
+              name: bnpl-secrets
+              key: REDIS_CONNECTION
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-api
+  namespace: bnpl-platform
+  labels:
+    app: payment-api
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: payment-api
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: payment-api-hpa
+  namespace: bnpl-platform
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: payment-api
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80

@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace RivertyBNPL.Shared.Infrastructure.Security;
+namespace YourCompanyBNPL.Shared.Infrastructure.Security;
 
 /// <summary>
 /// Comprehensive security middleware for Norwegian BNPL APIs
@@ -140,7 +140,7 @@ public class SecurityMiddleware
                  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
                  "font-src 'self' https://fonts.gstatic.com; " +
                  "img-src 'self' data: https:; " +
-                 "connect-src 'self' https://api.riverty.com wss://api.riverty.com https://api.vipps.no https://api.bankid.no; " +
+                 "connect-src 'self' https://api.yourcompany.com wss://api.yourcompany.com https://api.vipps.no https://api.bankid.no; " +
                  "frame-ancestors 'none'; " +
                  "base-uri 'self'; " +
                  "form-action 'self'";
@@ -148,13 +148,13 @@ public class SecurityMiddleware
         headers.Append("Content-Security-Policy", csp);
 
         // Norwegian privacy headers
-        headers.Append("X-Privacy-Policy", "https://riverty.com/privacy-no");
-        headers.Append("X-Data-Controller", "Riverty AS, Norway");
+        headers.Append("X-Privacy-Policy", "https://yourcompany.com/privacy-no");
+        headers.Append("X-Data-Controller", "YourCompany AS, Norway");
         headers.Append("X-GDPR-Compliant", "true");
 
         // API versioning and identification
         headers.Append("X-API-Version", "1.0");
-        headers.Append("X-Service", "RivertyBNPL");
+        headers.Append("X-Service", "YourCompanyBNPL");
         headers.Append("X-Country", "NO");
     }
 

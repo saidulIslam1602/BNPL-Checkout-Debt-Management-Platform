@@ -55,7 +55,7 @@ import { User } from './core/models/user.model';
           [opened]="isAuthenticated$ | async">
           
           <div class="sidenav-header">
-            <img src="assets/images/riverty-logo.svg" alt="Riverty" class="logo">
+            <img src="assets/images/yourcompany-logo.svg" alt="YourCompany" class="logo">
             <h2>Merchant Portal</h2>
           </div>
 
@@ -202,7 +202,7 @@ export class AppComponent implements OnInit {
       '/profile': 'Profile'
     };
     
-    return titleMap[url] || 'Riverty Merchant Portal';
+    return titleMap[url] || 'YourCompany Merchant Portal';
   }
 
   logout(): void {

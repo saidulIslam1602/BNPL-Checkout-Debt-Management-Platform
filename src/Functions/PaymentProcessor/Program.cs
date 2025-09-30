@@ -8,9 +8,9 @@ using Azure.Identity;
 using Serilog;
 using Serilog.Events;
 
-using RivertyBNPL.Functions.PaymentProcessor.Services;
-using RivertyBNPL.Functions.PaymentProcessor.Data;
-using RivertyBNPL.Functions.PaymentProcessor.Configuration;
+using YourCompanyBNPL.Functions.PaymentProcessor.Services;
+using YourCompanyBNPL.Functions.PaymentProcessor.Data;
+using YourCompanyBNPL.Functions.PaymentProcessor.Configuration;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()

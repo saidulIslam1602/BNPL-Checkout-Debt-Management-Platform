@@ -1,7 +1,7 @@
-using RivertyBNPL.Risk.API.DTOs;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Risk.API.DTOs;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Risk.API.Services;
+namespace YourCompanyBNPL.Risk.API.Services;
 
 /// <summary>
 /// Interface for risk assessment operations

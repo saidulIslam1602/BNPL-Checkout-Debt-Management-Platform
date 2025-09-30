@@ -1,0 +1,16 @@
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/bin/Debug/net8.0/RivertyBNPL.Events.deps.json
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/bin/Debug/net8.0/RivertyBNPL.Events.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/bin/Debug/net8.0/RivertyBNPL.Events.pdb
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/bin/Debug/net8.0/RivertyBNPL.Common.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/bin/Debug/net8.0/RivertyBNPL.Common.pdb
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.csproj.AssemblyReference.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.GeneratedMSBuildEditorConfig.editorconfig
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.AssemblyInfoInputs.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.AssemblyInfo.cs
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.csproj.CoreCompileInputs.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.sourcelink.json
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/Events.csproj.Up2Date
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/RivertyBNPL.Events.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/refint/RivertyBNPL.Events.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/RivertyBNPL.Events.pdb
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/Debug/net8.0/ref/RivertyBNPL.Events.dll

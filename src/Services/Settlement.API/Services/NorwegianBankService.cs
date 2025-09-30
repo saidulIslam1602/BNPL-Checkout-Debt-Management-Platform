@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
 
-namespace RivertyBNPL.Settlement.API.Services;
+namespace YourCompanyBNPL.Settlement.API.Services;
 
 /// <summary>
 /// Real integration with Norwegian banking systems for settlements and direct debits

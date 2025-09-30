@@ -1,0 +1,228 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+
+  .login-card-container {
+    width: 100%;
+    max-width: 450px;
+    
+    .login-card {
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      
+      .login-header {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 32px 32px 24px 32px;
+        text-align: center;
+        
+        .logo-section {
+          margin-bottom: 16px;
+          
+          .logo {
+            height: 48px;
+            margin-bottom: 12px;
+            filter: brightness(0) invert(1);
+          }
+
+          .app-title {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+          }
+        }
+
+        .market-indicator {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 8px 16px;
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: 20px;
+          
+          .flag-icon {
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+          }
+
+          .market-text {
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+        }
+      }
+
+      .login-content {
+        padding: 32px;
+        
+        .login-form {
+          .full-width {
+            width: 100%;
+            margin-bottom: 16px;
+          }
+
+          .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            
+            .remember-me {
+              font-size: 14px;
+            }
+
+            .forgot-password-link {
+              color: #1976d2;
+              text-decoration: none;
+              font-size: 14px;
+              font-weight: 500;
+              
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+
+          .login-button {
+            height: 48px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            position: relative;
+            
+            .login-spinner {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+
+      .login-actions {
+        background-color: #f8f9fa;
+        padding: 24px 32px;
+        
+        .demo-credentials {
+          text-align: center;
+          width: 100%;
+          
+          h4 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+          }
+
+          p {
+            margin: 4px 0;
+            font-size: 14px;
+            color: #64748b;
+            
+            strong {
+              color: #1e293b;
+            }
+          }
+
+          .demo-button {
+            margin-top: 12px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .login-container {
+    padding: 16px;
+    
+    .login-card-container {
+      .login-card {
+        .login-header {
+          padding: 24px 24px 20px 24px;
+          
+          .logo-section {
+            .logo {
+              height: 40px;
+            }
+
+            .app-title {
+              font-size: 20px;
+            }
+          }
+        }
+
+        .login-content {
+          padding: 24px;
+        }
+
+        .login-actions {
+          padding: 20px 24px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    padding: 12px;
+    
+    .login-card-container {
+      .login-card {
+        .login-header {
+          padding: 20px 20px 16px 20px;
+          
+          .logo-section {
+            .app-title {
+              font-size: 18px;
+            }
+          }
+        }
+
+        .login-content {
+          padding: 20px;
+          
+          .login-form {
+            .form-options {
+              flex-direction: column;
+              align-items: flex-start;
+              gap: 12px;
+            }
+          }
+        }
+
+        .login-actions {
+          padding: 16px 20px;
+        }
+      }
+    }
+  }
+}
+
+// Animation for smooth transitions
+.login-card {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

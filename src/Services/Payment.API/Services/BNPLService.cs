@@ -1,14 +1,15 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using MediatR;
-using RivertyBNPL.Payment.API.Data;
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Payment.API.Models;
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Common.Enums;
-using RivertyBNPL.Events.Payment;
+using YourCompanyBNPL.Payment.API.Data;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Payment.API.Models;
+using YourCompanyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Events.Payment;
 
-namespace RivertyBNPL.Payment.API.Services;
+namespace YourCompanyBNPL.Payment.API.Services;
 
 /// <summary>
 /// Implementation of BNPL-specific operations
@@ -561,7 +562,7 @@ public class BNPLService : IBNPLService
 
             _logger.LogInformation("Processed {Count} overdue installments", processedCount);
 
-            return ApiResponse.Success($"Processed {processedCount} overdue installments");
+            return ApiResponse.SuccessResponse($"Processed {processedCount} overdue installments");
         }
         catch (Exception ex)
         {

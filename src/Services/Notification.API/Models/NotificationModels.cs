@@ -1,8 +1,9 @@
+using YourCompanyBNPL.Common.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Notification.API.Models;
+namespace YourCompanyBNPL.Notification.API.Models;
 
 /// <summary>
 /// Notification entity
@@ -19,6 +20,18 @@ public class Notification : BaseEntity
     [Required]
     [MaxLength(500)]
     public string Recipient { get; set; } = string.Empty;
+    
+    [MaxLength(254)]
+    public string? RecipientEmail { get; set; }
+    
+    [MaxLength(20)]
+    public string? RecipientPhone { get; set; }
+    
+    [MaxLength(500)]
+    public string? RecipientDeviceToken { get; set; }
+    
+    [MaxLength(100)]
+    public string? CorrelationId { get; set; }
 
     [Required]
     [MaxLength(200)]
@@ -71,6 +84,9 @@ public class Notification : BaseEntity
 
     [MaxLength(100)]
     public string? BatchId { get; set; }
+
+    [MaxLength(100)]
+    public string? JobId { get; set; } // Hangfire job ID for scheduled notifications
 }
 
 /// <summary>
@@ -105,6 +121,8 @@ public class NotificationTemplate : BaseEntity
     public string? SmsContent { get; set; }
 
     public string? PushContent { get; set; }
+    
+    public string Content { get; set; } = string.Empty;
 
     public bool IsActive { get; set; } = true;
 
@@ -114,6 +132,11 @@ public class NotificationTemplate : BaseEntity
     public string? Description { get; set; }
 
     public int Version { get; set; } = 1;
+    
+    [MaxLength(200)]
+    public string DisplayName { get; set; } = string.Empty;
+    
+    public Dictionary<string, object>? Metadata { get; set; }
 
     public DateTime? LastUsedAt { get; set; }
 
@@ -138,6 +161,11 @@ public class NotificationPreference : BaseEntity
     public bool IsEnabled { get; set; } = true;
 
     public string? Settings { get; set; }
+    
+    public Dictionary<string, object>? Preferences { get; set; }
+    
+    [MaxLength(100)]
+    public string? TimeZone { get; set; }
 
     public DateTime? OptInDate { get; set; }
 
@@ -175,6 +203,8 @@ public class NotificationDelivery : BaseEntity
     public string? ExternalId { get; set; }
 
     public string? ExternalResponse { get; set; }
+    
+    public string? Response { get; set; }
 
     public decimal? Cost { get; set; }
 
@@ -195,6 +225,10 @@ public class NotificationCampaign : BaseEntity
 
     [MaxLength(500)]
     public string? Description { get; set; }
+    
+    [Required]
+    [MaxLength(100)]
+    public string Type { get; set; } = string.Empty;
 
     [Required]
     public NotificationChannel Channel { get; set; }
@@ -225,23 +259,24 @@ public class NotificationCampaign : BaseEntity
     public int ClickedCount { get; set; }
 
     public decimal? TotalCost { get; set; }
-
+    
     [MaxLength(10)]
     public string? Currency { get; set; }
-
+    
     public string? TargetCriteria { get; set; }
+    
+    public Dictionary<string, object>? Settings { get; set; }
 
-    public string? Settings { get; set; }
 }
 
 // Enums
-public enum NotificationChannel
+// Note: NotificationChannel is defined in Common.Enums - remove local definition to avoid ambiguity
+
+/// <summary>
+/// Campaign entity for notification campaigns (alias for NotificationCampaign)
+/// </summary>
+public class Campaign : NotificationCampaign
 {
-    Email = 1,
-    Sms = 2,
-    Push = 3,
-    InApp = 4,
-    Webhook = 5
 }
 
 public enum NotificationStatus

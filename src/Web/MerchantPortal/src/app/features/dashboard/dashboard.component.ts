@@ -74,7 +74,7 @@ interface TopCustomer {
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
-    BaseChartDirective
+    // BaseChartDirective // TODO: Add chart library module
   ],
   template: `
     <div class="dashboard-container">
@@ -184,11 +184,7 @@ interface TopCustomer {
             </mat-card-header>
             <mat-card-content>
               <div class="chart-container">
-                <canvas baseChart
-                        [data]="revenueChartData"
-                        [options]="revenueChartOptions"
-                        [type]="'line'">
-                </canvas>
+                <div class="chart-placeholder">Revenue Chart Coming Soon</div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -201,11 +197,7 @@ interface TopCustomer {
             </mat-card-header>
             <mat-card-content>
               <div class="chart-container">
-                <canvas baseChart
-                        [data]="paymentMethodsChartData"
-                        [options]="paymentMethodsChartOptions"
-                        [type]="'doughnut'">
-                </canvas>
+                <div class="chart-placeholder">Revenue Chart Coming Soon</div>
               </div>
             </mat-card-content>
           </mat-card>
@@ -219,11 +211,7 @@ interface TopCustomer {
           </mat-card-header>
           <mat-card-content>
             <div class="chart-container">
-              <canvas baseChart
-                      [data]="bnplPerformanceChartData"
-                      [options]="bnplPerformanceChartOptions"
-                      [type]="'bar'">
-              </canvas>
+              <div class="chart-placeholder">BNPL Performance Chart Coming Soon</div>
             </div>
           </mat-card-content>
         </mat-card>

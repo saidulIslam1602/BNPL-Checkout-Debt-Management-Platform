@@ -4,20 +4,20 @@ services:
   # SQL Server Database
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: riverty-sqlserver
+    container_name: yourcompany-sqlserver
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=RivertyBNPL123!
+      - SA_PASSWORD=YourCompanyBNPL123!
       - MSSQL_PID=Developer
     ports:
-      - "1433:1433"
+      - "1435:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
       - ./database/init:/docker-entrypoint-initdb.d
     networks:
-      - riverty-network
+      - yourcompany-network
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P RivertyBNPL123! -Q 'SELECT 1'"]
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourCompanyBNPL123! -Q 'SELECT 1'"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -26,13 +26,13 @@ services:
   # Redis Cache
   redis:
     image: redis:7-alpine
-    container_name: riverty-redis
+    container_name: yourcompany-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     networks:
-      - riverty-network
+      - yourcompany-network
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -44,15 +44,15 @@ services:
     build:
       context: .
       dockerfile: src/Services/Payment.API/Dockerfile
-    container_name: riverty-payment-api
+    container_name: yourcompany-payment-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Payment;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=YourCompanyBNPL_Payment;User Id=sa;Password=YourCompanyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
       - Redis__ConnectionString=redis:6379
-      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
-      - Jwt__Issuer=https://api.riverty.com
-      - Jwt__Audience=https://api.riverty.com
+      - Jwt__Key=yourcompany-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.yourcompany.com
+      - Jwt__Audience=https://api.yourcompany.com
     ports:
       - "5001:8080"
     depends_on:
@@ -61,7 +61,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./logs/payment-api:/app/logs
     healthcheck:
@@ -76,15 +76,15 @@ services:
     build:
       context: .
       dockerfile: src/Services/Risk.API/Dockerfile
-    container_name: riverty-risk-api
+    container_name: yourcompany-risk-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Risk;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=YourCompanyBNPL_Risk;User Id=sa;Password=YourCompanyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
       - Redis__ConnectionString=redis:6379
-      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
-      - Jwt__Issuer=https://api.riverty.com
-      - Jwt__Audience=https://api.riverty.com
+      - Jwt__Key=yourcompany-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.yourcompany.com
+      - Jwt__Audience=https://api.yourcompany.com
     ports:
       - "5002:8080"
     depends_on:
@@ -93,7 +93,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./logs/risk-api:/app/logs
     healthcheck:
@@ -108,15 +108,15 @@ services:
     build:
       context: .
       dockerfile: src/Services/Settlement.API/Dockerfile
-    container_name: riverty-settlement-api
+    container_name: yourcompany-settlement-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Settlement;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=YourCompanyBNPL_Settlement;User Id=sa;Password=YourCompanyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
       - Redis__ConnectionString=redis:6379
-      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
-      - Jwt__Issuer=https://api.riverty.com
-      - Jwt__Audience=https://api.riverty.com
+      - Jwt__Key=yourcompany-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.yourcompany.com
+      - Jwt__Audience=https://api.yourcompany.com
     ports:
       - "5004:8080"
     depends_on:
@@ -125,7 +125,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./logs/settlement-api:/app/logs
     healthcheck:
@@ -140,15 +140,15 @@ services:
     build:
       context: .
       dockerfile: src/Services/Notification.API/Dockerfile
-    container_name: riverty-notification-api
+    container_name: yourcompany-notification-api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=RivertyBNPL_Notification;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=YourCompanyBNPL_Notification;User Id=sa;Password=YourCompanyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true
       - Redis__ConnectionString=redis:6379
-      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
-      - Jwt__Issuer=https://api.riverty.com
-      - Jwt__Audience=https://api.riverty.com
+      - Jwt__Key=yourcompany-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.yourcompany.com
+      - Jwt__Audience=https://api.yourcompany.com
     ports:
       - "5003:8080"
     depends_on:
@@ -157,7 +157,7 @@ services:
       redis:
         condition: service_healthy
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./logs/notification-api:/app/logs
     healthcheck:
@@ -172,13 +172,13 @@ services:
     build:
       context: .
       dockerfile: src/Gateway/API.Gateway/Dockerfile
-    container_name: riverty-api-gateway
+    container_name: yourcompany-api-gateway
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
-      - Jwt__Key=riverty-bnpl-super-secret-key-for-development-only-change-in-production
-      - Jwt__Issuer=https://api.riverty.com
-      - Jwt__Audience=https://api.riverty.com
+      - Jwt__Key=yourcompany-bnpl-super-secret-key-for-development-only-change-in-production
+      - Jwt__Issuer=https://api.yourcompany.com
+      - Jwt__Audience=https://api.yourcompany.com
     ports:
       - "5000:8080"
     depends_on:
@@ -187,7 +187,7 @@ services:
       - settlement-api
       - notification-api
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./logs/api-gateway:/app/logs
     healthcheck:
@@ -202,7 +202,7 @@ services:
     build:
       context: .
       dockerfile: src/Web/MerchantPortal/Dockerfile
-    container_name: riverty-merchant-portal
+    container_name: yourcompany-merchant-portal
     environment:
       - NODE_ENV=development
       - API_BASE_URL=http://localhost:5000
@@ -211,7 +211,7 @@ services:
     depends_on:
       - api-gateway
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./src/Web/MerchantPortal/nginx.conf:/etc/nginx/nginx.conf:ro
 
@@ -220,7 +220,7 @@ services:
     build:
       context: .
       dockerfile: src/Web/ConsumerPortal/Dockerfile
-    container_name: riverty-consumer-portal
+    container_name: yourcompany-consumer-portal
     environment:
       - NODE_ENV=development
       - API_BASE_URL=http://localhost:5000
@@ -229,14 +229,14 @@ services:
     depends_on:
       - api-gateway
     networks:
-      - riverty-network
+      - yourcompany-network
     volumes:
       - ./src/Web/ConsumerPortal/nginx.conf:/etc/nginx/nginx.conf:ro
 
   # Seq Log Server (for centralized logging)
   seq:
     image: datalust/seq:latest
-    container_name: riverty-seq
+    container_name: yourcompany-seq
     environment:
       - ACCEPT_EULA=Y
     ports:
@@ -244,19 +244,19 @@ services:
     volumes:
       - seq_data:/data
     networks:
-      - riverty-network
+      - yourcompany-network
 
   # Prometheus (for metrics)
   prometheus:
     image: prom/prometheus:latest
-    container_name: riverty-prometheus
+    container_name: yourcompany-prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
     networks:
-      - riverty-network
+      - yourcompany-network
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -267,7 +267,7 @@ services:
   # Grafana (for dashboards)
   grafana:
     image: grafana/grafana:latest
-    container_name: riverty-grafana
+    container_name: yourcompany-grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
@@ -277,7 +277,7 @@ services:
       - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
     networks:
-      - riverty-network
+      - yourcompany-network
     depends_on:
       - prometheus
 
@@ -289,5 +289,5 @@ volumes:
   grafana_data:
 
 networks:
-  riverty-network:
+  yourcompany-network:
     driver: bridge

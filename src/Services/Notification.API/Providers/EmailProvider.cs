@@ -1,10 +1,11 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using RivertyBNPL.Services.Notification.API.Models;
-using RivertyBNPL.Shared.Common.Enums;
+using YourCompanyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Common.Enums;
 
-namespace RivertyBNPL.Services.Notification.API.Providers;
+namespace YourCompanyBNPL.Notification.API.Providers;
 
 /// <summary>
 /// Email notification provider using SendGrid

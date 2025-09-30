@@ -1,15 +1,15 @@
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RivertyBNPL.Payment.API.Models;
+namespace YourCompanyBNPL.Payment.API.Models;
 
 /// <summary>
 /// Payment entity representing a financial transaction
 /// </summary>
 [Table("Payments")]
-public class Payment : AuditableEntity
+public partial class Payment : AuditableEntity
 {
     [Required]
     public Guid CustomerId { get; set; }
@@ -74,19 +74,24 @@ public class Payment : AuditableEntity
     
     public DateTime? ExpiresAt { get; set; }
     
+    public int RiskScore { get; set; } = 0;
+    
+    public RiskLevel RiskLevel { get; set; } = RiskLevel.Medium;
+    
     // Navigation properties
     public virtual Customer? Customer { get; set; }
     public virtual Merchant? Merchant { get; set; }
     public virtual BNPLPlan? BNPLPlan { get; set; }
     public virtual ICollection<PaymentRefund> Refunds { get; set; } = new List<PaymentRefund>();
     public virtual ICollection<PaymentEvent> Events { get; set; } = new List<PaymentEvent>();
+    public virtual ICollection<Installment> Installments { get; set; } = new List<Installment>();
 }
 
 /// <summary>
 /// Customer entity
 /// </summary>
 [Table("Customers")]
-public class Customer : AuditableEntity
+public partial class Customer : AuditableEntity
 {
     [Required]
     [MaxLength(100)]
@@ -176,7 +181,7 @@ public class CustomerAddress : BaseEntity
 /// Merchant entity
 /// </summary>
 [Table("Merchants")]
-public class Merchant : AuditableEntity
+public partial class Merchant : AuditableEntity
 {
     [Required]
     [MaxLength(200)]
@@ -400,6 +405,10 @@ public class PaymentRefund : AuditableEntity
     [MaxLength(500)]
     public string? FailureReason { get; set; }
     
+    public SettlementStatus SettlementStatus { get; set; } = SettlementStatus.Pending;
+    
+    public DateTime? SettledAt { get; set; }
+    
     // Navigation properties
     public virtual Payment? Payment { get; set; }
 }
@@ -431,6 +440,13 @@ public class PaymentEvent : BaseEntity
     
     public Dictionary<string, object>? EventData { get; set; }
     
+    public PaymentEventType Type { get; set; }
+    
+    public Dictionary<string, object>? Metadata { get; set; } = new();
+    
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? Amount { get; set; }
+    
     // Navigation properties
     public virtual Payment? Payment { get; set; }
 }
@@ -443,6 +459,8 @@ public class Settlement : AuditableEntity
 {
     [Required]
     public Guid MerchantId { get; set; }
+    
+    public Guid? BatchId { get; set; }
     
     [Required]
     public DateTime SettlementDate { get; set; }
@@ -475,8 +493,13 @@ public class Settlement : AuditableEntity
     
     public int TransactionCount { get; set; }
     
+    public int RetryCount { get; set; } = 0;
+    
+    public DateTime? NextRetryAt { get; set; }
+    
     // Navigation properties
     public virtual Merchant? Merchant { get; set; }
+    public virtual SettlementBatch? Batch { get; set; }
     public virtual ICollection<SettlementTransaction> Transactions { get; set; } = new List<SettlementTransaction>();
 }
 
@@ -507,4 +530,83 @@ public class SettlementTransaction : BaseEntity
     // Navigation properties
     public virtual Settlement? Settlement { get; set; }
     public virtual Payment? Payment { get; set; }
+}
+
+/// <summary>
+/// Settlement event for audit trail
+/// </summary>
+[Table("SettlementEvents")]
+public class SettlementEvent : BaseEntity
+{
+    [Required]
+    public Guid SettlementId { get; set; }
+    
+    [Required]
+    [MaxLength(100)]
+    public string EventType { get; set; } = string.Empty;
+    
+    [Required]
+    public SettlementStatus FromStatus { get; set; }
+    
+    [Required]
+    public SettlementStatus ToStatus { get; set; }
+    
+    [MaxLength(1000)]
+    public string? Description { get; set; }
+    
+    [MaxLength(500)]
+    public string? Reason { get; set; }
+    
+    [MaxLength(100)]
+    public new string CreatedBy { get; set; } = string.Empty;
+    
+    public Dictionary<string, object>? EventData { get; set; }
+    
+    // Navigation properties
+    public virtual Settlement? Settlement { get; set; }
+}
+
+/// <summary>
+/// Settlement schedule configuration for merchants
+/// </summary>
+[Table("SettlementSchedules")]
+public class SettlementSchedule : AuditableEntity
+{
+    [Required]
+    public Guid MerchantId { get; set; }
+    
+    [Required]
+    public SettlementFrequency Frequency { get; set; }
+    
+    public int? DayOfWeek { get; set; } // 1-7 for weekly
+    public int? DayOfMonth { get; set; } // 1-31 for monthly
+    
+    [Range(0, 23)]
+    public int ProcessingHour { get; set; } = 9;
+    
+    [Range(0, 59)]
+    public int ProcessingMinute { get; set; } = 0;
+    
+    [Column(TypeName = "decimal(18,2)")]
+    public decimal? MinimumAmount { get; set; }
+    
+    public bool AutoProcess { get; set; } = true;
+    
+    public bool IsActive { get; set; } = true;
+    
+    public DateTime? NextScheduledDate { get; set; }
+    
+    public DateTime? LastProcessedDate { get; set; }
+    
+    [MaxLength(500)]
+    public string? Notes { get; set; }
+    
+    [MaxLength(100)]
+    public new string CreatedBy { get; set; } = string.Empty;
+    
+    [MaxLength(100)]
+    public new string? UpdatedBy { get; set; }
+    
+    // Navigation properties
+    public virtual Merchant? Merchant { get; set; }
 }

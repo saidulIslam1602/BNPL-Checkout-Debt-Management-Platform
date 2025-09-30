@@ -1,7 +1,8 @@
-using RivertyBNPL.Services.Notification.API.Models;
-using RivertyBNPL.Shared.Common.Enums;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Common.Enums;
 
-namespace RivertyBNPL.Services.Notification.API.Providers;
+namespace YourCompanyBNPL.Notification.API.Providers;
 
 /// <summary>
 /// Interface for notification providers

@@ -2,10 +2,10 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using RivertyBNPL.Functions.PaymentProcessor.Services;
-using RivertyBNPL.Functions.PaymentProcessor.Configuration;
+using YourCompanyBNPL.Functions.PaymentProcessor.Services;
+using YourCompanyBNPL.Functions.PaymentProcessor.Configuration;
 
-namespace RivertyBNPL.Functions.PaymentProcessor.Functions;
+namespace YourCompanyBNPL.Functions.PaymentProcessor.Functions;
 
 /// <summary>
 /// Azure Function for sending payment reminders to Norwegian BNPL customers

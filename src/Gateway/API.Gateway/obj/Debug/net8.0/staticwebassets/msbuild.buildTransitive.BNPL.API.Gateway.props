@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/BNPL.API.Gateway.props" />
+</Project>

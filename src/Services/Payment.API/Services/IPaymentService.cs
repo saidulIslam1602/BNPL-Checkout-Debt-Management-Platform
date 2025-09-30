@@ -1,7 +1,8 @@
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Payment.API.Services;
+namespace YourCompanyBNPL.Payment.API.Services;
 
 /// <summary>
 /// Interface for payment processing operations
@@ -17,6 +18,11 @@ public interface IPaymentService
     /// Processes a payment transaction
     /// </summary>
     Task<ApiResponse<PaymentResponse>> ProcessPaymentAsync(Guid paymentId, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Processes an approved payment transaction
+    /// </summary>
+    Task<ApiResponse<PaymentResponse>> ProcessApprovedPaymentAsync(Guid paymentId, CancellationToken cancellationToken = default);
     
     /// <summary>
     /// Gets payment by ID
@@ -98,20 +104,75 @@ public interface ISettlementService
     /// <summary>
     /// Creates settlements for eligible transactions
     /// </summary>
-    Task<ApiResponse<List<SettlementSummary>>> CreateSettlementsAsync(DateTime settlementDate, CancellationToken cancellationToken = default);
+    Task<ApiResponse<List<SettlementSummary>>> CreateSettlementsAsync(CreateSettlementRequest request, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Gets merchant settlements
+    /// Gets merchant settlements with filtering
     /// </summary>
-    Task<PagedApiResponse<SettlementSummary>> GetMerchantSettlementsAsync(Guid merchantId, int page = 1, int pageSize = 20, CancellationToken cancellationToken = default);
+    Task<PagedApiResponse<SettlementSummary>> GetMerchantSettlementsAsync(Guid merchantId, SettlementFilterRequest request, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Processes pending settlements
+    /// Gets all settlements with advanced filtering
     /// </summary>
-    Task<ApiResponse> ProcessPendingSettlementsAsync(CancellationToken cancellationToken = default);
+    Task<PagedApiResponse<SettlementSummary>> GetAllSettlementsAsync(SettlementFilterRequest request, CancellationToken cancellationToken = default);
     
     /// <summary>
-    /// Gets settlement by ID
+    /// Gets detailed settlement information
     /// </summary>
-    Task<ApiResponse<SettlementSummary>> GetSettlementAsync(Guid settlementId, CancellationToken cancellationToken = default);
+    Task<ApiResponse<SettlementDetails>> GetSettlementDetailsAsync(Guid settlementId, bool includeTransactions = false, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Processes pending settlements with options
+    /// </summary>
+    Task<ApiResponse<SettlementProcessingResult>> ProcessPendingSettlementsAsync(ProcessSettlementsRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Processes a specific settlement
+    /// </summary>
+    Task<ApiResponse<SettlementSummary>> ProcessSettlementAsync(Guid settlementId, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Cancels a pending settlement
+    /// </summary>
+    Task<ApiResponse<SettlementSummary>> CancelSettlementAsync(Guid settlementId, CancelSettlementRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Retries a failed settlement
+    /// </summary>
+    Task<ApiResponse<SettlementSummary>> RetrySettlementAsync(Guid settlementId, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Gets settlement analytics and reports
+    /// </summary>
+    Task<ApiResponse<SettlementAnalytics>> GetSettlementAnalyticsAsync(SettlementAnalyticsRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Exports settlement data
+    /// </summary>
+    Task<ApiResponse<byte[]>> ExportSettlementsAsync(SettlementExportRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Gets settlement reconciliation report
+    /// </summary>
+    Task<ApiResponse<SettlementReconciliationReport>> GetReconciliationReportAsync(SettlementReconciliationRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Configures settlement schedule for a merchant
+    /// </summary>
+    Task<ApiResponse<SettlementScheduleConfig>> ConfigureSettlementScheduleAsync(Guid merchantId, SettlementScheduleConfigRequest request, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Gets settlement schedule for a merchant
+    /// </summary>
+    Task<ApiResponse<SettlementScheduleConfig>> GetSettlementScheduleAsync(Guid merchantId, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Updates settlement status (internal use)
+    /// </summary>
+    Task<ApiResponse> UpdateSettlementStatusAsync(Guid settlementId, SettlementStatus status, string? bankTransactionId = null, string? correlationId = null, CancellationToken cancellationToken = default);
+    
+    /// <summary>
+    /// Validates settlement eligibility
+    /// </summary>
+    Task<ApiResponse<bool>> ValidateSettlementEligibilityAsync(Guid merchantId, CancellationToken cancellationToken = default);
 }

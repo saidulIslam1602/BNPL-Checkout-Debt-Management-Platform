@@ -1,10 +1,10 @@
 {
-  "name": "riverty-consumer-portal",
+  "name": "yourcompany-consumer-portal",
   "version": "1.0.0",
-  "description": "Riverty BNPL Consumer Portal - Norwegian BNPL checkout and payment management",
+  "description": "YourCompany BNPL Consumer Portal - Norwegian BNPL checkout and payment management",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --port 4201",
+    "start": "ng serve --host 0.0.0.0 --port 4200",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
     "test": "ng test",
@@ -33,13 +33,7 @@
     "date-fns": "^2.30.0",
     "@ngrx/store": "^17.0.0",
     "@ngrx/effects": "^17.0.0",
-    "@ngrx/store-devtools": "^17.0.0",
-    "ngx-translate": "^15.0.0",
-    "ngx-currency": "^3.0.0",
-    "ngx-loading": "^17.0.0",
-    "ngx-qrcode2": "^12.0.0",
-    "ngx-device-detector": "^6.0.0",
-    "hammer.js": "^2.0.8"
+    "@ngrx/store-devtools": "^17.0.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0",
@@ -49,7 +43,7 @@
     "@types/node": "^18.18.0",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
-    "karma-chrome-headless": "~3.1.0",
+    "puppeteer": "^21.0.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
@@ -60,12 +54,12 @@
     "bnpl",
     "consumer",
     "checkout",
-    "riverty",
+    "yourcompany",
     "norway",
     "fintech",
     "payments",
     "pwa"
   ],
-  "author": "Riverty BNPL Team",
+  "author": "YourCompany BNPL Team",
   "license": "MIT"
 }

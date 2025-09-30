@@ -92,10 +92,10 @@ interface CustomerInfo {
       <!-- Header -->
       <div class="checkout-header">
         <div class="header-content">
-          <img src="assets/images/riverty-logo.svg" alt="Riverty" class="logo">
+          <img src="assets/images/yourcompany-logo.svg" alt="YourCompany" class="logo">
           <div class="header-text">
             <h1>Trygg BNPL-betaling</h1>
-            <p>Kjøp nå, betal over tid med Riverty</p>
+            <p>Kjøp nå, betal over tid med YourCompany</p>
           </div>
         </div>
         <div class="security-badges">
@@ -443,7 +443,7 @@ interface CustomerInfo {
                     <mat-card-content>
                       <div class="terms-section">
                         <mat-checkbox formControlName="acceptTerms" class="terms-checkbox">
-                          Jeg godtar <a href="/terms" target="_blank">vilkårene og betingelsene</a> for Riverty BNPL
+                          Jeg godtar <a href="/terms" target="_blank">vilkårene og betingelsene</a> for YourCompany BNPL
                         </mat-checkbox>
                         
                         <mat-checkbox formControlName="acceptPrivacy" class="terms-checkbox">
@@ -451,11 +451,11 @@ interface CustomerInfo {
                         </mat-checkbox>
                         
                         <mat-checkbox formControlName="acceptCreditCheck" class="terms-checkbox">
-                          Jeg godtar at Riverty utfører kredittvurdering og kontakter kredittopplysningsforetak
+                          Jeg godtar at YourCompany utfører kredittvurdering og kontakter kredittopplysningsforetak
                         </mat-checkbox>
                         
                         <mat-checkbox formControlName="acceptMarketing" class="terms-checkbox">
-                          Jeg ønsker å motta tilbud og informasjon fra Riverty (valgfritt)
+                          Jeg ønsker å motta tilbud og informasjon fra YourCompany (valgfritt)
                         </mat-checkbox>
                       </div>
                     </mat-card-content>
@@ -745,11 +745,11 @@ export class CheckoutComponent implements OnInit {
 
       const result = await this.paymentService.createBNPLPayment(orderData).toPromise();
       
-      if (result.success) {
+      if (result?.success) {
         this.orderNumber.set(result.orderNumber);
         this.orderCompleted.set(true);
       } else {
-        throw new Error(result.errorMessage);
+        throw new Error(result?.errorMessage || 'Payment failed');
       }
 
     } catch (error) {

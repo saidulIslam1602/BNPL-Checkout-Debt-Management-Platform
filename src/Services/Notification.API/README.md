@@ -1,6 +1,6 @@
-# Riverty BNPL Notification API
+# YourCompany BNPL Notification API
 
-A comprehensive notification service for the Riverty BNPL platform, supporting multi-channel notifications (Email, SMS, Push) with advanced features like templating, scheduling, and delivery tracking.
+A comprehensive notification service for the YourCompany BNPL platform, supporting multi-channel notifications (Email, SMS, Push) with advanced features like templating, scheduling, and delivery tracking.
 
 ## Features
 
@@ -59,16 +59,16 @@ A comprehensive notification service for the Riverty BNPL platform, supporting m
 
 ```bash
 # Database
-ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=RivertyBNPL_Notification;..."
+ConnectionStrings__DefaultConnection="Server=localhost,1433;Database=YourCompanyBNPL_Notification;..."
 
 # JWT Authentication
 Jwt__Key="your-jwt-secret-key"
-Jwt__Issuer="https://api.riverty.com"
-Jwt__Audience="https://api.riverty.com"
+Jwt__Issuer="https://api.yourcompany.com"
+Jwt__Audience="https://api.yourcompany.com"
 
 # SendGrid (Email)
 NotificationProviders__Email__SendGrid__ApiKey="your-sendgrid-api-key"
-NotificationProviders__Email__SendGrid__FromEmail="noreply@riverty.com"
+NotificationProviders__Email__SendGrid__FromEmail="noreply@yourcompany.com"
 
 # Twilio (SMS)
 NotificationProviders__SMS__Twilio__AccountSid="your-twilio-account-sid"
@@ -76,7 +76,7 @@ NotificationProviders__SMS__Twilio__AuthToken="your-twilio-auth-token"
 NotificationProviders__SMS__Twilio__FromNumber="+4712345678"
 
 # Firebase (Push)
-NotificationProviders__Push__Firebase__ProjectId="riverty-bnpl"
+NotificationProviders__Push__Firebase__ProjectId="yourcompany-bnpl"
 NotificationProviders__Push__Firebase__CredentialsPath="/app/secrets/firebase-credentials.json"
 
 # Application Insights
@@ -124,13 +124,13 @@ The service uses Hangfire for background processing:
 
 ```bash
 # Build image
-docker build -t riverty-notification-api .
+docker build -t yourcompany-notification-api .
 
 # Run container
 docker run -p 5003:8080 \
   -e ConnectionStrings__DefaultConnection="your-connection-string" \
   -e NotificationProviders__Email__Provider="Console" \
-  riverty-notification-api
+  yourcompany-notification-api
 ```
 
 ## Usage Examples
@@ -232,4 +232,4 @@ dotnet test --filter Category=Integration
 
 ## License
 
-Copyright © 2024 Riverty BNPL. All rights reserved.
+Copyright © 2024 YourCompany BNPL. All rights reserved.

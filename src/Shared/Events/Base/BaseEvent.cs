@@ -1,7 +1,7 @@
 using MediatR;
 using System.Text.Json.Serialization;
 
-namespace RivertyBNPL.Events.Base;
+namespace YourCompanyBNPL.Events.Base;
 
 /// <summary>
 /// Base class for all domain events in the system

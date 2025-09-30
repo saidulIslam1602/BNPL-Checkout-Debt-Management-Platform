@@ -1,14 +1,15 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using MediatR;
-using RivertyBNPL.Payment.API.Data;
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Payment.API.Models;
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Common.Enums;
-using RivertyBNPL.Events.Payment;
+using YourCompanyBNPL.Payment.API.Data;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Payment.API.Models;
+using YourCompanyBNPL.Common.Models;
+using YourCompanyBNPL.Common.Enums;
+using YourCompanyBNPL.Events.Payment;
 
-namespace RivertyBNPL.Payment.API.Services;
+namespace YourCompanyBNPL.Payment.API.Services;
 
 /// <summary>
 /// Implementation of payment processing operations
@@ -19,17 +20,20 @@ public class PaymentService : IPaymentService
     private readonly IMapper _mapper;
     private readonly IMediator _mediator;
     private readonly ILogger<PaymentService> _logger;
+    private readonly IPaymentGatewayService? _paymentGatewayService; // Optional - for gateway integration
 
     public PaymentService(
         PaymentDbContext context,
         IMapper mapper,
         IMediator mediator,
-        ILogger<PaymentService> logger)
+        ILogger<PaymentService> logger,
+        IPaymentGatewayService? paymentGatewayService = null)
     {
         _context = context;
         _mapper = mapper;
         _mediator = mediator;
         _logger = logger;
+        _paymentGatewayService = paymentGatewayService;
     }
 
     public async Task<ApiResponse<PaymentResponse>> CreatePaymentAsync(CreatePaymentRequest request, CancellationToken cancellationToken = default)
@@ -248,6 +252,67 @@ public class PaymentService : IPaymentService
         {
             _logger.LogError(ex, "Error processing payment {PaymentId}", paymentId);
             return ApiResponse<PaymentResponse>.ErrorResult("An error occurred while processing the payment", 500);
+        }
+    }
+
+    public async Task<ApiResponse<PaymentResponse>> ProcessApprovedPaymentAsync(Guid paymentId, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogInformation("Processing approved payment {PaymentId}", paymentId);
+
+            var payment = await _context.Payments
+                .Include(p => p.Customer)
+                .Include(p => p.Merchant)
+                .FirstOrDefaultAsync(p => p.Id == paymentId, cancellationToken);
+
+            if (payment == null)
+            {
+                return ApiResponse<PaymentResponse>.ErrorResult("Payment not found", 404);
+            }
+
+            if (payment.Status != PaymentStatus.Processing)
+            {
+                return ApiResponse<PaymentResponse>.ErrorResult($"Payment is not in processing status. Current status: {payment.Status}", 400);
+            }
+
+            // Update payment status to completed
+            payment.Status = PaymentStatus.Completed;
+            payment.ProcessedAt = DateTime.UtcNow;
+            payment.UpdatedAt = DateTime.UtcNow;
+
+            await UpdatePaymentStatusAsync(payment, PaymentStatus.Completed, "Payment approved and processed", cancellationToken);
+
+            // Publish payment completed event
+            var paymentCompletedEvent = new PaymentCompletedEvent
+            {
+                PaymentId = payment.Id,
+                CustomerId = payment.CustomerId,
+                MerchantId = payment.MerchantId,
+                Amount = payment.Amount,
+                Currency = payment.Currency,
+                PaymentMethod = payment.PaymentMethod,
+                TransactionId = payment.TransactionId ?? string.Empty,
+                ProcessedAt = payment.ProcessedAt.Value,
+                NetAmount = payment.NetAmount,
+                AggregateId = payment.Id,
+                UserId = payment.CustomerId.ToString()
+            };
+
+            await _mediator.Publish(paymentCompletedEvent, cancellationToken);
+
+            var response = _mapper.Map<PaymentResponse>(payment);
+            response.Customer = _mapper.Map<CustomerSummary>(payment.Customer);
+            response.Merchant = _mapper.Map<MerchantSummary>(payment.Merchant);
+
+            _logger.LogInformation("Approved payment {PaymentId} processed successfully", paymentId);
+
+            return ApiResponse<PaymentResponse>.SuccessResult(response, "Approved payment processed successfully");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing approved payment {PaymentId}", paymentId);
+            return ApiResponse<PaymentResponse>.ErrorResult("An error occurred while processing the approved payment", 500);
         }
     }
 
@@ -619,19 +684,21 @@ public class PaymentService : IPaymentService
             _logger.LogInformation("Processing payment {PaymentId} through gateway for method {PaymentMethod}", 
                 payment.Id, payment.PaymentMethod);
 
-            // Use the appropriate payment gateway based on payment method
-            var gatewayResult = payment.PaymentMethod switch
+            // Use the payment gateway to process the payment
+            var gatewayRequest = new PaymentGatewayRequest
             {
-                PaymentMethod.CreditCard => await _paymentGatewayService.ProcessCreditCardPaymentAsync(payment, cancellationToken),
-                PaymentMethod.DebitCard => await _paymentGatewayService.ProcessDebitCardPaymentAsync(payment, cancellationToken),
-                PaymentMethod.BankTransfer => await _paymentGatewayService.ProcessBankTransferAsync(payment, cancellationToken),
-                PaymentMethod.Vipps => await _paymentGatewayService.ProcessVippsPaymentAsync(payment, cancellationToken),
-                PaymentMethod.Klarna => await _paymentGatewayService.ProcessKlarnaPaymentAsync(payment, cancellationToken),
-                PaymentMethod.BNPL => await _paymentGatewayService.ProcessBNPLPaymentAsync(payment, cancellationToken),
-                _ => throw new NotSupportedException($"Payment method {payment.PaymentMethod} is not supported")
+                Amount = payment.Amount,
+                Currency = payment.Currency,
+                PaymentMethod = payment.PaymentMethod,
+                CustomerId = payment.CustomerId,
+                MerchantId = payment.MerchantId,
+                OrderReference = payment.OrderReference ?? payment.Id.ToString(),
+                Description = payment.Description ?? "Payment processing"
             };
 
-            if (gatewayResult.IsSuccess)
+            var gatewayResult = await _paymentGatewayService.ProcessPaymentAsync(gatewayRequest, cancellationToken);
+
+            if (gatewayResult.Success)
             {
                 _logger.LogInformation("Payment {PaymentId} processed successfully. Gateway Transaction ID: {TransactionId}", 
                     payment.Id, gatewayResult.TransactionId);

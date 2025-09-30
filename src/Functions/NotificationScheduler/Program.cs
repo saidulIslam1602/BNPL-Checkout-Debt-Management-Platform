@@ -4,10 +4,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using RivertyBNPL.NotificationScheduler.Functions.Services;
+using YourCompanyBNPL.NotificationScheduler.Functions.Services;
 
 var host = new HostBuilder()
-    .ConfigureFunctionsWebApplication()
+    .ConfigureFunctionsWorkerDefaults()
     .ConfigureAppConfiguration((context, config) =>
     {
         config.AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
@@ -29,9 +29,9 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
 
-        // Database Context (using Payment DB for now, could be separate)
-        services.AddDbContext<PaymentDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        // TODO: Database Context (using Payment DB for now, could be separate)
+        // services.AddDbContext<PaymentDbContext>(options =>
+        //     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
         // HTTP Client
         services.AddHttpClient();
@@ -45,14 +45,22 @@ var host = new HostBuilder()
         // External service clients
         services.AddHttpClient<INotificationApiClient, NotificationApiClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration["Services:NotificationApi:BaseUrl"]!);
-            client.DefaultRequestHeaders.Add("ApiKey", configuration["Services:NotificationApi:ApiKey"]);
+            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:NotificationApi:BaseUrl") ?? "https://localhost:7001");
+            var apiKey = configuration.GetValue<string>("Services:NotificationApi:ApiKey");
+            if (!string.IsNullOrEmpty(apiKey))
+            {
+                client.DefaultRequestHeaders.Add("ApiKey", apiKey);
+            }
         });
 
         services.AddHttpClient<IPaymentApiClient, PaymentApiClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration["Services:PaymentApi:BaseUrl"]!);
-            client.DefaultRequestHeaders.Add("ApiKey", configuration["Services:PaymentApi:ApiKey"]);
+            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:PaymentApi:BaseUrl") ?? "https://localhost:7002");
+            var apiKey = configuration.GetValue<string>("Services:PaymentApi:ApiKey");
+            if (!string.IsNullOrEmpty(apiKey))
+            {
+                client.DefaultRequestHeaders.Add("ApiKey", apiKey);
+            }
         });
     })
     .UseSerilog()

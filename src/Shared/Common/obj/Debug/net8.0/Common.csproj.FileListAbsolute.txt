@@ -1,0 +1,13 @@
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/bin/Debug/net8.0/RivertyBNPL.Common.deps.json
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/bin/Debug/net8.0/RivertyBNPL.Common.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/bin/Debug/net8.0/RivertyBNPL.Common.pdb
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.csproj.AssemblyReference.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.GeneratedMSBuildEditorConfig.editorconfig
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.AssemblyInfoInputs.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.AssemblyInfo.cs
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.csproj.CoreCompileInputs.cache
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/Common.sourcelink.json
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/RivertyBNPL.Common.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/refint/RivertyBNPL.Common.dll
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/RivertyBNPL.Common.pdb
+/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/Debug/net8.0/ref/RivertyBNPL.Common.dll

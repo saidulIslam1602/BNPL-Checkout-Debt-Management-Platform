@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "vvijYecRcYa29ZK0XOtR8vaOBseYDsaO+9jjaNCO+d0=",
+  "Source": "BNPL.API.Gateway",
+  "BasePath": "_content/BNPL.API.Gateway",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

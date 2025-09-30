@@ -1,0 +1,86 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'yourcompany-bnpl'
+    environment: 'development'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Load rules once and periodically evaluate them
+rule_files:
+  # - "alerts/*.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Payment API
+  - job_name: 'payment-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['payment-api:8080']
+        labels:
+          service: 'payment-api'
+          api: 'payment'
+
+  # Risk Assessment API
+  - job_name: 'risk-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['risk-api:8080']
+        labels:
+          service: 'risk-api'
+          api: 'risk'
+
+  # Settlement API
+  - job_name: 'settlement-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['settlement-api:8080']
+        labels:
+          service: 'settlement-api'
+          api: 'settlement'
+
+  # Notification API
+  - job_name: 'notification-api'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['notification-api:8080']
+        labels:
+          service: 'notification-api'
+          api: 'notification'
+
+  # API Gateway
+  - job_name: 'api-gateway'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['api-gateway:8080']
+        labels:
+          service: 'api-gateway'
+          component: 'gateway'
+
+  # SQL Server (if exporter is configured)
+  - job_name: 'sqlserver'
+    static_configs:
+      - targets: []
+        labels:
+          service: 'sqlserver'
+          database: 'mssql'
+
+  # Redis
+  - job_name: 'redis'
+    static_configs:
+      - targets: []
+        labels:
+          service: 'redis'
+          cache: 'redis'

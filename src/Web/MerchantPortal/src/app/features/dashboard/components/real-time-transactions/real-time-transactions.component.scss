@@ -1,0 +1,470 @@
+.realtime-transactions-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  
+  .card-header {
+    padding: 24px 24px 16px 24px;
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      width: 100%;
+      
+      .title-section {
+        flex: 1;
+        
+        .card-title {
+          display: flex;
+          align-items: center;
+          font-size: 20px;
+          font-weight: 600;
+          margin: 0;
+          
+          .title-icon {
+            margin-right: 12px;
+            color: #1976d2;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+          }
+        }
+
+        .card-subtitle {
+          margin: 8px 0 0 36px;
+          color: rgba(0, 0, 0, 0.6);
+          font-size: 14px;
+        }
+      }
+
+      .status-indicators {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        
+        .connection-status {
+          display: flex;
+          align-items: center;
+          padding: 4px 12px;
+          border-radius: 16px;
+          font-size: 12px;
+          font-weight: 500;
+          
+          &.connected {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4caf50;
+            
+            .status-dot {
+              background: #4caf50;
+            }
+          }
+          
+          &.disconnected {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            
+            .status-dot {
+              background: #f44336;
+            }
+          }
+          
+          &.connecting {
+            background: rgba(255, 152, 0, 0.1);
+            color: #ff9800;
+            
+            .status-dot {
+              background: #ff9800;
+              animation: pulse 1.5s infinite;
+            }
+          }
+
+          .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+          }
+        }
+
+        .transaction-count {
+          display: flex;
+          align-items: center;
+          color: rgba(0, 0, 0, 0.6);
+          font-size: 12px;
+          
+          mat-icon {
+            font-size: 16px;
+            width: 16px;
+            height: 16px;
+            margin-right: 4px;
+          }
+        }
+      }
+    }
+  }
+
+  .card-content {
+    flex: 1;
+    padding: 0 24px;
+    overflow: hidden;
+    
+    .transactions-container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        
+        .loading-text {
+          margin-top: 16px;
+          color: rgba(0, 0, 0, 0.6);
+          font-size: 14px;
+        }
+      }
+
+      .transactions-list {
+        flex: 1;
+        overflow-y: auto;
+        max-height: 400px;
+        
+        .transaction-item {
+          display: flex;
+          align-items: center;
+          padding: 16px;
+          border-radius: 8px;
+          margin-bottom: 12px;
+          background: #fafafa;
+          border-left: 4px solid transparent;
+          transition: all 0.3s ease;
+          position: relative;
+          
+          &:hover {
+            background: #f5f5f5;
+            transform: translateX(4px);
+          }
+
+          &.status-pending {
+            border-left-color: #ff9800;
+          }
+
+          &.status-processing {
+            border-left-color: #2196f3;
+          }
+
+          &.status-completed {
+            border-left-color: #4caf50;
+          }
+
+          &.status-failed {
+            border-left-color: #f44336;
+          }
+
+          .transaction-main {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            .transaction-info {
+              display: flex;
+              align-items: center;
+              gap: 24px;
+              
+              .customer-info {
+                .customer-name {
+                  font-weight: 500;
+                  font-size: 14px;
+                  color: rgba(0, 0, 0, 0.87);
+                }
+
+                .customer-id {
+                  font-size: 12px;
+                  color: rgba(0, 0, 0, 0.6);
+                  margin-top: 2px;
+                }
+              }
+
+              .transaction-details {
+                .amount {
+                  font-weight: 600;
+                  font-size: 16px;
+                  color: #1976d2;
+                }
+
+                .payment-method {
+                  display: flex;
+                  align-items: center;
+                  font-size: 12px;
+                  color: rgba(0, 0, 0, 0.6);
+                  margin-top: 4px;
+                  
+                  .method-icon {
+                    font-size: 14px;
+                    width: 14px;
+                    height: 14px;
+                    margin-right: 4px;
+                  }
+                }
+              }
+            }
+
+            .transaction-meta {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 8px;
+              
+              .status-section {
+                display: flex;
+                gap: 8px;
+                
+                .status-chip, .risk-chip {
+                  display: flex;
+                  align-items: center;
+                  padding: 4px 8px;
+                  border-radius: 12px;
+                  font-size: 11px;
+                  font-weight: 500;
+                  
+                  .chip-icon {
+                    font-size: 12px;
+                    width: 12px;
+                    height: 12px;
+                    margin-right: 4px;
+                  }
+                }
+
+                .chip-pending {
+                  background: rgba(255, 152, 0, 0.1);
+                  color: #ff9800;
+                }
+
+                .chip-processing {
+                  background: rgba(33, 150, 243, 0.1);
+                  color: #2196f3;
+                }
+
+                .chip-completed {
+                  background: rgba(76, 175, 80, 0.1);
+                  color: #4caf50;
+                }
+
+                .chip-failed {
+                  background: rgba(244, 67, 54, 0.1);
+                  color: #f44336;
+                }
+
+                .chip-risk-low {
+                  background: rgba(76, 175, 80, 0.1);
+                  color: #4caf50;
+                }
+
+                .chip-risk-medium {
+                  background: rgba(255, 152, 0, 0.1);
+                  color: #ff9800;
+                }
+
+                .chip-risk-high {
+                  background: rgba(244, 67, 54, 0.1);
+                  color: #f44336;
+                }
+              }
+
+              .timestamp {
+                display: flex;
+                align-items: center;
+                font-size: 11px;
+                color: rgba(0, 0, 0, 0.6);
+                
+                .time-icon {
+                  font-size: 12px;
+                  width: 12px;
+                  height: 12px;
+                  margin-right: 4px;
+                }
+              }
+            }
+          }
+
+          .transaction-actions {
+            display: flex;
+            gap: 4px;
+            margin-left: 16px;
+            
+            button {
+              width: 32px;
+              height: 32px;
+              
+              mat-icon {
+                font-size: 16px;
+                width: 16px;
+                height: 16px;
+              }
+            }
+          }
+
+          .bnpl-info, .location-info {
+            position: absolute;
+            bottom: 4px;
+            left: 16px;
+            display: flex;
+            align-items: center;
+            font-size: 10px;
+            color: rgba(0, 0, 0, 0.5);
+            
+            mat-icon {
+              font-size: 12px;
+              width: 12px;
+              height: 12px;
+              margin-right: 4px;
+            }
+          }
+
+          .location-info {
+            left: 120px;
+          }
+        }
+
+        .no-transactions {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 200px;
+          color: rgba(0, 0, 0, 0.6);
+          
+          .no-data-icon {
+            font-size: 48px;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+          }
+
+          .no-data-text {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 8px;
+          }
+
+          .no-data-subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+
+  .card-actions {
+    padding: 16px 24px 24px 24px;
+    display: flex;
+    justify-content: space-between;
+    
+    .view-all-button, .refresh-button {
+      display: flex;
+      align-items: center;
+      
+      mat-icon {
+        margin-right: 8px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        
+        &.spinning {
+          animation: spin 1s linear infinite;
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .realtime-transactions-card {
+    .card-header {
+      padding: 16px;
+      
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        
+        .status-indicators {
+          align-items: flex-start;
+          flex-direction: row;
+          gap: 16px;
+        }
+      }
+    }
+
+    .card-content {
+      padding: 0 16px;
+      
+      .transactions-list {
+        .transaction-item {
+          padding: 12px;
+          
+          .transaction-main {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            
+            .transaction-info {
+              width: 100%;
+              justify-content: space-between;
+            }
+
+            .transaction-meta {
+              width: 100%;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: center;
+            }
+          }
+
+          .transaction-actions {
+            margin-left: 0;
+            margin-top: 8px;
+          }
+        }
+      }
+    }
+
+    .card-actions {
+      padding: 16px;
+      flex-direction: column;
+      gap: 8px;
+      
+      .view-all-button, .refresh-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}

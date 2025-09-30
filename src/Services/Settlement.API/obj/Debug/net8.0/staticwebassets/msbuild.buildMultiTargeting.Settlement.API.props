@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../build/Settlement.API.props" />
+</Project>

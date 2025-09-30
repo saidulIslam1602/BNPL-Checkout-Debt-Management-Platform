@@ -1,3 +1,4 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -7,10 +8,10 @@ using System.Reflection;
 using Serilog;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using RivertyBNPL.Payment.API.Data;
-using RivertyBNPL.Payment.API.Services;
-using RivertyBNPL.Payment.API.Mappings;
-using RivertyBNPL.Payment.API.Validators;
+using YourCompanyBNPL.Payment.API.Data;
+using YourCompanyBNPL.Payment.API.Services;
+using YourCompanyBNPL.Payment.API.Mappings;
+using YourCompanyBNPL.Payment.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<PaymentDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
-        ?? "Server=(localdb)\\mssqllocaldb;Database=RivertyBNPL_Payment;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true";
+        ?? "Server=(localdb)\\mssqllocaldb;Database=YourCompanyBNPL_Payment;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true";
     
     options.UseSqlServer(connectionString, sqlOptions =>
     {
@@ -56,6 +57,11 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreatePaymentRequestValidat
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IBNPLService, BNPLService>();
 builder.Services.AddScoped<ISettlementService, SettlementService>();
+builder.Services.AddScoped<IEnhancedSettlementService, EnhancedSettlementService>();
+builder.Services.AddScoped<IPaymentWebhookService, PaymentWebhookService>();
+builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
+builder.Services.AddScoped<IFraudDetectionService, FraudDetectionService>();
+builder.Services.AddScoped<IPaymentTokenizationService, PaymentTokenizationService>();
 
 // HTTP clients
 builder.Services.AddHttpClient();
@@ -86,10 +92,10 @@ builder.Services.AddAuthorization(options =>
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddDbContext<PaymentDbContext>()
+    .AddDbContextCheck<PaymentDbContext>()
     .AddSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection") 
-            ?? "Server=(localdb)\\mssqllocaldb;Database=RivertyBNPL_Payment;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true",
+            ?? "Server=(localdb)\\mssqllocaldb;Database=YourCompanyBNPL_Payment;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true",
         name: "payment-database");
 
 // API Documentation
@@ -98,13 +104,13 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Riverty BNPL Payment API",
+        Title = "YourCompany BNPL Payment API",
         Version = "v1",
-        Description = "Payment processing and BNPL services for the Riverty platform",
+        Description = "Payment processing and BNPL services for the YourCompany platform",
         Contact = new OpenApiContact
         {
-            Name = "Riverty Development Team",
-            Email = "dev@riverty.com"
+            Name = "YourCompany Development Team",
+            Email = "dev@yourcompany.com"
         }
     });
 
@@ -150,8 +156,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:4200",  // Angular dev server
                 "http://localhost:4201",  // Consumer portal
-                "https://merchant.riverty.com",
-                "https://consumer.riverty.com"
+                "https://merchant.yourcompany.com",
+                "https://consumer.yourcompany.com"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -170,7 +176,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Riverty BNPL Payment API v1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "YourCompany BNPL Payment API v1");
         c.RoutePrefix = string.Empty; // Serve Swagger UI at root
     });
 }
@@ -184,6 +190,9 @@ app.UseAuthorization();
 
 // Global error handling middleware
 app.UseMiddleware<ErrorHandlingMiddleware>();
+
+// Idempotency middleware
+app.UseMiddleware<IdempotencyMiddleware>();
 
 // Request logging middleware
 app.UseSerilogRequestLogging();
@@ -226,7 +235,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-Log.Information("Starting Riverty BNPL Payment API");
+Log.Information("Starting YourCompany BNPL Payment API");
 
 try
 {
@@ -284,4 +293,10 @@ public class ErrorHandlingMiddleware
         var jsonResponse = System.Text.Json.JsonSerializer.Serialize(response);
         await context.Response.WriteAsync(jsonResponse);
     }
+}
+
+// Make Program class accessible for testing
+namespace YourCompanyBNPL.Payment.API
+{
+    public partial class Program { }
 }

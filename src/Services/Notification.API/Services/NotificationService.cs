@@ -1,11 +1,14 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using RivertyBNPL.Notification.API.Data;
-using RivertyBNPL.Notification.API.DTOs;
-using RivertyBNPL.Notification.API.Models;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Notification.API.Data;
+using YourCompanyBNPL.Notification.API.DTOs;
+using YourCompanyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Notification.API.Exceptions;
+using YourCompanyBNPL.Notification.API.Infrastructure;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Notification.API.Services;
+namespace YourCompanyBNPL.Notification.API.Services;
 
 /// <summary>
 /// Implementation of notification service
@@ -18,6 +21,9 @@ public class NotificationService : INotificationService
     private readonly IPushNotificationService _pushService;
     private readonly ITemplateService _templateService;
     private readonly IPreferenceService _preferenceService;
+    private readonly ICircuitBreakerService _circuitBreaker;
+    private readonly INotificationThrottlingService _throttlingService;
+    private readonly IWebhookService _webhookService;
     private readonly ILogger<NotificationService> _logger;
 
     public NotificationService(
@@ -27,6 +33,9 @@ public class NotificationService : INotificationService
         IPushNotificationService pushService,
         ITemplateService templateService,
         IPreferenceService preferenceService,
+        ICircuitBreakerService circuitBreaker,
+        INotificationThrottlingService throttlingService,
+        IWebhookService webhookService,
         ILogger<NotificationService> logger)
     {
         _context = context;
@@ -35,6 +44,9 @@ public class NotificationService : INotificationService
         _pushService = pushService;
         _templateService = templateService;
         _preferenceService = preferenceService;
+        _circuitBreaker = circuitBreaker;
+        _throttlingService = throttlingService;
+        _webhookService = webhookService;
         _logger = logger;
     }
 
@@ -45,13 +57,24 @@ public class NotificationService : INotificationService
             _logger.LogInformation("Sending notification of type {Type} via {Channel} to {Recipient}", 
                 request.Type, request.Channel, request.Recipient);
 
+            // Check throttling limits
+            var canSend = await _throttlingService.CanSendAsync(request.Channel, request.Recipient, cancellationToken);
+            if (!canSend)
+            {
+                var delay = await _throttlingService.GetDelayAsync(request.Channel, request.Recipient, cancellationToken);
+                throw new RateLimitExceededException(
+                    $"{request.Channel}:{request.Recipient}", 
+                    0, // Will be filled by throttling service
+                    delay ?? TimeSpan.FromMinutes(1));
+            }
+
             // Check user preferences if customer ID is provided
             if (request.CustomerId.HasValue)
             {
                 var isOptedIn = await _preferenceService.IsOptedInAsync(request.CustomerId.Value, request.Type, request.Channel, cancellationToken);
                 if (!isOptedIn)
                 {
-                    return ApiResponse<NotificationResponse>.Failure("Customer has opted out of this notification type");
+                    throw new NotificationOptOutException(request.CustomerId.Value, request.Type, request.Channel.ToString());
                 }
             }
 
@@ -83,16 +106,16 @@ public class NotificationService : INotificationService
             if (request.TemplateId.HasValue)
             {
                 var templateResponse = await _templateService.RenderTemplateAsync(request.TemplateId.Value, request.TemplateData ?? new(), cancellationToken);
-                if (!templateResponse.IsSuccess)
+                if (!templateResponse.Success)
                 {
-                    return ApiResponse<NotificationResponse>.Failure($"Failed to render template: {templateResponse.Message}");
+                    return ApiResponse<NotificationResponse>.ErrorResult($"Failed to render template: {templateResponse.Message}");
                 }
 
                 notification.Subject = templateResponse.Data.Subject;
                 notification.Content = request.Channel switch
                 {
                     NotificationChannel.Email => templateResponse.Data.HtmlContent ?? templateResponse.Data.TextContent ?? string.Empty,
-                    NotificationChannel.Sms => templateResponse.Data.SmsContent ?? templateResponse.Data.TextContent ?? string.Empty,
+                    NotificationChannel.SMS => templateResponse.Data.SmsContent ?? templateResponse.Data.TextContent ?? string.Empty,
                     NotificationChannel.Push => templateResponse.Data.PushContent ?? templateResponse.Data.TextContent ?? string.Empty,
                     _ => templateResponse.Data.TextContent ?? string.Empty
                 };
@@ -110,12 +133,12 @@ public class NotificationService : INotificationService
             }
 
             var response = MapToResponse(notification);
-            return ApiResponse<NotificationResponse>.Success(response, "Notification sent successfully");
+            return ApiResponse<NotificationResponse>.SuccessResult(response, "Notification sent successfully");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send notification");
-            return ApiResponse<NotificationResponse>.Failure($"Failed to send notification: {ex.Message}");
+            return ApiResponse<NotificationResponse>.ErrorResult($"Failed to send notification: {ex.Message}");
         }
     }
 
@@ -129,7 +152,7 @@ public class NotificationService : INotificationService
             foreach (var notificationRequest in request.Notifications)
             {
                 var result = await SendNotificationAsync(notificationRequest, cancellationToken);
-                if (result.IsSuccess && result.Data != null)
+                if (result.Success && result.Data != null)
                 {
                     // Update batch ID
                     var notification = await _context.Notifications.FindAsync(result.Data.Id);
@@ -142,33 +165,25 @@ public class NotificationService : INotificationService
                 }
             }
 
-            return ApiResponse<List<NotificationResponse>>.Success(responses, $"Sent {responses.Count} notifications");
+            return ApiResponse<List<NotificationResponse>>.SuccessResult(responses, $"Sent {responses.Count} notifications");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send bulk notifications");
-            return ApiResponse<List<NotificationResponse>>.Failure($"Failed to send bulk notifications: {ex.Message}");
+            return ApiResponse<List<NotificationResponse>>.ErrorResult($"Failed to send bulk notifications: {ex.Message}");
         }
     }
 
     public async Task<ApiResponse<NotificationResponse>> GetNotificationAsync(Guid notificationId, CancellationToken cancellationToken = default)
     {
-        try
+        var notification = await _context.Notifications.FindAsync(notificationId);
+        if (notification == null)
         {
-            var notification = await _context.Notifications.FindAsync(notificationId);
-            if (notification == null)
-            {
-                return ApiResponse<NotificationResponse>.Failure("Notification not found");
-            }
+            throw new NotificationNotFoundException(notificationId);
+        }
 
-            var response = MapToResponse(notification);
-            return ApiResponse<NotificationResponse>.Success(response);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to get notification {NotificationId}", notificationId);
-            return ApiResponse<NotificationResponse>.Failure($"Failed to get notification: {ex.Message}");
-        }
+        var response = MapToResponse(notification);
+        return ApiResponse<NotificationResponse>.SuccessResult(response);
     }
 
     public async Task<PagedApiResponse<NotificationResponse>> SearchNotificationsAsync(NotificationSearchRequest request, CancellationToken cancellationToken = default)
@@ -212,12 +227,12 @@ public class NotificationService : INotificationService
 
             var responses = notifications.Select(MapToResponse).ToList();
 
-            return PagedApiResponse<NotificationResponse>.Success(responses, totalCount, request.Page, request.PageSize);
+            return PagedApiResponse<NotificationResponse>.SuccessResult(responses, totalCount, request.Page, request.PageSize);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to search notifications");
-            return PagedApiResponse<NotificationResponse>.Failure($"Failed to search notifications: {ex.Message}");
+            return PagedApiResponse<NotificationResponse>.ErrorResult($"Failed to search notifications: {ex.Message}");
         }
     }
 
@@ -228,17 +243,17 @@ public class NotificationService : INotificationService
             var notification = await _context.Notifications.FindAsync(notificationId);
             if (notification == null)
             {
-                return ApiResponse<NotificationResponse>.Failure("Notification not found");
+                return ApiResponse<NotificationResponse>.ErrorResult("Notification not found");
             }
 
             if (notification.Status != NotificationStatus.Failed)
             {
-                return ApiResponse<NotificationResponse>.Failure("Only failed notifications can be retried");
+                return ApiResponse<NotificationResponse>.ErrorResult("Only failed notifications can be retried");
             }
 
             if (notification.RetryCount >= notification.MaxRetries)
             {
-                return ApiResponse<NotificationResponse>.Failure("Maximum retry attempts exceeded");
+                return ApiResponse<NotificationResponse>.ErrorResult("Maximum retry attempts exceeded");
             }
 
             notification.Status = NotificationStatus.Pending;
@@ -250,12 +265,12 @@ public class NotificationService : INotificationService
             await _context.SaveChangesAsync(cancellationToken);
 
             var response = MapToResponse(notification);
-            return ApiResponse<NotificationResponse>.Success(response, "Notification retry initiated");
+            return ApiResponse<NotificationResponse>.SuccessResult(response, "Notification retry initiated");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to retry notification {NotificationId}", notificationId);
-            return ApiResponse<NotificationResponse>.Failure($"Failed to retry notification: {ex.Message}");
+            return ApiResponse<NotificationResponse>.ErrorResult($"Failed to retry notification: {ex.Message}");
         }
     }
 
@@ -266,12 +281,12 @@ public class NotificationService : INotificationService
             var notification = await _context.Notifications.FindAsync(notificationId);
             if (notification == null)
             {
-                return ApiResponse.Failure("Notification not found");
+                return ApiResponse.ErrorResult("Notification not found");
             }
 
             if (notification.Status != NotificationStatus.Pending && notification.Status != NotificationStatus.Scheduled)
             {
-                return ApiResponse.Failure("Only pending or scheduled notifications can be cancelled");
+                return ApiResponse.ErrorResult("Only pending or scheduled notifications can be cancelled");
             }
 
             notification.Status = NotificationStatus.Cancelled;
@@ -279,12 +294,12 @@ public class NotificationService : INotificationService
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return ApiResponse.Success("Notification cancelled successfully");
+            return ApiResponse.SuccessResponse("Notification cancelled successfully");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to cancel notification {NotificationId}", notificationId);
-            return ApiResponse.Failure($"Failed to cancel notification: {ex.Message}");
+            return ApiResponse.ErrorResult($"Failed to cancel notification: {ex.Message}");
         }
     }
 
@@ -315,12 +330,12 @@ public class NotificationService : INotificationService
                 analytics.OpenRate = (decimal)analytics.TotalOpened / analytics.TotalSent * 100;
             }
 
-            return ApiResponse<NotificationAnalytics>.Success(analytics);
+            return ApiResponse<NotificationAnalytics>.SuccessResult(analytics);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to get analytics");
-            return ApiResponse<NotificationAnalytics>.Failure($"Failed to get analytics: {ex.Message}");
+            return ApiResponse<NotificationAnalytics>.ErrorResult($"Failed to get analytics: {ex.Message}");
         }
     }
 
@@ -341,12 +356,12 @@ public class NotificationService : INotificationService
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return ApiResponse<int>.Success(processedCount, $"Processed {processedCount} scheduled notifications");
+            return ApiResponse<int>.SuccessResult(processedCount, $"Processed {processedCount} scheduled notifications");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to process scheduled notifications");
-            return ApiResponse<int>.Failure($"Failed to process scheduled notifications: {ex.Message}");
+            return ApiResponse<int>.ErrorResult($"Failed to process scheduled notifications: {ex.Message}");
         }
     }
 
@@ -369,12 +384,12 @@ public class NotificationService : INotificationService
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return ApiResponse<int>.Success(processedCount, $"Processed {processedCount} retry notifications");
+            return ApiResponse<int>.SuccessResult(processedCount, $"Processed {processedCount} retry notifications");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to process retry notifications");
-            return ApiResponse<int>.Failure($"Failed to process retry notifications: {ex.Message}");
+            return ApiResponse<int>.ErrorResult($"Failed to process retry notifications: {ex.Message}");
         }
     }
 
@@ -387,7 +402,7 @@ public class NotificationService : INotificationService
             (bool success, string? externalId, string? errorMessage) = notification.Channel switch
             {
                 NotificationChannel.Email => await _emailService.SendEmailAsync(notification.Recipient, notification.Subject, notification.Content, cancellationToken: cancellationToken),
-                NotificationChannel.Sms => await _smsService.SendSmsAsync(notification.Recipient, notification.Content, cancellationToken),
+                NotificationChannel.SMS => await _smsService.SendSmsAsync(notification.Recipient, notification.Content),
                 NotificationChannel.Push => await _pushService.SendPushNotificationAsync(notification.Recipient, notification.Subject, notification.Content, cancellationToken: cancellationToken),
                 _ => (false, null, "Unsupported notification channel")
             };
@@ -397,11 +412,44 @@ public class NotificationService : INotificationService
                 notification.Status = NotificationStatus.Sent;
                 notification.SentAt = DateTime.UtcNow;
                 notification.ExternalId = externalId;
+                
+                // Record the sent notification for throttling
+                await _throttlingService.RecordSentAsync(notification.Channel, notification.Recipient, cancellationToken);
+                
+                // Trigger webhook for successful send
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _webhookService.TriggerWebhookAsync(notification.Id, Models.WebhookEvent.NotificationSent, null, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to trigger webhook for notification sent: {NotificationId}", notification.Id);
+                    }
+                }, cancellationToken);
             }
             else
             {
                 notification.Status = NotificationStatus.Failed;
                 notification.ErrorMessage = errorMessage;
+                
+                // Trigger webhook for failed send
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var additionalData = new Dictionary<string, object>
+                        {
+                            ["ErrorMessage"] = errorMessage ?? "Unknown error"
+                        };
+                        await _webhookService.TriggerWebhookAsync(notification.Id, Models.WebhookEvent.NotificationFailed, additionalData, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning(ex, "Failed to trigger webhook for notification failed: {NotificationId}", notification.Id);
+                    }
+                }, cancellationToken);
             }
 
             notification.UpdatedAt = DateTime.UtcNow;
@@ -439,7 +487,7 @@ public class NotificationService : INotificationService
             PaymentId = notification.PaymentId,
             InstallmentId = notification.InstallmentId,
             CreatedAt = notification.CreatedAt,
-            UpdatedAt = notification.UpdatedAt
+            UpdatedAt = notification.UpdatedAt ?? notification.CreatedAt
         };
     }
 }

@@ -1,0 +1,100 @@
+[
+  {
+    "name": "PaymentReminderDaily",
+    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunDailyReminders",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 9 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "OverduePaymentNotifications",
+    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunOverdueNotifications",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 * * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "BNPLInstallmentReminders",
+    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunBNPLReminders",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 */4 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "CustomerEngagementNotifications",
+    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunCustomerEngagement",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 */6 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "ManualPaymentReminder",
+    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunManualReminder",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "req",
+        "direction": "In",
+        "type": "httpTrigger",
+        "authLevel": "Function",
+        "methods": [
+          "post"
+        ],
+        "properties": {}
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "Out"
+      }
+    ]
+  }
+]

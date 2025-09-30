@@ -1,11 +1,13 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FluentValidation;
-using RivertyBNPL.Notification.API.DTOs;
-using RivertyBNPL.Notification.API.Services;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Notification.API.DTOs;
+using YourCompanyBNPL.Notification.API.Services;
+using YourCompanyBNPL.Notification.API.Infrastructure;
+using YourCompanyBNPL.Common.Models;
 
-namespace RivertyBNPL.Notification.API.Controllers;
+namespace YourCompanyBNPL.Notification.API.Controllers;
 
 /// <summary>
 /// Controller for notification operations
@@ -43,14 +45,13 @@ public class NotificationsController : ControllerBase
         var validationResult = await _sendValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return BadRequest(ApiResponse<NotificationResponse>.Failure(
-                "Validation failed",
+            return BadRequest(ApiResponse<NotificationResponse>.ErrorResult(
                 validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
         }
 
         var result = await _notificationService.SendNotificationAsync(request, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -71,14 +72,13 @@ public class NotificationsController : ControllerBase
         var validationResult = await _bulkValidator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            return BadRequest(ApiResponse<List<NotificationResponse>>.Failure(
-                "Validation failed",
+            return BadRequest(ApiResponse<List<NotificationResponse>>.ErrorResult(
                 validationResult.Errors.Select(e => e.ErrorMessage).ToList()));
         }
 
         var result = await _notificationService.SendBulkNotificationAsync(request, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -98,7 +98,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.GetNotificationAsync(id, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -118,7 +118,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.SearchNotificationsAsync(request, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -138,7 +138,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.RetryNotificationAsync(id, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -158,7 +158,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.CancelNotificationAsync(id, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -179,17 +179,17 @@ public class NotificationsController : ControllerBase
     {
         if (fromDate > toDate)
         {
-            return BadRequest(ApiResponse<NotificationAnalytics>.Failure("From date must be before to date"));
+            return BadRequest(ApiResponse<NotificationAnalytics>.ErrorResult("From date must be before to date"));
         }
 
         if ((toDate - fromDate).TotalDays > 365)
         {
-            return BadRequest(ApiResponse<NotificationAnalytics>.Failure("Date range cannot exceed 365 days"));
+            return BadRequest(ApiResponse<NotificationAnalytics>.ErrorResult("Date range cannot exceed 365 days"));
         }
 
         var result = await _notificationService.GetAnalyticsAsync(fromDate, toDate, cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -209,7 +209,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.ProcessScheduledNotificationsAsync(cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }
@@ -229,7 +229,7 @@ public class NotificationsController : ControllerBase
     {
         var result = await _notificationService.ProcessRetryNotificationsAsync(cancellationToken);
         
-        if (result.IsSuccess)
+        if (result.Success)
         {
             return Ok(result);
         }

@@ -1,6 +1,7 @@
-using RivertyBNPL.Shared.Common.Enums;
 
-namespace RivertyBNPL.Services.Notification.API.Providers;
+using YourCompanyBNPL.Common.Enums;
+
+namespace YourCompanyBNPL.Notification.API.Providers;
 
 /// <summary>
 /// Factory for creating notification providers

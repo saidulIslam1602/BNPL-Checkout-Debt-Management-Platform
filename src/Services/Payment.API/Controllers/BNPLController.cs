@@ -1,11 +1,12 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using RivertyBNPL.Payment.API.Services;
-using RivertyBNPL.Payment.API.DTOs;
-using RivertyBNPL.Common.Models;
+using YourCompanyBNPL.Payment.API.Services;
+using YourCompanyBNPL.Payment.API.DTOs;
+using YourCompanyBNPL.Common.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace RivertyBNPL.Payment.API.Controllers;
+namespace YourCompanyBNPL.Payment.API.Controllers;
 
 /// <summary>
 /// Controller for BNPL (Buy Now, Pay Later) operations

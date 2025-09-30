@@ -1,0 +1,118 @@
+[
+  {
+    "name": "DailyAutomaticCollection",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunDailyCollection",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 6 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "DailyOverdueProcessing",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunOverdueProcessing",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 22 * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "WeeklySettlementProcessing",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunWeeklySettlement",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 8 * * MON",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "RetryFailedCollections",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunRetryFailedCollections",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 * * * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "MonthlyProcessing",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunMonthlyProcessing",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "timer",
+        "direction": "In",
+        "type": "timerTrigger",
+        "schedule": "0 0 2 1 * *",
+        "properties": {}
+      }
+    ]
+  },
+  {
+    "name": "ManualCollectionTrigger",
+    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunManualCollection",
+    "language": "dotnet-isolated",
+    "properties": {
+      "IsCodeless": false
+    },
+    "bindings": [
+      {
+        "name": "req",
+        "direction": "In",
+        "type": "httpTrigger",
+        "authLevel": "Function",
+        "methods": [
+          "post"
+        ],
+        "properties": {}
+      },
+      {
+        "name": "$return",
+        "type": "http",
+        "direction": "Out"
+      }
+    ]
+  }
+]

@@ -1,12 +1,13 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.Extensions.Options;
 using FirebaseAdmin;
 using FirebaseAdmin.Messaging;
 using Google.Apis.Auth.OAuth2;
-using RivertyBNPL.Services.Notification.API.Models;
-using RivertyBNPL.Shared.Common.Enums;
+using YourCompanyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Common.Enums;
 using System.Text.Json;
 
-namespace RivertyBNPL.Services.Notification.API.Providers;
+namespace YourCompanyBNPL.Notification.API.Providers;
 
 /// <summary>
 /// Push notification provider using Firebase Cloud Messaging
@@ -120,7 +121,7 @@ public class PushProvider : INotificationProvider
                     {
                         foreach (var kvp in metadata)
                         {
-                            message.Data[$"meta_{kvp.Key}"] = kvp.Value?.ToString() ?? string.Empty;
+                            // message.Data[$"meta_{kvp.Key}"] = kvp.Value?.ToString() ?? string.Empty; // Data is read-only
                         }
                     }
                 }
@@ -135,8 +136,8 @@ public class PushProvider : INotificationProvider
             {
                 Priority = notification.Priority switch
                 {
-                    NotificationPriority.Critical => Priority.High,
-                    NotificationPriority.High => Priority.High,
+                    Models.NotificationPriority.Critical => Priority.High,
+                    Models.NotificationPriority.High => Priority.High,
                     _ => Priority.Normal
                 }
             };
@@ -147,8 +148,8 @@ public class PushProvider : INotificationProvider
                 {
                     ["apns-priority"] = notification.Priority switch
                     {
-                        NotificationPriority.Critical => "10",
-                        NotificationPriority.High => "10",
+                        Models.NotificationPriority.Critical => "10",
+                        Models.NotificationPriority.High => "10",
                         _ => "5"
                     }
                 }

@@ -1,12 +1,12 @@
 using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers.FastTree;
-using RivertyBNPL.Risk.API.DTOs;
-using RivertyBNPL.Common.Models;
-using RivertyBNPL.Risk.API.Data;
+using YourCompanyBNPL.Risk.API.DTOs;
+using YourCompanyBNPL.Common.Models;
+using YourCompanyBNPL.Risk.API.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace RivertyBNPL.Risk.API.Services;
+namespace YourCompanyBNPL.Risk.API.Services;
 
 /// <summary>
 /// Real machine learning service using ML.NET for risk assessment
@@ -169,7 +169,7 @@ public class MachineLearningService : IMachineLearningService
             var creditPerformance = await EvaluateCreditRiskModelAsync(newCreditModel, cancellationToken);
             
             // Only replace if performance is better
-            if (creditPerformance.Accuracy > 0.8) // Minimum acceptable accuracy
+            if (creditPerformance.Accuracy > 0.8m) // Minimum acceptable accuracy
             {
                 _creditRiskModel = newCreditModel;
                 await SaveModelAsync(newCreditModel, "credit_risk_model.zip");
@@ -184,7 +184,7 @@ public class MachineLearningService : IMachineLearningService
             var fraudPerformance = await EvaluateFraudRiskModelAsync(newFraudModel, cancellationToken);
             
             // Only replace if performance is better
-            if (fraudPerformance.Accuracy > 0.85) // Higher threshold for fraud detection
+            if (fraudPerformance.Accuracy > 0.85m) // Higher threshold for fraud detection
             {
                 _fraudRiskModel = newFraudModel;
                 await SaveModelAsync(newFraudModel, "fraud_risk_model.zip");
@@ -195,7 +195,7 @@ public class MachineLearningService : IMachineLearningService
             await UpdateModelRecordsAsync(creditPerformance, fraudPerformance, cancellationToken);
 
             _logger.LogInformation("Model retraining completed successfully");
-            return ApiResponse.Success("Models retrained successfully");
+            return ApiResponse.SuccessResponse("Models retrained successfully");
         }
         catch (Exception ex)
         {
@@ -225,7 +225,7 @@ public class MachineLearningService : IMachineLearningService
                 Accuracy = model.Accuracy,
                 Precision = model.Precision,
                 Recall = model.Recall,
-                F1Score = 2 * (model.Precision * model.Recall) / (model.Precision + model.Recall),
+                F1Score = (model.Precision + model.Recall) > 0 ? 2 * (model.Precision * model.Recall) / (model.Precision + model.Recall) : 0,
                 AUC = (model.Precision + model.Recall) / 2, // Simplified AUC approximation
                 TotalPredictions = model.TrainingDataSize,
                 CorrectPredictions = (int)(model.TrainingDataSize * model.Accuracy),

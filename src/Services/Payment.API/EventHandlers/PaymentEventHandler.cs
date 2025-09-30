@@ -1,15 +1,17 @@
+using YourCompanyBNPL.Common.Enums;
 using Microsoft.Extensions.Logging;
-using RivertyBNPL.Shared.Infrastructure.ServiceBus;
-using RivertyBNPL.Payment.API.Services;
-using RivertyBNPL.Payment.API.Data;
+using YourCompanyBNPL.Shared.Infrastructure.ServiceBus;
+using YourCompanyBNPL.Payment.API.Services;
+using YourCompanyBNPL.Payment.API.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace RivertyBNPL.Payment.API.EventHandlers;
+namespace YourCompanyBNPL.Payment.API.EventHandlers;
 
 /// <summary>
 /// Event handler for payment-related events in the Norwegian BNPL system
 /// Processes real-time events from other microservices
 /// </summary>
+
 public class PaymentEventHandler
 {
     private readonly ILogger<PaymentEventHandler> _logger;
@@ -36,7 +38,7 @@ public class PaymentEventHandler
     /// Handles risk assessment completion events
     /// Updates payment status based on risk assessment results
     /// </summary>
-    public async Task HandleRiskAssessmentCompletedAsync(RiskAssessmentCompletedEvent riskEvent)
+    public async Task HandleRiskAssessmentCompletedAsync(RiskAssessmentCompletedEvent riskEvent, CancellationToken cancellationToken = default)
     {
         var correlationId = riskEvent.CorrelationId;
         _logger.LogInformation("Processing risk assessment completed event. AssessmentId: {AssessmentId}, CustomerId: {CustomerId}, Approved: {IsApproved}. CorrelationId: {CorrelationId}",
@@ -48,7 +50,7 @@ public class PaymentEventHandler
             var pendingPayments = await _context.Payments
                 .Where(p => p.CustomerId == Guid.Parse(riskEvent.CustomerId) &&
                            p.Amount == riskEvent.RequestedAmount &&
-                           p.Status == Common.Enums.PaymentStatus.PENDING)
+                           p.Status == Common.Enums.PaymentStatus.Pending)
                 .ToListAsync();
 
             foreach (var payment in pendingPayments)
@@ -83,7 +85,7 @@ public class PaymentEventHandler
                     _context.PaymentEvents.Add(paymentEvent);
 
                     // Process the payment
-                    await _paymentService.ProcessApprovedPaymentAsync(payment.Id, correlationId);
+                    await _paymentService.ProcessApprovedPaymentAsync(payment.Id, cancellationToken);
                 }
                 else
                 {
@@ -91,7 +93,7 @@ public class PaymentEventHandler
                     _logger.LogWarning("Risk assessment declined for payment {PaymentId}. Risk factors: {RiskFactors}. CorrelationId: {CorrelationId}",
                         payment.Id, string.Join(", ", riskEvent.RiskFactors), correlationId);
 
-                    payment.Status = Common.Enums.PaymentStatus.FAILED;
+                    payment.Status = Common.Enums.PaymentStatus.Failed;
                     payment.FailureReason = $"Risk assessment declined. Risk factors: {string.Join(", ", riskEvent.RiskFactors)}";
                     payment.RiskScore = riskEvent.CreditScore;
                     payment.RiskLevel = Enum.Parse<Common.Enums.RiskLevel>(riskEvent.RiskLevel);
@@ -243,12 +245,11 @@ public class PaymentEventHandler
             _context.PaymentEvents.Add(paymentEvent);
 
             // Check if all installments are paid
-            var allInstallmentsPaid = payment.Installments.All(i => i.Status == Common.Enums.InstallmentStatus.PAID);
+            var allInstallmentsPaid = payment.Installments.All(i => i.Status == Common.Enums.PaymentStatus.Completed);
             
             if (allInstallmentsPaid)
             {
-                payment.Status = Common.Enums.PaymentStatus.COMPLETED;
-                payment.CompletedAt = DateTime.UtcNow;
+                payment.Status = Common.Enums.PaymentStatus.Completed;
 
                 _logger.LogInformation("All installments paid for payment {PaymentId}. Marking as completed. CorrelationId: {CorrelationId}",
                     payment.Id, correlationId);
@@ -304,7 +305,7 @@ public class PaymentEventHandler
             // Update settlement records
             await _settlementService.UpdateSettlementStatusAsync(
                 Guid.Parse(settlementEvent.SettlementId),
-                settlementEvent.Status,
+                Enum.Parse<Common.Enums.SettlementStatus>(settlementEvent.Status),
                 settlementEvent.BankTransactionId,
                 correlationId);
 
@@ -336,9 +337,8 @@ public class PaymentEventHandler
 
     private async Task BlockPaymentForFraudAsync(Models.Payment payment, FraudDetectedEvent fraudEvent, string correlationId)
     {
-        payment.Status = Common.Enums.PaymentStatus.CANCELLED;
+        payment.Status = Common.Enums.PaymentStatus.Cancelled;
         payment.FailureReason = $"Blocked due to fraud detection. Score: {fraudEvent.FraudScore}";
-        payment.CancelledAt = DateTime.UtcNow;
 
         // Create fraud event
         var fraudEventRecord = new Models.PaymentEvent

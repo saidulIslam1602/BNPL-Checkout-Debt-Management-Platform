@@ -4,7 +4,7 @@ using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace RivertyBNPL.Shared.Infrastructure.Security;
+namespace YourCompanyBNPL.Shared.Infrastructure.Security;
 
 /// <summary>
 /// Strong Customer Authentication (SCA) implementation for Norwegian BNPL
@@ -350,7 +350,7 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
                 SessionId = sessionId,
                 IssuedAt = DateTimeOffset.UtcNow.ToUnixTimeSeconds(),
                 ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(_options.AuthTokenExpiryMinutes).ToUnixTimeSeconds(),
-                Issuer = "RivertyBNPL",
+                Issuer = "YourCompanyBNPL",
                 Audience = "BNPL-API"
             };
 
@@ -456,18 +456,14 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
         var bankIdRequest = new BankIDAuthenticationRequest
         {
             PersonalNumber = request.SocialSecurityNumber,
-            EndUserIp = request.ClientIP,
-            Requirement = new BankIDRequirement
-            {
-                AllowFingerprint = true,
-                CertificatePolicies = new[] { "1.2.752.78.1.5" } // Norwegian BankID policy
-            }
+            IpAddress = request.ClientIP,
+            UserVisibleData = $"BNPL payment authentication for {request.Amount:F2} NOK"
         };
 
         var bankIdResponse = await _bankIdService.InitiateAuthenticationAsync(bankIdRequest);
         
         challenge.BankIDOrderRef = bankIdResponse.OrderRef;
-        challenge.QRCodeData = bankIdResponse.QRStartToken;
+        challenge.QRCodeData = bankIdResponse.QrStartToken;
         challenge.AutoStartToken = bankIdResponse.AutoStartToken;
         
         return challenge;
@@ -478,8 +474,8 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
         var vippsRequest = new VippsAuthenticationRequest
         {
             PhoneNumber = request.PhoneNumber,
-            Text = $"Bekreft BNPL-betaling på {request.Amount:F2} NOK",
-            Fallback = VippsFallback.SMS
+            Purpose = $"BNPL payment authentication",
+            AmountInOre = (int)(request.Amount * 100) // Convert NOK to øre
         };
 
         var vippsResponse = await _vippsService.InitiateAuthenticationAsync(vippsRequest);
@@ -493,7 +489,7 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     private async Task<SCAChallenge> InitiateSMSOTPAsync(SCAChallenge challenge, SCARequest request)
     {
         var otpCode = GenerateOTPCode();
-        var message = $"Din engangskode for Riverty BNPL: {otpCode}. Gyldig i {_options.OTPExpiryMinutes} minutter.";
+        var message = $"Din engangskode for YourCompany BNPL: {otpCode}. Gyldig i {_options.OTPExpiryMinutes} minutter.";
         
         await _smsService.SendSMSAsync(request.PhoneNumber, message);
         
@@ -522,14 +518,14 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
         
         return new SCAResult
         {
-            IsValid = bankIdResult.Status == BankIDStatus.COMPLETE,
-            Status = bankIdResult.Status == BankIDStatus.COMPLETE ? SCAStatus.COMPLETED : SCAStatus.FAILED,
+            IsValid = bankIdResult.Status == "complete",
+            Status = bankIdResult.Status == "complete" ? SCAStatus.COMPLETED : SCAStatus.FAILED,
             ErrorMessage = bankIdResult.HintCode,
             AuthenticationData = new Dictionary<string, object>
             {
-                { "PersonalNumber", bankIdResult.CompletionData?.User?.PersonalNumber ?? "" },
-                { "Name", bankIdResult.CompletionData?.User?.Name ?? "" },
-                { "Signature", bankIdResult.CompletionData?.Signature ?? "" }
+                { "PersonalNumber", bankIdResult.UserInfo?.PersonalNumber ?? "" },
+                { "Name", bankIdResult.UserInfo?.Name ?? "" },
+                { "GivenName", bankIdResult.UserInfo?.GivenName ?? "" }
             }
         };
     }
@@ -545,9 +541,9 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
         
         return new SCAResult
         {
-            IsValid = vippsResult.Status == VippsStatus.APPROVED,
-            Status = vippsResult.Status == VippsStatus.APPROVED ? SCAStatus.COMPLETED : SCAStatus.FAILED,
-            ErrorMessage = vippsResult.ErrorMessage
+            IsValid = vippsResult.Status == "ok",
+            Status = vippsResult.Status == "ok" ? SCAStatus.COMPLETED : SCAStatus.FAILED,
+            ErrorMessage = vippsResult.Status != "ok" ? "Vipps authentication failed" : null
         };
     }
 
@@ -586,40 +582,19 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            // Query customer's registered authentication methods from database
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer == null)
+            // TODO: Implement customer service integration to get registered authentication methods
+            // For now, return default available methods
+            _logger.LogDebug("Getting authentication methods for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            
+            // Return standard Norwegian authentication methods
+            return new List<SCAMethod>
             {
-                return new List<SCAMethod> { SCAMethod.SMS_OTP }; // Default fallback
-            }
-
-            var methods = new List<SCAMethod>();
-
-            // Check if customer has BankID registered
-            if (!string.IsNullOrEmpty(customer.BankIdPersonalNumber))
-            {
-                methods.Add(SCAMethod.BANK_ID);
-            }
-
-            // Check if customer has Vipps registered
-            if (!string.IsNullOrEmpty(customer.VippsPhoneNumber))
-            {
-                methods.Add(SCAMethod.VIPPS);
-            }
-
-            // SMS OTP is always available if phone number exists
-            if (!string.IsNullOrEmpty(customer.PhoneNumber))
-            {
-                methods.Add(SCAMethod.SMS_OTP);
-            }
-
-            // Biometric if enabled
-            if (customer.BiometricAuthEnabled)
-            {
-                methods.Add(SCAMethod.BIOMETRIC);
-            }
-
-            return methods.Any() ? methods : new List<SCAMethod> { SCAMethod.SMS_OTP };
+                SCAMethod.BANK_ID,
+                SCAMethod.VIPPS,
+                SCAMethod.SMS_OTP
+            };
         }
         catch (Exception ex)
         {
@@ -632,13 +607,11 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            var today = DateTime.UtcNow.Date;
-            var tomorrow = today.AddDays(1);
-
-            var dailyTotal = await _paymentService.GetCustomerTransactionTotalAsync(
-                customerId, today, tomorrow);
-
-            return dailyTotal;
+            // TODO: Implement payment service integration for transaction totals
+            _logger.LogDebug("Getting daily transaction total for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            return 0m; // Default value until service is integrated
         }
         catch (Exception ex)
         {
@@ -651,13 +624,11 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            var today = DateTime.UtcNow.Date;
-            var tomorrow = today.AddDays(1);
-
-            var dailyCount = await _paymentService.GetCustomerTransactionCountAsync(
-                customerId, today, tomorrow);
-
-            return dailyCount;
+            // TODO: Implement payment service integration for transaction counts
+            _logger.LogDebug("Getting daily transaction count for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            return 0; // Default value until service is integrated
         }
         catch (Exception ex)
         {
@@ -670,13 +641,11 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer?.CreatedAt == null)
-            {
-                return 0;
-            }
-
-            return (int)(DateTime.UtcNow - customer.CreatedAt).TotalDays;
+            // TODO: Implement customer service integration for customer age
+            _logger.LogDebug("Getting customer age for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            return 365; // Default to 1 year old account
         }
         catch (Exception ex)
         {
@@ -689,8 +658,11 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            var riskProfile = await _riskService.GetCustomerRiskProfileAsync(customerId);
-            return riskProfile?.RiskScore ?? 50; // Default medium risk
+            // TODO: Implement risk service integration
+            _logger.LogDebug("Getting risk score for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            return 50; // Default medium risk
         }
         catch (Exception ex)
         {
@@ -703,18 +675,13 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            // Check if merchant is in trusted list
-            var merchant = await _merchantService.GetMerchantByIdAsync(merchantId);
-            if (merchant?.IsTrusted == true)
-            {
-                return true;
-            }
-
-            // Check if customer has successful transaction history with this merchant
-            var successfulTransactions = await _paymentService.GetSuccessfulTransactionCountAsync(
-                customerId, merchantId);
-
-            return successfulTransactions >= 5; // Consider trusted after 5 successful transactions
+            // TODO: Implement merchant service integration
+            // For now, return false to require SCA for all merchants
+            _logger.LogDebug("Checking trusted merchant status for merchant {MerchantId}, customer {CustomerId}", 
+                merchantId, customerId);
+            
+            await Task.CompletedTask;
+            return false; // Require SCA until merchant service is integrated
         }
         catch (Exception ex)
         {
@@ -728,11 +695,13 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            // Check if customer has similar payments to this merchant in the past 30 days
-            var recentPayments = await _paymentService.GetRecentSimilarPaymentsAsync(
-                customerId, merchantId, amount, TimeSpan.FromDays(30));
-
-            return recentPayments.Count >= 2; // Consider recurring if 2+ similar payments in 30 days
+            // TODO: Implement payment history service integration
+            // For now, return false to require SCA for all payments
+            _logger.LogDebug("Checking recurring payment for customer {CustomerId}, merchant {MerchantId}, amount {Amount}", 
+                customerId, merchantId, amount);
+            
+            await Task.CompletedTask;
+            return false; // Require SCA until payment history service is integrated
         }
         catch (Exception ex)
         {
@@ -746,8 +715,12 @@ public class StrongCustomerAuthenticationService : IStrongCustomerAuthentication
     {
         try
         {
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            return customer?.CustomerType == CustomerType.Corporate;
+            // TODO: Implement customer service integration  
+            // For now, return false (treat as individual customer)
+            _logger.LogDebug("Checking corporate customer status for customer {CustomerId}", customerId);
+            
+            await Task.CompletedTask;
+            return false; // Treat as individual until customer service is integrated
         }
         catch (Exception ex)
         {
@@ -896,6 +869,65 @@ public interface IRedisService
     Task SetAsync<T>(string key, T value, TimeSpan expiry);
     Task<T?> GetAsync<T>(string key);
     Task DeleteAsync(string key);
+}
+
+#endregion
+
+#region Request/Response Models
+
+public class BankIDAuthenticationRequest
+{
+    public string PersonalNumber { get; set; } = string.Empty;
+    public string? IpAddress { get; set; }
+    public string? UserVisibleData { get; set; }
+}
+
+public class BankIDAuthenticationResponse
+{
+    public string OrderRef { get; set; } = string.Empty;
+    public string AutoStartToken { get; set; } = string.Empty;
+    public string QrStartToken { get; set; } = string.Empty;
+}
+
+public class BankIDCollectResponse
+{
+    public string Status { get; set; } = string.Empty;
+    public string? HintCode { get; set; }
+    public BankIDUserInfo? UserInfo { get; set; }
+}
+
+public class BankIDUserInfo
+{
+    public string PersonalNumber { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
+    public string GivenName { get; set; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
+}
+
+public class VippsAuthenticationRequest
+{
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string? Purpose { get; set; }
+    public int? AmountInOre { get; set; }
+}
+
+public class VippsAuthenticationResponse
+{
+    public string OrderId { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+}
+
+public class VippsStatusResponse
+{
+    public string Status { get; set; } = string.Empty;
+    public VippsUserInfo? UserInfo { get; set; }
+}
+
+public class VippsUserInfo
+{
+    public string PhoneNumber { get; set; } = string.Empty;
+    public string? Name { get; set; }
+    public string? Email { get; set; }
 }
 
 #endregion

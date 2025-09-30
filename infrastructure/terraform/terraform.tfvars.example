@@ -1,0 +1,58 @@
+# Riverty BNPL Platform - Terraform Variables Example
+# Copy this file to terraform.tfvars and update with your values
+
+# Environment
+environment = "development"
+
+# Kubernetes
+kubernetes_version = "1.28.3"
+aks_admin_group_object_ids = [
+  "00000000-0000-0000-0000-000000000000"  # Replace with your Azure AD group ID
+]
+
+# SQL Server
+sql_admin_username         = "sqladmin"
+sql_admin_password         = "YourSecurePassword123!" # Change this!
+sql_azuread_admin_login    = "admin@yourdomain.com"
+sql_azuread_admin_object_id = "00000000-0000-0000-0000-000000000000"
+
+# Security
+security_alert_emails = [
+  "security@riverty.com",
+  "ops@riverty.com"
+]
+
+# SSL Certificate (for production)
+# ssl_certificate_data     = "base64-encoded-certificate"
+# ssl_certificate_password = "certificate-password"
+
+# Scaling
+min_node_count = 2
+max_node_count = 5
+
+# Database
+database_sku = "S1"
+
+# Redis
+redis_sku      = "Standard"
+redis_capacity = 1
+
+# Service Bus
+service_bus_sku = "Standard"
+
+# Feature Flags
+enable_application_gateway   = false
+enable_geo_replication      = false
+enable_zone_redundancy      = false
+enable_cost_optimization    = true
+
+# Norwegian Integration
+enable_vipps_integration  = true
+enable_bankid_integration = true
+
+# Additional Tags
+additional_tags = {
+  Department = "Engineering"
+  CostCenter = "Platform"
+  ManagedBy  = "Terraform"
+}

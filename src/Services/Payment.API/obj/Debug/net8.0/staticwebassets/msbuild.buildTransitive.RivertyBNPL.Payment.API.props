@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/RivertyBNPL.Payment.API.props" />
+</Project>

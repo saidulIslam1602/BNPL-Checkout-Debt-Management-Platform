@@ -1,8 +1,9 @@
+using YourCompanyBNPL.Common.Enums;
 using FluentValidation;
-using RivertyBNPL.Notification.API.DTOs;
-using RivertyBNPL.Notification.API.Models;
+using YourCompanyBNPL.Notification.API.DTOs;
+using YourCompanyBNPL.Notification.API.Models;
 
-namespace RivertyBNPL.Notification.API.Validators;
+namespace YourCompanyBNPL.Notification.API.Validators;
 
 /// <summary>
 /// Validator for SendNotificationRequest
@@ -104,7 +105,7 @@ public class CreateTemplateRequestValidator : AbstractValidator<CreateTemplateRe
 
         RuleFor(x => x.SmsContent)
             .NotEmpty()
-            .When(x => x.Channel == NotificationChannel.Sms)
+            .When(x => x.Channel == NotificationChannel.SMS)
             .WithMessage("SMS content is required for SMS templates");
 
         RuleFor(x => x.PushContent)

@@ -1,0 +1,71 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "AZURE_FUNCTIONS_ENVIRONMENT": "Development",
+    
+    "ConnectionStrings__DefaultConnection": "Server=localhost,1433;Database=YourCompanyBNPL_PaymentProcessor;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true;MultipleActiveResultSets=true",
+    
+    "ServiceBusConnection": "Endpoint=sb://yourcompany-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=your-service-bus-key",
+    
+    "ApplicationInsights__ConnectionString": "InstrumentationKey=your-app-insights-key;IngestionEndpoint=https://northeurope-1.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/",
+    
+    "PaymentProcessor__InstallmentBatchSize": "50",
+    "PaymentProcessor__BatchDelayMilliseconds": "1000",
+    "PaymentProcessor__MaxRetryAttempts": "3",
+    "PaymentProcessor__RetryDelayHours": "4",
+    "PaymentProcessor__RetryDelayMilliseconds": "2000",
+    "PaymentProcessor__MaxRetryBatchSize": "25",
+    "PaymentProcessor__OverdueDays": "7",
+    "PaymentProcessor__CollectionEscalationDays": "30",
+    "PaymentProcessor__OverdueAmountAlertThreshold": "100000",
+    "PaymentProcessor__HealthCheckFailureThreshold": "10",
+    
+    "Notifications__OverdueNoticeAlertThreshold": "50",
+    "Notifications__SmsProvider": "Telenor",
+    "Notifications__EmailProvider": "SendGrid",
+    "Notifications__PushProvider": "Firebase",
+    
+    "Settlements__FailureAlertThreshold": "5",
+    "Settlements__VarianceAlertThreshold": "1000",
+    "Settlements__InstantSettlementEnabled": "true",
+    "Settlements__MinInstantAmount": "1000",
+    "Settlements__MaxInstantAmount": "50000",
+    
+    "ExternalServices__PaymentGateway__BaseUrl": "https://localhost:5001/api/v1",
+    "ExternalServices__PaymentGateway__ApiKey": "dev-payment-gateway-key",
+    "ExternalServices__PaymentGateway__TimeoutSeconds": "30",
+    
+    "ExternalServices__RiskAssessment__BaseUrl": "https://localhost:5002/api/v1",
+    "ExternalServices__RiskAssessment__ApiKey": "dev-risk-assessment-key",
+    "ExternalServices__RiskAssessment__TimeoutSeconds": "30",
+    
+    "ExternalServices__Notification__BaseUrl": "https://localhost:5003/api/v1",
+    "ExternalServices__Notification__ApiKey": "dev-notification-key",
+    "ExternalServices__Notification__TimeoutSeconds": "10",
+    
+    "ExternalServices__Settlement__BaseUrl": "https://localhost:5004/api/v1",
+    "ExternalServices__Settlement__ApiKey": "dev-settlement-key",
+    "ExternalServices__Settlement__TimeoutSeconds": "60",
+    
+    "Norwegian__Banking__DnbApiBaseUrl": "https://api.dnb.no/psd2/v2",
+    "Norwegian__Banking__ClientId": "your-dnb-client-id",
+    "Norwegian__Banking__ClientSecret": "your-dnb-client-secret",
+    "Norwegian__Banking__CompanyAccountNumber": "1234.56.78901",
+    
+    "Norwegian__CreditBureau__ExperianApiKey": "your-experian-key",
+    "Norwegian__CreditBureau__BisnodeApiKey": "your-bisnode-key",
+    "Norwegian__CreditBureau__LindorffApiKey": "your-lindorff-key",
+    
+    "Norwegian__Vipps__ClientId": "your-vipps-client-id",
+    "Norwegian__Vipps__ClientSecret": "your-vipps-client-secret",
+    "Norwegian__Vipps__SubscriptionKey": "your-vipps-subscription-key",
+    "Norwegian__Vipps__MerchantSerialNumber": "123456"
+  },
+  "Host": {
+    "LocalHttpPort": 7071,
+    "CORS": "*",
+    "CORSCredentials": false
+  }
+}

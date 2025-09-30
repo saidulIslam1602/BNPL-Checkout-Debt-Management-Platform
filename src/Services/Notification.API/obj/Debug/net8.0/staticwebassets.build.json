@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "kNUNvhKSHc1Kyin2/IPzGDDTgjNUp2ckg6DQ/M6XHpc=",
+  "Source": "YourCompanyBNPL.Notification.API",
+  "BasePath": "_content/YourCompanyBNPL.Notification.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}

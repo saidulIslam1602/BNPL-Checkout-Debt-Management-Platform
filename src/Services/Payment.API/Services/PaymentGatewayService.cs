@@ -1,9 +1,10 @@
+using YourCompanyBNPL.Common.Enums;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using RivertyBNPL.Common.Enums;
+using YourCompanyBNPL.Common.Enums;
 
-namespace RivertyBNPL.Payment.API.Services;
+namespace YourCompanyBNPL.Payment.API.Services;
 
 /// <summary>
 /// Real payment gateway integration service supporting multiple Norwegian payment providers
@@ -588,9 +589,9 @@ public class PaymentGatewayService : IPaymentGatewayService
                         unit = "pcs",
                         unitPrice = (int)(request.Amount * 100),
                         taxRate = 2500, // 25% Norwegian VAT
-                        taxAmount = (int)(request.Amount * 100 * 0.25),
+                        taxAmount = (int)(request.Amount * 100 * 0.25m),
                         grossTotalAmount = (int)(request.Amount * 100),
-                        netTotalAmount = (int)(request.Amount * 100 * 0.8)
+                        netTotalAmount = (int)(request.Amount * 100 * 0.8m)
                     }
                 },
                 amount = (int)(request.Amount * 100),
@@ -791,7 +792,7 @@ public class PaymentGatewayService : IPaymentGatewayService
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
         _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", vippsConfig.SubscriptionKey);
         _httpClient.DefaultRequestHeaders.Add("Merchant-Serial-Number", vippsConfig.MerchantSerialNumber);
-        _httpClient.DefaultRequestHeaders.Add("Vipps-System-Name", "RivertyBNPL");
+        _httpClient.DefaultRequestHeaders.Add("Vipps-System-Name", "YourCompanyBNPL");
         _httpClient.DefaultRequestHeaders.Add("Vipps-System-Version", "1.0.0");
 
         var response = await _httpClient.PostAsync($"{vippsConfig.BaseUrl}/epayment/v1/payments", content, cancellationToken);

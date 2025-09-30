@@ -1,8 +1,9 @@
 using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using RivertyBNPL.NotificationScheduler.Functions.Services;
+using YourCompanyBNPL.NotificationScheduler.Functions.Services;
 
-namespace RivertyBNPL.NotificationScheduler.Functions.Functions;
+namespace YourCompanyBNPL.NotificationScheduler.Functions.Functions;
 
 /// <summary>
 /// Azure Function for sending payment reminders
@@ -31,16 +32,16 @@ public class PaymentReminderFunction
         try
         {
             // Send reminders for payments due in 3 days
-            var threeDayReminders = await _paymentReminderService.SendPaymentRemindersAsync(3);
-            _logger.LogInformation("Sent {Count} payment reminders for payments due in 3 days", threeDayReminders);
+            var threeDayReminders = await _paymentReminderService.SendPaymentRemindersAsync();
+            _logger.LogInformation("Sent {Count} payment reminders for payments due in 3 days", threeDayReminders.Data);
 
             // Send reminders for payments due in 1 day
-            var oneDayReminders = await _paymentReminderService.SendPaymentRemindersAsync(1);
-            _logger.LogInformation("Sent {Count} payment reminders for payments due in 1 day", oneDayReminders);
+            var oneDayReminders = await _paymentReminderService.SendPaymentRemindersAsync();
+            _logger.LogInformation("Sent {Count} payment reminders for payments due in 1 day", oneDayReminders.Data);
 
             // Send reminders for payments due today
-            var todayReminders = await _paymentReminderService.SendPaymentRemindersAsync(0);
-            _logger.LogInformation("Sent {Count} payment reminders for payments due today", todayReminders);
+            var todayReminders = await _paymentReminderService.SendPaymentRemindersAsync();
+            _logger.LogInformation("Sent {Count} payment reminders for payments due today", todayReminders.Data);
 
             _logger.LogInformation("Payment reminder function completed successfully");
         }
@@ -62,7 +63,7 @@ public class PaymentReminderFunction
         try
         {
             var overdueNotifications = await _paymentReminderService.SendOverdueNotificationsAsync();
-            _logger.LogInformation("Sent {Count} overdue payment notifications", overdueNotifications);
+            _logger.LogInformation("Sent {Count} overdue payment notifications", overdueNotifications.Data);
 
             _logger.LogInformation("Overdue payment notification function completed successfully");
         }
@@ -84,16 +85,16 @@ public class PaymentReminderFunction
         try
         {
             // Send reminders for BNPL installments due in 7 days
-            var weekReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync(7);
-            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due in 7 days", weekReminders);
+            var weekReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync();
+            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due in 7 days", weekReminders.Data);
 
             // Send reminders for BNPL installments due in 3 days
-            var threeDayReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync(3);
-            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due in 3 days", threeDayReminders);
+            var threeDayReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync();
+            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due in 3 days", threeDayReminders.Data);
 
             // Send reminders for BNPL installments due tomorrow
-            var tomorrowReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync(1);
-            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due tomorrow", tomorrowReminders);
+            var tomorrowReminders = await _paymentReminderService.SendBNPLInstallmentRemindersAsync();
+            _logger.LogInformation("Sent {Count} BNPL installment reminders for payments due tomorrow", tomorrowReminders.Data);
 
             _logger.LogInformation("BNPL installment reminder function completed successfully");
         }
@@ -115,7 +116,7 @@ public class PaymentReminderFunction
         try
         {
             var engagementNotifications = await _paymentReminderService.SendCustomerEngagementNotificationsAsync();
-            _logger.LogInformation("Sent {Count} customer engagement notifications", engagementNotifications);
+            _logger.LogInformation("Sent {Count} customer engagement notifications", engagementNotifications.Data);
 
             _logger.LogInformation("Customer engagement notification function completed successfully");
         }
@@ -141,13 +142,15 @@ public class PaymentReminderFunction
             var daysAhead = int.TryParse(query["daysAhead"], out var days) ? days : 1;
             var notificationType = query["type"] ?? "payment";
 
-            int count = notificationType.ToLower() switch
+            var apiResult = notificationType.ToLower() switch
             {
-                "bnpl" => await _paymentReminderService.SendBNPLInstallmentRemindersAsync(daysAhead),
+                "bnpl" => await _paymentReminderService.SendBNPLInstallmentRemindersAsync(),
                 "overdue" => await _paymentReminderService.SendOverdueNotificationsAsync(),
                 "engagement" => await _paymentReminderService.SendCustomerEngagementNotificationsAsync(),
-                _ => await _paymentReminderService.SendPaymentRemindersAsync(daysAhead)
+                _ => await _paymentReminderService.SendPaymentRemindersAsync()
             };
+            
+            int count = apiResult.Data;
 
             var result = $"Sent {count} {notificationType} notifications for {daysAhead} days ahead";
             _logger.LogInformation(result);

@@ -1,4 +1,4 @@
-namespace RivertyBNPL.Common.Enums;
+namespace YourCompanyBNPL.Common.Enums;
 
 /// <summary>
 /// Payment status enumeration for tracking payment lifecycle
@@ -36,12 +36,15 @@ public enum PaymentMethod
 {
     CreditCard = 0,
     DebitCard = 1,
+    Card = CreditCard, // Alias for compatibility
     BankTransfer = 2,
     DirectDebit = 3,
     DigitalWallet = 4,
     BNPL = 5,
     Cash = 6,
-    Cryptocurrency = 7
+    Cryptocurrency = 7,
+    Vipps = 8,
+    Klarna = 9
 }
 
 /// <summary>
@@ -155,4 +158,112 @@ public enum CollectionStatus
     Settled = 6,        // Debt settled for less than full amount
     PaidInFull = 7,     // Debt paid in full
     WriteOff = 8        // Debt written off as uncollectable
+}
+public enum SettlementFrequency
+{
+    Daily,
+    Weekly,
+    Biweekly,
+    BiWeekly = Biweekly, // Alias for compatibility
+    Monthly,
+    OnDemand,
+    Manual
+}
+
+public enum FraudReportStatus
+{
+    New,
+    UnderReview,
+    Confirmed,
+    FalsePositive,
+    Resolved
+}
+
+public enum SettlementTransactionType
+{
+    Payment,
+    Refund,
+    Chargeback,
+    Fee,
+    Adjustment
+}
+
+public enum PaymentEventType
+{
+    PaymentCreated,
+    PaymentProcessing,
+    PaymentCompleted,
+    PaymentFailed,
+    PaymentCancelled,
+    PaymentRefunded,
+    PaymentDisputed,
+    PaymentExpired,
+    InstallmentDue,
+    InstallmentPaid,
+    InstallmentOverdue,
+    RISK_ASSESSMENT_COMPLETED,
+    PAYMENT_APPROVED,
+    PAYMENT_REJECTED,
+    PAYMENT_FAILED,
+    FRAUD_DETECTED,
+    SETTLEMENT_PROCESSED,
+    INSTALLMENT_PAID
+}
+
+/// <summary>
+/// Installment status for BNPL payments
+/// </summary>
+public enum InstallmentStatus
+{
+    Pending = 0,
+    Paid = 1,
+    Overdue = 2,
+    Failed = 3,
+    Cancelled = 4,
+    Refunded = 5
+}
+
+/// <summary>
+/// Settlement sort options
+/// </summary>
+public enum SettlementSortBy
+{
+    SettlementDate = 0,
+    CreatedAt = 1,
+    ProcessedAt = 2,
+    GrossAmount = 3,
+    NetAmount = 4,
+    Status = 5,
+    MerchantName = 6,
+    TransactionCount = 7,
+    Amount = 8,
+    MerchantId = 9,
+    Currency = 10
+}
+
+/// <summary>
+/// Webhook event types
+/// </summary>
+public enum WebhookEventType
+{
+    PaymentCreated = 0,
+    PaymentCompleted = 1,
+    PaymentFailed = 2,
+    PaymentCancelled = 3,
+    PaymentRefunded = 4,
+    InstallmentDue = 5,
+    InstallmentPaid = 6,
+    InstallmentOverdue = 7,
+    SettlementProcessed = 8,
+    FraudDetected = 9
+}
+
+public enum WebhookDeliveryStatus
+{
+    Pending,
+    Delivered,
+    Failed,
+    Retrying,
+    Cancelled,
+    MaxRetriesReached
 }
