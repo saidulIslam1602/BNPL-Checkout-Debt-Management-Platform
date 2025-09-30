@@ -124,10 +124,58 @@ export class CheckoutService {
   }
 
   /**
-   * Calculate tax (Norwegian VAT)
+   * Calculate tax (Norwegian VAT) dynamically based on product category and amount
    */
-  calculateTax(subtotal: number): number {
-    return Math.round(subtotal * 0.25); // 25% Norwegian VAT
+  calculateTax(subtotal: number, productCategory?: string): number {
+    const vatRate = this.calculateVATRate(subtotal, productCategory);
+    return Math.round(subtotal * vatRate);
+  }
+
+  /**
+   * Calculate dynamic VAT rate based on product category and amount
+   */
+  private calculateVATRate(amount: number, productCategory?: string): number {
+    // Base Norwegian VAT rate
+    let baseRate = 0.25; // 25% standard rate
+
+    // Category-based adjustments
+    if (productCategory) {
+      switch (productCategory.toLowerCase()) {
+        case 'food':
+        case 'groceries':
+          baseRate = 0.15; // 15% for food items
+          break;
+        case 'books':
+        case 'newspapers':
+          baseRate = 0.0; // 0% for books and newspapers
+          break;
+        case 'medicine':
+        case 'healthcare':
+          baseRate = 0.0; // 0% for medicine
+          break;
+        case 'clothing':
+        case 'shoes':
+          baseRate = 0.25; // 25% for clothing
+          break;
+        case 'electronics':
+        case 'technology':
+          baseRate = 0.25; // 25% for electronics
+          break;
+        default:
+          baseRate = 0.25; // 25% default
+      }
+    }
+
+    // Amount-based adjustments for high-value items
+    if (amount > 100000) {
+      baseRate *= 1.0; // No adjustment for very high amounts
+    } else if (amount > 50000) {
+      baseRate *= 0.98; // 2% reduction for high amounts
+    } else if (amount < 1000) {
+      baseRate *= 1.02; // 2% increase for small amounts
+    }
+
+    return Math.max(0, Math.min(0.25, baseRate)); // Ensure rate is between 0% and 25%
   }
 
   /**

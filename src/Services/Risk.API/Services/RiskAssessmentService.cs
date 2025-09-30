@@ -553,18 +553,91 @@ public class RiskAssessmentService : IRiskAssessmentService
                 declineReason = "Too many recent late payments";
         }
 
-        // Calculate interest rate
-        var interestRate = creditRating switch
-        {
-            CreditRating.Excellent => 0.0599m,
-            CreditRating.Good => 0.0799m,
-            CreditRating.Fair => 0.0999m,
-            CreditRating.Poor => 0.1299m,
-            CreditRating.VeryPoor => 0.1599m,
-            _ => 0.1599m
-        };
+        // Calculate dynamic interest rate based on credit rating and risk factors
+        var interestRate = CalculateDynamicInterestRate(creditRating, assessment, riskLevel);
 
         return (riskLevel, creditRating, recommendedLimit, isApproved, declineReason, interestRate);
+    }
+
+    private static decimal CalculateDynamicInterestRate(CreditRating creditRating, CreditAssessment assessment, RiskLevel riskLevel)
+    {
+        // Base interest rate based on credit rating
+        var baseRate = creditRating switch
+        {
+            CreditRating.Excellent => 0.0499m,  // 4.99% APR
+            CreditRating.Good => 0.0699m,       // 6.99% APR
+            CreditRating.Fair => 0.0899m,       // 8.99% APR
+            CreditRating.Poor => 0.1199m,       // 11.99% APR
+            CreditRating.VeryPoor => 0.1499m,   // 14.99% APR
+            _ => 0.1499m
+        };
+
+        // Risk-based adjustments
+        var riskAdjustment = riskLevel switch
+        {
+            RiskLevel.Low => 0.95m,     // 5% discount for low risk
+            RiskLevel.Medium => 1.0m,   // Standard rate
+            RiskLevel.High => 1.15m,    // 15% premium for high risk
+            _ => 1.2m                   // 20% premium for very high risk
+        };
+
+        // Income-based adjustment
+        var incomeAdjustment = CalculateIncomeBasedAdjustment(assessment.AnnualIncome);
+
+        // Debt-to-income ratio adjustment
+        var debtRatio = assessment.ExistingDebt / Math.Max(assessment.AnnualIncome, 1);
+        var debtAdjustment = debtRatio switch
+        {
+            <= 0.2m => 0.9m,    // 10% discount for low debt ratio
+            <= 0.4m => 1.0m,    // Standard rate
+            <= 0.6m => 1.1m,    // 10% premium
+            _ => 1.25m           // 25% premium for high debt ratio
+        };
+
+        // Employment stability adjustment
+        var employmentAdjustment = CalculateEmploymentAdjustment(assessment.EmploymentStatus, assessment.EmploymentDuration);
+
+        // Calculate final rate with all adjustments
+        var finalRate = baseRate * riskAdjustment * incomeAdjustment * debtAdjustment * employmentAdjustment;
+
+        // Ensure rate is within reasonable bounds (2% to 25%)
+        return Math.Max(0.02m, Math.Min(0.25m, finalRate));
+    }
+
+    private static decimal CalculateIncomeBasedAdjustment(decimal annualIncome)
+    {
+        return annualIncome switch
+        {
+            >= 1000000 => 0.85m,  // 15% discount for high income
+            >= 750000 => 0.9m,    // 10% discount for upper-middle income
+            >= 500000 => 0.95m,   // 5% discount for middle income
+            >= 300000 => 1.0m,    // Standard rate
+            >= 200000 => 1.05m,   // 5% premium for lower income
+            _ => 1.1m             // 10% premium for very low income
+        };
+    }
+
+    private static decimal CalculateEmploymentAdjustment(EmploymentStatus employmentStatus, int employmentDurationMonths)
+    {
+        var statusAdjustment = employmentStatus switch
+        {
+            EmploymentStatus.FullTime => 0.95m,     // 5% discount for full-time
+            EmploymentStatus.PartTime => 1.0m,      // Standard rate
+            EmploymentStatus.SelfEmployed => 1.05m, // 5% premium for self-employed
+            EmploymentStatus.Contract => 1.1m,      // 10% premium for contract
+            EmploymentStatus.Unemployed => 1.3m,    // 30% premium for unemployed
+            _ => 1.2m                               // 20% premium for other
+        };
+
+        var durationAdjustment = employmentDurationMonths switch
+        {
+            >= 24 => 0.9m,   // 10% discount for 2+ years
+            >= 12 => 1.0m,   // Standard rate for 1+ year
+            >= 6 => 1.05m,   // 5% premium for 6+ months
+            _ => 1.15m       // 15% premium for < 6 months
+        };
+
+        return statusAdjustment * durationAdjustment;
     }
 
     private async Task UpdateCustomerRiskProfileAsync(Guid customerId, CreditAssessment assessment, CancellationToken cancellationToken)

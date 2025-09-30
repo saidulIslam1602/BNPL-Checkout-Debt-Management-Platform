@@ -613,31 +613,81 @@ public class BNPLService : IBNPLService
 
     private static decimal CalculateInterestRate(BNPLPlanType planType, decimal amount, int installmentCount)
     {
-        // Base interest rate calculation
-        var baseRate = planType switch
+        // Dynamic base interest rate calculation based on plan duration and risk
+        var baseRate = CalculateBaseInterestRate(planType, installmentCount);
+        
+        // Dynamic rate adjustment based on amount tiers and risk factors
+        var amountMultiplier = CalculateAmountBasedMultiplier(amount);
+        var riskMultiplier = CalculateRiskBasedMultiplier(amount, installmentCount);
+        
+        return Math.Round(baseRate * amountMultiplier * riskMultiplier, 4);
+    }
+
+    private static decimal CalculateBaseInterestRate(BNPLPlanType planType, int installmentCount)
+    {
+        // Calculate base rate based on plan duration and Norwegian market conditions
+        var durationMonths = planType switch
         {
-            BNPLPlanType.PayIn3 => 0.00m,  // 0% for 3 installments
-            BNPLPlanType.PayIn4 => 0.00m,  // 0% for 4 installments
-            BNPLPlanType.PayIn6 => 0.05m,  // 5% APR for 6 installments
-            BNPLPlanType.PayIn12 => 0.12m, // 12% APR for 12 installments
-            BNPLPlanType.PayIn24 => 0.18m, // 18% APR for 24 installments
-            BNPLPlanType.Custom => installmentCount <= 6 ? 0.05m : 0.12m,
-            _ => 0.12m
+            BNPLPlanType.PayIn3 => 3,
+            BNPLPlanType.PayIn4 => 4,
+            BNPLPlanType.PayIn6 => 6,
+            BNPLPlanType.PayIn12 => 12,
+            BNPLPlanType.PayIn24 => 24,
+            BNPLPlanType.Custom => installmentCount,
+            _ => 12
         };
 
-        // Adjust rate based on amount (higher amounts get better rates)
-        if (amount > 50000)
-            baseRate *= 0.8m;
-        else if (amount > 20000)
-            baseRate *= 0.9m;
+        // Norwegian BNPL market rates: 0% for short-term, progressive for longer terms
+        return durationMonths switch
+        {
+            <= 4 => 0.00m,  // No interest for short-term plans
+            <= 6 => 0.05m,  // 5% APR for 6-month plans
+            <= 12 => 0.12m, // 12% APR for 12-month plans
+            _ => 0.18m      // 18% APR for 24-month plans
+        };
+    }
 
-        return baseRate;
+    private static decimal CalculateAmountBasedMultiplier(decimal amount)
+    {
+        // Dynamic rate adjustment based on transaction amount
+        return amount switch
+        {
+            >= 100000 => 0.7m,  // 30% discount for high-value transactions
+            >= 50000 => 0.8m,   // 20% discount for medium-high value
+            >= 20000 => 0.9m,   // 10% discount for medium value
+            >= 5000 => 1.0m,    // Standard rate
+            _ => 1.1m           // 10% premium for small transactions
+        };
+    }
+
+    private static decimal CalculateRiskBasedMultiplier(decimal amount, int installmentCount)
+    {
+        // Risk-based adjustment considering amount-to-duration ratio
+        var riskRatio = amount / (installmentCount * 1000); // Amount per month per 1000 NOK
+        
+        return riskRatio switch
+        {
+            <= 1 => 0.9m,   // Low risk: 10% discount
+            <= 3 => 1.0m,   // Standard risk
+            <= 5 => 1.1m,   // Higher risk: 10% premium
+            _ => 1.2m       // High risk: 20% premium
+        };
     }
 
     private static decimal CalculateDownPayment(decimal amount, BNPLPlanType planType)
     {
-        // Calculate down payment as percentage of total amount
-        var downPaymentPercentage = planType switch
+        // Dynamic down payment calculation based on plan type and amount
+        var basePercentage = CalculateBaseDownPaymentPercentage(planType);
+        var amountAdjustment = CalculateAmountBasedDownPaymentAdjustment(amount);
+        var finalPercentage = Math.Max(0.05m, Math.Min(0.5m, basePercentage * amountAdjustment));
+
+        return Math.Round(amount * finalPercentage, 2);
+    }
+
+    private static decimal CalculateBaseDownPaymentPercentage(BNPLPlanType planType)
+    {
+        // Base down payment percentage based on plan duration
+        return planType switch
         {
             BNPLPlanType.PayIn3 => 0.33m,  // 33% down for 3 installments
             BNPLPlanType.PayIn4 => 0.25m,  // 25% down for 4 installments
@@ -646,8 +696,19 @@ public class BNPLService : IBNPLService
             BNPLPlanType.PayIn24 => 0.10m, // 10% down for 24 installments
             _ => 0.25m
         };
+    }
 
-        return Math.Round(amount * downPaymentPercentage, 2);
+    private static decimal CalculateAmountBasedDownPaymentAdjustment(decimal amount)
+    {
+        // Adjust down payment based on transaction amount
+        return amount switch
+        {
+            >= 100000 => 0.8m,  // 20% reduction for high-value transactions
+            >= 50000 => 0.9m,   // 10% reduction for medium-high value
+            >= 20000 => 1.0m,   // Standard rate
+            >= 5000 => 1.1m,    // 10% increase for medium value
+            _ => 1.2m           // 20% increase for small transactions
+        };
     }
 
     private static decimal CalculateTotalInterest(decimal principalAmount, decimal annualRate, int installmentCount)
@@ -664,20 +725,37 @@ public class BNPLService : IBNPLService
 
     private static decimal CalculateTotalFees(decimal amount, BNPLPlanType planType)
     {
-        // Fixed fees based on plan type
-        var fee = planType switch
+        // Dynamic fee calculation based on plan type and amount
+        var baseFee = CalculateBaseFee(planType);
+        var amountBasedFee = CalculateAmountBasedFee(amount);
+        var totalFee = baseFee + amountBasedFee;
+
+        // Cap fees at 2% of amount to ensure affordability
+        var maxFee = amount * 0.02m;
+        return Math.Min(totalFee, maxFee);
+    }
+
+    private static decimal CalculateBaseFee(BNPLPlanType planType)
+    {
+        // Base fee structure for different plan types
+        return planType switch
         {
             BNPLPlanType.PayIn3 => 0.00m,   // No fees for short-term plans
             BNPLPlanType.PayIn4 => 0.00m,   // No fees for short-term plans
-            BNPLPlanType.PayIn6 => 25.00m,  // Fixed fee for medium-term plans
-            BNPLPlanType.PayIn12 => 50.00m, // Fixed fee for long-term plans
-            BNPLPlanType.PayIn24 => 100.00m, // Fixed fee for extended plans
-            _ => 25.00m
+            BNPLPlanType.PayIn6 => 15.00m,  // Reduced fee for medium-term plans
+            BNPLPlanType.PayIn12 => 30.00m, // Moderate fee for long-term plans
+            BNPLPlanType.PayIn24 => 60.00m, // Higher fee for extended plans
+            _ => 20.00m
         };
+    }
 
-        // Cap fees at 2% of amount
-        var maxFee = amount * 0.02m;
-        return Math.Min(fee, maxFee);
+    private static decimal CalculateAmountBasedFee(decimal amount)
+    {
+        // Additional fee based on transaction amount (0.1% of amount)
+        var percentageFee = amount * 0.001m;
+        
+        // Apply minimum and maximum caps
+        return Math.Max(5.00m, Math.Min(percentageFee, 50.00m));
     }
 
     private static decimal CalculateLateFee(decimal installmentAmount, int daysPastDue)

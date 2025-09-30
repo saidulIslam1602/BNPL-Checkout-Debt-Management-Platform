@@ -18,11 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.Gateway", "src\Gateway\
 EndProject
 
 # Functions
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentCollection.Functions", "src\Functions\PaymentCollection\PaymentCollection.Functions.csproj", "{F6G7H8I9-J0K1-2345-FGHI-678901234567}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentCollection", "src\Functions\PaymentCollection\PaymentCollection.csproj", "{F6G7H8I9-J0K1-2345-FGHI-678901234567}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationScheduler.Functions", "src\Functions\NotificationScheduler\NotificationScheduler.csproj", "{G7H8I9J0-K1L2-3456-GHIJ-789012345678}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationScheduler", "src\Functions\NotificationScheduler\NotificationScheduler.csproj", "{G7H8I9J0-K1L2-3456-GHIJ-789012345678}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentCollection.Functions", "src\Functions\PaymentCollection\PaymentCollection.csproj", "{H9I0J1K2-L3M4-5678-HIJK-890123456789}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentProcessor", "src\Functions\PaymentProcessor\PaymentProcessor.csproj", "{H9I0J1K2-L3M4-5678-HIJK-890123456789}"
 EndProject
 
 # Shared Libraries

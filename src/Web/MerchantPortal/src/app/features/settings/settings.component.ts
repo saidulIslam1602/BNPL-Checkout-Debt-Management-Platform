@@ -271,8 +271,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 export class SettingsComponent {
   businessForm: FormGroup;
   bnplEnabled = true;
-  minOrderAmount = 100;
-  maxOrderAmount = 50000;
+  minOrderAmount = this.calculateMinOrderAmount();
+  maxOrderAmount = this.calculateMaxOrderAmount();
 
   industries = signal([
     { value: 'electronics', label: 'Electronics' },
@@ -354,5 +354,111 @@ export class SettingsComponent {
 
   saveNotifications() {
     console.log('Saving notification preferences...');
+  }
+
+  /**
+   * Calculate dynamic minimum order amount based on business profile
+   */
+  private calculateMinOrderAmount(): number {
+    // Base minimum amount
+    let baseAmount = 100;
+
+    // Adjust based on business type/industry
+    const businessType = this.businessForm?.get('businessType')?.value || 'retail';
+    switch (businessType) {
+      case 'electronics':
+        baseAmount = 200; // Higher minimum for electronics
+        break;
+      case 'fashion':
+        baseAmount = 150; // Medium minimum for fashion
+        break;
+      case 'home':
+        baseAmount = 300; // Higher minimum for home goods
+        break;
+      case 'automotive':
+        baseAmount = 500; // Much higher minimum for automotive
+        break;
+      case 'jewelry':
+        baseAmount = 1000; // Very high minimum for jewelry
+        break;
+      default:
+        baseAmount = 100; // Default minimum
+    }
+
+    // Adjust based on business size (if available)
+    const businessSize = this.businessForm?.get('businessSize')?.value || 'small';
+    switch (businessSize) {
+      case 'enterprise':
+        baseAmount *= 0.8; // 20% reduction for enterprise
+        break;
+      case 'large':
+        baseAmount *= 0.9; // 10% reduction for large business
+        break;
+      case 'medium':
+        baseAmount *= 1.0; // No change for medium
+        break;
+      case 'small':
+        baseAmount *= 1.1; // 10% increase for small business
+        break;
+    }
+
+    return Math.round(baseAmount);
+  }
+
+  /**
+   * Calculate dynamic maximum order amount based on business profile and risk
+   */
+  private calculateMaxOrderAmount(): number {
+    // Base maximum amount
+    let baseAmount = 50000;
+
+    // Adjust based on business type/industry
+    const businessType = this.businessForm?.get('businessType')?.value || 'retail';
+    switch (businessType) {
+      case 'electronics':
+        baseAmount = 100000; // Higher limit for electronics
+        break;
+      case 'fashion':
+        baseAmount = 75000; // Medium limit for fashion
+        break;
+      case 'home':
+        baseAmount = 150000; // Higher limit for home goods
+        break;
+      case 'automotive':
+        baseAmount = 500000; // Much higher limit for automotive
+        break;
+      case 'jewelry':
+        baseAmount = 200000; // Very high limit for jewelry
+        break;
+      default:
+        baseAmount = 50000; // Default limit
+    }
+
+    // Adjust based on business size
+    const businessSize = this.businessForm?.get('businessSize')?.value || 'small';
+    switch (businessSize) {
+      case 'enterprise':
+        baseAmount *= 2.0; // 2x increase for enterprise
+        break;
+      case 'large':
+        baseAmount *= 1.5; // 1.5x increase for large business
+        break;
+      case 'medium':
+        baseAmount *= 1.2; // 20% increase for medium business
+        break;
+      case 'small':
+        baseAmount *= 1.0; // No change for small business
+        break;
+    }
+
+    // Adjust based on business age (if available)
+    const businessAge = this.businessForm?.get('businessAge')?.value || 1;
+    if (businessAge >= 5) {
+      baseAmount *= 1.3; // 30% increase for established businesses
+    } else if (businessAge >= 2) {
+      baseAmount *= 1.1; // 10% increase for growing businesses
+    }
+
+    return Math.round(baseAmount);
   }
 }

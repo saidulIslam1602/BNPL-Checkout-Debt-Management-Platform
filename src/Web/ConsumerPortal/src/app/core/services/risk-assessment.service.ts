@@ -68,30 +68,15 @@ export class RiskAssessmentService {
       let approvalStatus: 'approved' | 'declined' | 'manual_review' = 'approved';
       let maxApprovedAmount = requestedAmount;
 
-      // Adjust based on amount
-      if (requestedAmount > 30000) {
-        creditScore -= 50;
-      } else if (requestedAmount > 15000) {
-        creditScore -= 25;
-      }
+      // Dynamic amount-based adjustment
+      const amountAdjustment = this.calculateAmountBasedAdjustment(requestedAmount);
+      creditScore += amountAdjustment;
 
-      // Determine risk level and approval
-      if (creditScore >= 700) {
-        riskLevel = 'low';
-        maxApprovedAmount = Math.min(50000, requestedAmount * 1.2);
-      } else if (creditScore >= 600) {
-        riskLevel = 'medium';
-        maxApprovedAmount = Math.min(25000, requestedAmount);
-      } else {
-        riskLevel = 'high';
-        if (creditScore < 550) {
-          approvalStatus = 'declined';
-          maxApprovedAmount = 0;
-        } else {
-          approvalStatus = 'manual_review';
-          maxApprovedAmount = Math.min(10000, requestedAmount * 0.8);
-        }
-      }
+      // Calculate dynamic approval limits based on credit score and income
+      const approvalLimits = this.calculateApprovalLimits(creditScore, requestedAmount, annualIncome);
+      riskLevel = approvalLimits.riskLevel;
+      maxApprovedAmount = approvalLimits.maxApprovedAmount;
+      approvalStatus = approvalLimits.approvalStatus;
 
       // Determine recommended BNPL options
       const recommendedOptions: string[] = [];
@@ -267,6 +252,116 @@ export class RiskAssessmentService {
         return 'Høy risiko - Ustabil økonomi eller dårlig betalingshistorikk';
       default:
         return 'Ukjent risikonivå';
+    }
+  }
+
+  /**
+   * Calculate amount-based adjustment for credit score
+   */
+  private calculateAmountBasedAdjustment(requestedAmount: number): number {
+    // Progressive adjustment based on amount tiers
+    if (requestedAmount > 100000) {
+      return -80; // High penalty for very large amounts
+    } else if (requestedAmount > 50000) {
+      return -50; // Medium penalty for large amounts
+    } else if (requestedAmount > 30000) {
+      return -30; // Small penalty for medium-large amounts
+    } else if (requestedAmount > 15000) {
+      return -15; // Very small penalty for medium amounts
+    } else if (requestedAmount > 5000) {
+      return 0; // No adjustment for normal amounts
+    } else {
+      return 10; // Small bonus for small amounts (lower risk)
+    }
+  }
+
+  /**
+   * Calculate dynamic approval limits based on credit score and income
+   */
+  private calculateApprovalLimits(creditScore: number, requestedAmount: number, annualIncome: number): {
+    riskLevel: 'low' | 'medium' | 'high';
+    maxApprovedAmount: number;
+    approvalStatus: 'approved' | 'declined' | 'manual_review';
+  } {
+    // Calculate income-based multiplier
+    const incomeMultiplier = this.calculateIncomeMultiplier(annualIncome);
+    
+    // Calculate base approval amount based on credit score
+    const baseApprovalAmount = this.calculateBaseApprovalAmount(creditScore);
+    
+    // Calculate final approval amount considering income
+    const maxApprovedAmount = Math.min(
+      baseApprovalAmount * incomeMultiplier,
+      requestedAmount * 1.5, // Never approve more than 150% of requested
+      annualIncome * 0.3 // Never approve more than 30% of annual income
+    );
+
+    // Determine risk level and approval status
+    if (creditScore >= 750) {
+      return {
+        riskLevel: 'low',
+        maxApprovedAmount: Math.max(maxApprovedAmount, 10000),
+        approvalStatus: 'approved'
+      };
+    } else if (creditScore >= 650) {
+      return {
+        riskLevel: 'medium',
+        maxApprovedAmount: Math.max(maxApprovedAmount, 5000),
+        approvalStatus: 'approved'
+      };
+    } else if (creditScore >= 550) {
+      return {
+        riskLevel: 'high',
+        maxApprovedAmount: Math.max(maxApprovedAmount, 2000),
+        approvalStatus: 'manual_review'
+      };
+    } else {
+      return {
+        riskLevel: 'high',
+        maxApprovedAmount: 0,
+        approvalStatus: 'declined'
+      };
+    }
+  }
+
+  /**
+   * Calculate income-based multiplier for approval amounts
+   */
+  private calculateIncomeMultiplier(annualIncome: number): number {
+    if (annualIncome >= 1000000) {
+      return 2.0; // 2x multiplier for very high income
+    } else if (annualIncome >= 750000) {
+      return 1.5; // 1.5x multiplier for high income
+    } else if (annualIncome >= 500000) {
+      return 1.2; // 1.2x multiplier for upper-middle income
+    } else if (annualIncome >= 300000) {
+      return 1.0; // Standard multiplier
+    } else if (annualIncome >= 200000) {
+      return 0.8; // 0.8x multiplier for lower income
+    } else {
+      return 0.6; // 0.6x multiplier for very low income
+    }
+  }
+
+  /**
+   * Calculate base approval amount based on credit score
+   */
+  private calculateBaseApprovalAmount(creditScore: number): number {
+    // Progressive approval amounts based on credit score
+    if (creditScore >= 800) {
+      return 100000; // Up to 100k for excellent credit
+    } else if (creditScore >= 750) {
+      return 75000; // Up to 75k for very good credit
+    } else if (creditScore >= 700) {
+      return 50000; // Up to 50k for good credit
+    } else if (creditScore >= 650) {
+      return 30000; // Up to 30k for fair credit
+    } else if (creditScore >= 600) {
+      return 15000; // Up to 15k for poor credit
+    } else if (creditScore >= 550) {
+      return 5000; // Up to 5k for very poor credit
+    } else {
+      return 0; // No approval for extremely poor credit
     }
   }
 }

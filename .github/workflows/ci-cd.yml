@@ -1,0 +1,171 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  NODE_VERSION: '18.x'
+  AZURE_RESOURCE_GROUP: 'bnpl-platform-rg'
+  AKS_CLUSTER_NAME: 'bnpl-aks'
+  ACR_NAME: 'bnplacr'
+
+jobs:
+  # Build and Test Backend
+  build-backend:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Run Unit Tests
+      run: dotnet test tests/Unit/ --no-build --verbosity normal --logger trx --results-directory TestResults
+    
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: TestResults
+
+  # Build and Test Frontend
+  build-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [ConsumerPortal, MerchantPortal]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: 'src/Web/${{ matrix.app }}/package-lock.json'
+    
+    - name: Install dependencies
+      run: |
+        cd src/Web/${{ matrix.app }}
+        npm ci --legacy-peer-deps
+    
+    - name: Build
+      run: |
+        cd src/Web/${{ matrix.app }}
+        npm run build:prod
+    
+    - name: Run Tests
+      run: |
+        cd src/Web/${{ matrix.app }}
+        npm test -- --watch=false --browsers=ChromeHeadless
+
+  # Security Scan
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+    
+    - name: Upload Trivy results to GitHub Security
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  # Build and Push Docker Images
+  build-and-push:
+    needs: [build-backend, build-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      matrix:
+        service: [payment-api, risk-api, settlement-api, notification-api, api-gateway]
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Login to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.ACR_NAME }}.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+    
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.service }}:${{ github.sha }} \
+          -t ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.service }}:latest \
+          -f src/Services/${{ matrix.service }}/Dockerfile .
+        docker push ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.service }}:${{ github.sha }}
+        docker push ${{ env.ACR_NAME }}.azurecr.io/${{ matrix.service }}:latest
+
+  # Deploy to Kubernetes
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+    
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials \
+          --resource-group ${{ env.AZURE_RESOURCE_GROUP }} \
+          --name ${{ env.AKS_CLUSTER_NAME }}
+    
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -f k8s/configmap.yaml
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/
+        kubectl rollout status deployment/payment-api -n bnpl-platform
+    
+    - name: Verify deployment
+      run: |
+        kubectl get pods -n bnpl-platform
+        kubectl get services -n bnpl-platform
+
+  # Integration Tests (Post-Deployment)
+  integration-tests:
+    needs: deploy
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Run Integration Tests
+      env:
+        API_BASE_URL: ${{ secrets.API_BASE_URL }}
+      run: dotnet test tests/Integration/ --verbosity normal
