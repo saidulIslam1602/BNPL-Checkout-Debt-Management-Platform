@@ -1,0 +1,88 @@
+{
+  "name": "yourcompany-legacy-portal",
+  "version": "1.0.0",
+  "description": "YourCompany BNPL Legacy Portal - Knockout.js application for legacy system integration",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "gulp serve",
+    "build": "gulp build",
+    "build:prod": "gulp build:prod",
+    "test": "gulp test",
+    "lint": "gulp lint",
+    "watch": "gulp watch",
+    "clean": "gulp clean",
+    "serve": "gulp serve"
+  },
+  "keywords": [
+    "knockout",
+    "knockoutjs",
+    "legacy",
+    "portal",
+    "bnpl",
+    "yourcompany",
+    "norway",
+    "fintech",
+    "payments"
+  ],
+  "author": "YourCompany BNPL Team",
+  "license": "MIT",
+  "dependencies": {
+    "knockout": "^3.5.1",
+    "jquery": "^3.7.0",
+    "bootstrap": "^5.3.0",
+    "moment": "^2.29.4",
+    "lodash": "^4.17.21",
+    "axios": "^1.5.0",
+    "chart.js": "^4.4.0",
+    "datatables.net": "^1.13.6",
+    "datatables.net-bs5": "^1.13.6",
+    "select2": "^4.1.0-rc.0",
+    "sweetalert2": "^11.7.0",
+    "toastr": "^2.1.4",
+    "js-cookie": "^3.0.0",
+    "crypto-js": "^4.1.1",
+    "numeral": "^2.0.6",
+    "date-fns": "^2.30.0"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-sass": "^5.1.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-watch": "^5.0.1",
+    "gulp-browser-sync": "^2.29.0",
+    "gulp-eslint": "^6.0.0",
+    "gulp-jasmine": "^4.0.0",
+    "gulp-karma": "^0.0.5",
+    "karma": "^6.4.0",
+    "karma-jasmine": "^5.1.0",
+    "karma-chrome-launcher": "^3.2.0",
+    "karma-firefox-launcher": "^2.1.2",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "eslint": "^8.47.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "sass": "^1.64.0",
+    "browser-sync": "^2.29.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "ie >= 11"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/bnpl-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourcompany/bnpl-platform/issues"
+  },
+  "homepage": "https://github.com/yourcompany/bnpl-platform#readme"
+}

@@ -12,6 +12,7 @@ using YourCompanyBNPL.Payment.API.Data;
 using YourCompanyBNPL.Payment.API.Services;
 using YourCompanyBNPL.Payment.API.Mappings;
 using YourCompanyBNPL.Payment.API.Validators;
+using YourCompanyBNPL.Payment.API.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,8 @@ builder.Services.AddScoped<IPaymentWebhookService, PaymentWebhookService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
 builder.Services.AddScoped<IFraudDetectionService, FraudDetectionService>();
 builder.Services.AddScoped<IPaymentTokenizationService, PaymentTokenizationService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // HTTP clients
 builder.Services.AddHttpClient();
@@ -81,7 +84,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "default-secret-key-for-development-only"))
         };
-    });
+    })
+    .AddSaml2(); // Add SAML authentication
+
+// Add SAML configuration
+builder.Services.AddSamlAuthentication(builder.Configuration);
+
+// Add OpenID Connect configuration
+builder.Services.AddOpenIdConnectAuthentication(builder.Configuration);
+
+// Add Azure AD configuration
+builder.Services.AddAzureAdAuthentication(builder.Configuration);
+builder.Services.AddAzureAdAuthorization(builder.Configuration);
 
 builder.Services.AddAuthorization(options =>
 {
@@ -168,6 +182,16 @@ builder.Services.AddCors(options =>
 // Rate limiting (basic implementation)
 builder.Services.AddMemoryCache();
 
+// Session support for SAML
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
@@ -185,6 +209,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowSpecificOrigins");
 
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 

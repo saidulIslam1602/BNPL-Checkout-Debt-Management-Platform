@@ -1,0 +1,92 @@
+{
+  "name": "yourcompany-bnpl-realtime-api",
+  "version": "1.0.0",
+  "description": "YourCompany BNPL Real-time API - Node.js microservice for real-time notifications and WebSocket connections",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "build": "npm run lint && npm test",
+    "docker:build": "docker build -t yourcompany-bnpl-realtime-api .",
+    "docker:run": "docker run -p 5005:5005 yourcompany-bnpl-realtime-api"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "websocket",
+    "realtime",
+    "bnpl",
+    "yourcompany",
+    "norway",
+    "fintech",
+    "payments",
+    "notifications"
+  ],
+  "author": "YourCompany BNPL Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.7.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^6.10.0",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.3.1",
+    "winston": "^3.10.0",
+    "winston-daily-rotate-file": "^4.7.1",
+    "redis": "^4.6.7",
+    "ioredis": "^5.3.2",
+    "mongoose": "^7.5.0",
+    "axios": "^1.5.0",
+    "node-cron": "^3.0.2",
+    "uuid": "^9.0.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "joi": "^17.9.2",
+    "express-async-errors": "^3.1.1",
+    "http-status-codes": "^2.2.0",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "multer": "^1.4.5-lts.1",
+    "sharp": "^0.32.5",
+    "nodemailer": "^6.9.4",
+    "twilio": "^4.15.0",
+    "firebase-admin": "^11.10.1",
+    "bull": "^4.11.3",
+    "ioredis": "^5.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.6.2",
+    "supertest": "^6.3.3",
+    "eslint": "^8.47.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-standard": "^5.0.0",
+    "@types/jest": "^29.5.4",
+    "eslint-plugin-jest": "^27.4.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourcompany/bnpl-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourcompany/bnpl-platform/issues"
+  },
+  "homepage": "https://github.com/yourcompany/bnpl-platform#readme"
+}

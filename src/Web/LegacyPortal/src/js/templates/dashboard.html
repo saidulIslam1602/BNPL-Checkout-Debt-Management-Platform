@@ -1,0 +1,236 @@
+<!-- Dashboard Template -->
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Dashboard</h1>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title" data-bind="text: stats().totalPayments || 0"></h4>
+                        <p class="card-text">Total Payments</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-credit-card fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title" data-bind="text: stats().totalRevenue || 0"></h4>
+                        <p class="card-text">Total Revenue</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-chart-line fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title" data-bind="text: stats().totalCustomers || 0"></h4>
+                        <p class="card-text">Total Customers</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="card-title" data-bind="text: stats().activeMerchants || 0"></h4>
+                        <p class="card-text">Active Merchants</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-store fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-8 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Payment Volume</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="paymentChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Revenue by Category</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Growth Chart -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Customer Growth</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="customerChart" height="50"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Row -->
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Recent Payments</h5>
+                <a href="#payments" class="btn btn-sm btn-outline-primary" data-bind="click: app.navigateToPayments">
+                    View All
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: recentPayments">
+                            <tr>
+                                <td>
+                                    <a href="#" data-bind="text: id, click: $parent.viewPayment.bind($parent, $data)"></a>
+                                </td>
+                                <td data-bind="text: customerName"></td>
+                                <td data-bind="text: $parent.app.formatCurrency(amount)"></td>
+                                <td>
+                                    <span class="badge" data-bind="css: {
+                                        'bg-success': status === 'completed',
+                                        'bg-warning': status === 'pending',
+                                        'bg-danger': status === 'failed'
+                                    }, text: status"></span>
+                                </td>
+                                <td data-bind="text: $parent.app.formatDate(createdAt)"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">Recent Customers</h5>
+                <a href="#customers" class="btn btn-sm btn-outline-primary" data-bind="click: app.navigateToCustomers">
+                    View All
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind="foreach: recentCustomers">
+                            <tr>
+                                <td>
+                                    <a href="#" data-bind="text: name, click: $parent.viewCustomer.bind($parent, $data)"></a>
+                                </td>
+                                <td data-bind="text: email"></td>
+                                <td>
+                                    <span class="badge" data-bind="css: {
+                                        'bg-success': status === 'active',
+                                        'bg-warning': status === 'pending',
+                                        'bg-danger': status === 'inactive'
+                                    }, text: status"></span>
+                                </td>
+                                <td data-bind="text: $parent.app.formatDate(createdAt)"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alerts Row -->
+<div class="row" data-bind="if: alerts().length > 0">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">System Alerts</h5>
+            </div>
+            <div class="card-body">
+                <div data-bind="foreach: alerts">
+                    <div class="alert" data-bind="css: {
+                        'alert-danger': type === 'error',
+                        'alert-warning': type === 'warning',
+                        'alert-info': type === 'info',
+                        'alert-success': type === 'success'
+                    }">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong data-bind="text: title"></strong>
+                                <p class="mb-0" data-bind="text: message"></p>
+                            </div>
+                            <button type="button" class="btn-close" data-bind="click: $parent.dismissAlert.bind($parent, $data)"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div data-bind="if: isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading dashboard data...</p>
+</div>

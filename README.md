@@ -1,356 +1,371 @@
-# 🏦 BNPL Checkout & Debt Management Platform
+# YourCompany BNPL Checkout Debt Management Platform
 
-A comprehensive **Buy Now Pay Later (BNPL)** platform designed for the Norwegian market, featuring microservices architecture, real-time risk assessment, and complete debt management capabilities.
+A comprehensive fintech solution for Buy Now Pay Later (BNPL) services in Norway, built with modern microservices architecture and industry-standard technologies.
 
-## 🎯 Overview
+## 🚀 Overview
 
-This enterprise-grade BNPL platform provides a complete solution for merchants and consumers, with specialized features for the Norwegian financial market including Vipps integration, BankID authentication, and PSD2 compliance.
-
-### ✨ Key Features
-
-- 🛒 **Complete BNPL Checkout Flow** - Multi-step checkout with real-time risk assessment
-- 💳 **Multiple Payment Options** - 3, 4, 6, 12, and 24-month payment plans
-- 🇳🇴 **Norwegian Market Integration** - Vipps, BankID, DNB Open Banking
-- 🔒 **Advanced Security** - PSD2 compliance, fraud detection, SCA
-- 📱 **Progressive Web Apps** - Consumer and Merchant portals with offline support
-- ⚡ **Real-time Processing** - Event-driven architecture with Azure Functions
-- 📊 **Comprehensive Analytics** - Risk assessment, payment tracking, reporting
-- 🏗️ **Microservices Architecture** - Scalable, maintainable, cloud-native design
+This platform provides a complete BNPL solution including:
+- **Payment Processing**: Secure payment handling with multiple payment methods
+- **Risk Assessment**: AI-powered risk evaluation for BNPL applications
+- **Real-time Notifications**: WebSocket-based real-time communication
+- **Settlement Management**: Automated settlement processing
+- **Multi-tenant Architecture**: Support for multiple merchants and customers
+- **Enterprise Authentication**: SAML, OpenID Connect, and Azure AD integration
 
 ## 🏗️ Architecture
 
-### System Components
+### Microservices
+- **Payment API** (.NET 8): Core payment processing and BNPL logic
+- **Risk Assessment API** (.NET 8): Risk evaluation and fraud detection
+- **Notification API** (.NET 8): Email, SMS, and push notifications
+- **Settlement API** (.NET 8): Automated settlement processing
+- **Real-time API** (Node.js): WebSocket connections and real-time events
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Consumer Portal│    │ Merchant Portal │    │   API Gateway   │
-│   (Angular 17)  │    │   (Angular 17)  │    │   (Ocelot)      │
-└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
-          │                      │                      │
-          └──────────────────────┼──────────────────────┘
-                                 │
-                    ┌─────────────┴─────────────┐
-                    │                           │
-         ┌─────────▼─────────┐    ┌─────────▼─────────┐
-         │   Payment API     │    │   Risk Assessment  │
-         │   (.NET 8)        │    │   API (.NET 8)     │
-         └─────────┬─────────┘    └─────────┬─────────┘
-                   │                        │
-         ┌─────────▼─────────┐    ┌─────────▼─────────┐
-         │ Settlement API    │    │ Notification API  │
-         │   (.NET 8)        │    │   (.NET 8)        │
-         └───────────────────┘    └───────────────────┘
-```
+### Web Applications
+- **Admin Portal** (Vue.js 3): Administrative interface for system management
+- **Legacy Portal** (Knockout.js): Legacy system integration and support
 
-### Technology Stack
+### Infrastructure
+- **SQL Server**: Primary database for transactional data
+- **MongoDB**: Document storage for logs and analytics
+- **Redis**: Caching and session management
+- **Elasticsearch**: Log aggregation and search
+- **Kibana**: Log analysis and visualization
+- **Prometheus**: Metrics collection
+- **Grafana**: Monitoring dashboards
+- **Nginx**: Reverse proxy and load balancing
 
-**Backend Services (.NET 8)**
-- Payment API - Core BNPL processing and payment management
-- Risk Assessment API - Credit scoring and fraud detection
-- Settlement API - Payment settlement and reconciliation
-- Notification API - Multi-channel communication (email, SMS, push)
+## 🛠️ Technology Stack
 
-**Frontend Applications (Angular 17)**
-- Consumer Portal - PWA for end customers
-- Merchant Portal - Business dashboard and analytics
+### Backend
+- **.NET 8**: Primary backend framework
+- **Node.js 18**: Real-time services
+- **Entity Framework Core**: ORM
+- **MediatR**: CQRS pattern implementation
+- **FluentValidation**: Input validation
+- **AutoMapper**: Object mapping
+- **Serilog**: Structured logging
 
-**Infrastructure & DevOps**
-- Docker & Docker Compose
-- Kubernetes (K8s) manifests
-- Terraform (Azure infrastructure)
-- GitHub Actions (CI/CD)
-- Prometheus + Grafana (monitoring)
-- Redis (caching)
-- SQL Server (database)
+### Frontend
+- **Vue.js 3**: Modern admin interface
+- **Knockout.js**: Legacy portal
+- **Bootstrap 5**: UI framework
+- **Chart.js**: Data visualization
+- **Socket.IO**: Real-time communication
+
+### Authentication & Security
+- **JWT**: Token-based authentication
+- **SAML 2.0**: Enterprise SSO
+- **OpenID Connect**: Modern authentication
+- **Azure AD**: Microsoft identity integration
+- **BankID**: Norwegian digital identity
+- **FEIDE**: Norwegian education sector
+
+### DevOps & Monitoring
+- **Docker**: Containerization
+- **Docker Compose**: Multi-container orchestration
+- **Gulp**: Build automation
+- **ESLint**: Code quality
+- **Jest**: Testing framework
+
+## 📋 Prerequisites
+
+- **Node.js** 18.0.0 or higher
+- **.NET 8 SDK**
+- **Docker** and **Docker Compose**
+- **Git**
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 1. Clone the Repository
+```bash
+git clone https://github.com/yourcompany/bnpl-platform.git
+cd bnpl-platform
+```
 
-- Docker Desktop (v20.10+)
-- .NET SDK 8.0
-- Node.js 20+ (for Angular applications)
-- kubectl (v1.28+)
-- Azure CLI (v2.50+)
+### 2. Install Dependencies
+```bash
+# Install root dependencies
+npm install
 
-### Local Development
+# Install all service dependencies
+npm run install:all
+```
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd "BNPL Checkout & Debt Management Platform"
-   ```
+### 3. Environment Setup
+```bash
+# Copy environment files
+cp .env.example .env
 
-2. **Start infrastructure services**
-   ```bash
-   docker-compose up -d
-   ```
+# Edit environment variables
+nano .env
+```
 
-3. **Configure environment**
-   ```bash
-   cp appsettings.template.json appsettings.json
-   # Update with your configuration values
-   ```
+### 4. Start Services
+```bash
+# Start all services with Docker Compose
+npm run start:services
 
-4. **Start backend services**
-   ```bash
-   # Payment API
-   cd src/Services/Payment.API
-   dotnet run
+# Or use Docker Compose directly
+docker-compose up -d
+```
 
-   # Risk Assessment API
-   cd src/Services/Risk.API
-   dotnet run
+### 5. Access the Platform
+- **Admin Portal**: http://localhost:4202
+- **Legacy Portal**: http://localhost:4203
+- **API Documentation**: http://localhost:5000/swagger
+- **Grafana**: http://localhost:3000 (admin/admin)
+- **Kibana**: http://localhost:5601
 
-   # Settlement API
-   cd src/Services/Settlement.API
-   dotnet run
+## 🔧 Development
 
-   # Notification API
-   cd src/Services/Notification.API
-   dotnet run
-   ```
+### Build Commands
+```bash
+# Development build
+npm run build:dev
 
-5. **Start frontend applications**
-   ```bash
-   # Consumer Portal
-   cd src/Web/ConsumerPortal
-   npm install
-   ng serve --port 4201
+# Production build
+npm run build:prod
 
-   # Merchant Portal
-   cd src/Web/MerchantPortal
-   npm install
-   ng serve --port 4200
-   ```
+# Build specific services
+npm run build:services
+npm run build:web
+```
 
-### Access Points
+### Development Server
+```bash
+# Start development environment
+npm run dev
 
-- **Consumer Portal**: http://localhost:4201
-- **Merchant Portal**: http://localhost:4200
-- **API Gateway**: http://localhost:5000
-- **Payment API**: http://localhost:5001
-- **Risk API**: http://localhost:5002
-- **Settlement API**: http://localhost:5003
-- **Notification API**: http://localhost:5004
+# Watch for changes
+npm run watch
+```
+
+### Testing
+```bash
+# Run all tests
+npm test
+
+# Test specific services
+npm run test:services
+npm run test:web
+```
+
+## 🐳 Docker
+
+### Build Images
+```bash
+npm run docker:build
+```
+
+### Run Containers
+```bash
+npm run docker:run
+```
+
+### Stop Containers
+```bash
+npm run docker:stop
+```
+
+### View Logs
+```bash
+npm run logs:services
+```
+
+## 📊 Monitoring
+
+### Health Checks
+```bash
+npm run health:check
+```
+
+### Metrics
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000
+
+### Logs
+- **Kibana**: http://localhost:5601
+- **Elasticsearch**: http://localhost:9200
+
+## 🔐 Authentication
+
+### SAML Configuration
+1. Configure SAML identity providers in `appsettings.json`
+2. Set up certificates for signing and encryption
+3. Configure metadata URLs for each provider
+
+### OpenID Connect
+1. Register applications with identity providers
+2. Configure client IDs and secrets
+3. Set up redirect URIs
+
+### Azure AD
+1. Register application in Azure AD
+2. Configure API permissions
+3. Set up client credentials
 
 ## 📁 Project Structure
 
 ```
-BNPL Checkout & Debt Management Platform/
-├── 📁 src/
-│   ├── 📁 Services/                    # Backend Microservices
-│   │   ├── Payment.API/               # Core payment processing
-│   │   ├── Risk.API/                  # Risk assessment & fraud detection
-│   │   ├── Settlement.API/            # Payment settlement
-│   │   └── Notification.API/          # Multi-channel notifications
-│   ├── 📁 Functions/                   # Azure Functions
-│   │   ├── PaymentProcessor/          # Payment processing functions
-│   │   ├── PaymentCollection/         # Automatic collection
-│   │   └── NotificationScheduler/     # Scheduled notifications
-│   ├── 📁 Web/                        # Frontend Applications
-│   │   ├── ConsumerPortal/            # Consumer PWA (Angular 17)
-│   │   └── MerchantPortal/            # Merchant dashboard (Angular 17)
-│   ├── 📁 Gateway/                    # API Gateway
-│   │   └── API.Gateway/               # Ocelot API Gateway
-│   └── 📁 Shared/                     # Shared Libraries
-│       ├── Common/                    # Common models and utilities
-│       ├── Events/                    # Event definitions
-│       └── Infrastructure/            # Cross-cutting concerns
-├── 📁 infrastructure/                 # Infrastructure as Code
-│   └── terraform/                     # Azure Terraform configurations
-├── 📁 k8s/                           # Kubernetes manifests
-├── 📁 monitoring/                     # Monitoring configurations
-│   ├── grafana/                      # Grafana dashboards
-│   └── prometheus.yml                # Prometheus configuration
-├── 📁 docs/                          # Documentation
-│   ├── API_DOCUMENTATION.md          # Complete API documentation
-│   └── DEPLOYMENT_GUIDE.md           # Deployment instructions
-└── 📁 tests/                         # Test projects
-    ├── Unit/                         # Unit tests
-    └── Integration/                  # Integration tests
+src/
+├── Services/                 # Microservices
+│   ├── Payment.API/         # Payment processing
+│   ├── RiskAssessment.API/  # Risk evaluation
+│   ├── Notification.API/    # Notifications
+│   ├── Settlement.API/      # Settlement processing
+│   └── RealTime.Node.API/   # Real-time services
+├── Web/                     # Web applications
+│   ├── AdminPortal/         # Vue.js admin interface
+│   └── LegacyPortal/        # Knockout.js legacy portal
+└── Shared/                  # Shared libraries
+    ├── Common/              # Common utilities
+    ├── Models/              # Data models
+    └── Services/            # Shared services
 ```
-
-## 🇳🇴 Norwegian Market Features
-
-### Payment Integration
-- **Vipps** - Mobile payment integration
-- **BankID** - Digital identity authentication
-- **DNB Open Banking** - Account aggregation and payment initiation
-- **Norwegian SSN Validation** - Personnummer validation
-- **Postal Code Validation** - Norwegian postal code lookup
-
-### Compliance & Security
-- **PSD2 Compliance** - Strong Customer Authentication (SCA)
-- **GDPR Compliance** - Data protection and privacy
-- **Norwegian Financial Regulations** - Compliance with local laws
-- **Fraud Detection** - Advanced ML-based fraud prevention
-
-### Localization
-- **Norwegian Language** - Complete UI localization
-- **NOK Currency** - Norwegian Krone formatting
-- **Norwegian VAT** - 25% VAT calculation
-- **Local Address Format** - Norwegian address validation
-
-## 🔧 API Documentation
-
-### Core Endpoints
-
-**Payment API**
-- `POST /api/payments` - Create BNPL payment
-- `GET /api/payments/{id}` - Get payment details
-- `POST /api/payments/{id}/installments` - Process installment
-
-**Risk Assessment API**
-- `POST /api/risk/assess` - Assess credit risk
-- `POST /api/risk/fraud-check` - Fraud detection
-- `GET /api/risk/score/{customerId}` - Get credit score
-
-**Settlement API**
-- `POST /api/settlements` - Create settlement
-- `GET /api/settlements/{id}` - Get settlement status
-- `POST /api/settlements/{id}/process` - Process settlement
-
-**Notification API**
-- `POST /api/notifications/send` - Send notification
-- `POST /api/notifications/schedule` - Schedule notification
-- `GET /api/notifications/templates` - Get notification templates
-
-For complete API documentation, see [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
 
 ## 🚀 Deployment
 
-### Docker Deployment
-```bash
-# Build and start all services
-docker-compose up -d
+### Production Deployment
+1. Configure production environment variables
+2. Set up SSL certificates
+3. Configure database connections
+4. Deploy with Docker Compose
 
-# Check service health
-docker-compose ps
+### Environment Variables
+```bash
+# Database
+CONNECTION_STRINGS__DEFAULT_CONNECTION=...
+REDIS_CONNECTION_STRING=...
+MONGODB_CONNECTION_STRING=...
+
+# Authentication
+JWT__KEY=...
+JWT__ISSUER=...
+JWT__AUDIENCE=...
+
+# External Services
+EMAIL__SMTP_SERVER=...
+TWILIO__ACCOUNT_SID=...
 ```
 
-### Kubernetes Deployment
-```bash
-# Apply Kubernetes manifests
-kubectl apply -f k8s/
+## 📚 API Documentation
 
-# Check deployment status
-kubectl get pods -n bnpl-platform
-```
+### Swagger Documentation
+- **Payment API**: http://localhost:5000/swagger
+- **Risk Assessment API**: http://localhost:5002/swagger
+- **Notification API**: http://localhost:5003/swagger
+- **Settlement API**: http://localhost:5004/swagger
 
-### Azure Cloud Deployment
-```bash
-# Initialize Terraform
-cd infrastructure/terraform
-terraform init
-
-# Plan deployment
-terraform plan
-
-# Apply infrastructure
-terraform apply
-```
-
-For detailed deployment instructions, see [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md)
-
-## 📊 Monitoring & Observability
-
-### Metrics & Dashboards
-- **Prometheus** - Metrics collection
-- **Grafana** - Dashboards and visualization
-- **Application Insights** - Azure monitoring
-- **Seq** - Structured logging
-
-### Health Checks
-- All services include health check endpoints
-- Kubernetes liveness and readiness probes
-- Circuit breaker patterns for resilience
+### WebSocket API
+- **Real-time API**: ws://localhost:5005
 
 ## 🧪 Testing
 
-### Running Tests
+### Unit Tests
 ```bash
-# Unit tests
-dotnet test tests/Unit/
+# Run .NET tests
+dotnet test
 
-# Integration tests
-dotnet test tests/Integration/
-
-# E2E tests
-npm run e2e
+# Run Node.js tests
+npm test
 ```
 
-### Test Coverage
-- Unit tests for all services
-- Integration tests for API endpoints
-- E2E tests for critical user journeys
-- Performance tests for load scenarios
+### Integration Tests
+```bash
+# Run integration tests
+npm run test:integration
+```
 
-## 🔒 Security
-
-### Authentication & Authorization
-- JWT-based authentication
-- Role-based access control (RBAC)
-- API key management
-- OAuth 2.0 integration
-
-### Data Protection
-- Encryption at rest and in transit
-- PII data masking
-- Secure configuration management
-- Regular security audits
+### End-to-End Tests
+```bash
+# Run E2E tests
+npm run test:e2e
+```
 
 ## 📈 Performance
 
-### Scalability Features
-- Horizontal pod autoscaling
-- Redis caching layer
-- Database connection pooling
-- Async processing with Azure Functions
+### Load Testing
+```bash
+# Run load tests
+npm run test:load
+```
 
-### Performance Metrics
-- API response times < 200ms
-- 99.9% uptime SLA
-- Support for 10,000+ concurrent users
-- Sub-second payment processing
+### Performance Monitoring
+- **Grafana Dashboards**: Real-time performance metrics
+- **Prometheus**: Metrics collection
+- **Application Insights**: Detailed performance analysis
+
+## 🔒 Security
+
+### Security Features
+- **JWT Authentication**: Secure token-based auth
+- **Role-based Access Control**: Granular permissions
+- **Rate Limiting**: API protection
+- **Input Validation**: Comprehensive validation
+- **Audit Logging**: Complete audit trail
+- **Encryption**: Data encryption at rest and in transit
+
+### Security Best Practices
+- Regular security updates
+- Dependency vulnerability scanning
+- Code quality checks
+- Security testing
+- Penetration testing
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+### Code Standards
+- Follow ESLint configuration
+- Use TypeScript for new code
+- Write unit tests
+- Document public APIs
+- Follow Git commit conventions
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📞 Support
+## 🆘 Support
 
-For support and questions:
-- 📧 Email: support@yourcompany.com
-- 📚 Documentation: [docs/](docs/)
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/bnpl-platform/issues)
+### Documentation
+- [API Documentation](docs/api.md)
+- [Deployment Guide](docs/deployment.md)
+- [Troubleshooting](docs/troubleshooting.md)
 
-## 🎯 Roadmap
+### Contact
+- **Email**: support@yourcompany.com
+- **Slack**: #bnpl-platform
+- **Issues**: [GitHub Issues](https://github.com/yourcompany/bnpl-platform/issues)
 
-### Upcoming Features
-- [ ] Mobile app (React Native)
+## 🗺️ Roadmap
+
+### Version 2.0
+- [ ] Machine Learning risk models
 - [ ] Advanced analytics dashboard
-- [ ] Machine learning risk models
-- [ ] Multi-currency support
-- [ ] White-label solutions
+- [ ] Mobile applications
+- [ ] International expansion
+- [ ] Blockchain integration
 
-### Recent Updates
-- ✅ Complete microservices architecture
-- ✅ Norwegian market integration
-- ✅ PWA implementation
-- ✅ Comprehensive monitoring
-- ✅ CI/CD pipeline setup
+### Version 1.1
+- [ ] Performance optimizations
+- [ ] Additional payment methods
+- [ ] Enhanced reporting
+- [ ] API rate limiting improvements
+
+## 🙏 Acknowledgments
+
+- Norwegian fintech community
+- Open source contributors
+- Security researchers
+- Beta testers
 
 ---
 
-**Built with ❤️ for the Norwegian market** 🇳🇴
-
-*This platform demonstrates enterprise-level architecture patterns and is designed to showcase modern software development practices in the fintech domain.*
+**YourCompany BNPL Platform** - Empowering Norwegian businesses with flexible payment solutions.
