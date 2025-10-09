@@ -1,4 +1,4 @@
-# YourCompany BNPL Checkout Debt Management Platform
+# BNPL Checkout Debt Management Platform
 
 A comprehensive fintech solution for Buy Now Pay Later (BNPL) services in Norway, built with modern microservices architecture and industry-standard technologies.
 
@@ -394,4 +394,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**YourCompany BNPL Platform** - Empowering Norwegian businesses with flexible payment solutions.
+**BNPL Platform** - Empowering Norwegian businesses with flexible payment solutions.
