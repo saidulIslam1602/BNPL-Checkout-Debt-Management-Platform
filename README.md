@@ -1,374 +1,352 @@
 # BNPL Checkout Debt Management Platform
 
-A comprehensive fintech solution for Buy Now Pay Later (BNPL) services in Norway, built with modern microservices architecture and industry-standard technologies.
-
-##  Quick Links
-
-- **[Quick Start Guide](QUICK_START.md)** - Get up and running in 5 minutes
-- **[Recent Fixes Summary](FIXES_SUMMARY.md)** - Latest configuration fixes and improvements
-- **[Known Issues](KNOWN_ISSUES.md)** - Pre-existing issues and workarounds
-- **[API Documentation](docs/API_DOCUMENTATION.md)** - Complete API reference
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
-
-##  Important Notes
-
-> **Recent Configuration Updates**: All database names, namespaces, and infrastructure resources have been standardized to use `YourCompanyBNPL_*` naming convention. See [FIXES_SUMMARY.md](FIXES_SUMMARY.md) for complete details.
-
-> **Environment Variables Required**: Copy `.env.example` to `.env` and configure your credentials before starting services. See [QUICK_START.md](QUICK_START.md) for setup instructions.
-
-> **Known Compilation Errors**: Some pre-existing code issues require package installations. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for remediation steps.
+A comprehensive Buy Now Pay Later (BNPL) platform built with modern microservices architecture, featuring payment processing, risk assessment, and real-time notification systems.
 
 ## Overview
 
-This platform provides a complete BNPL solution including:
-- **Payment Processing**: Secure payment handling with multiple payment methods
-- **Risk Assessment**: AI-powered risk evaluation for BNPL applications
-- **Real-time Notifications**: WebSocket-based real-time communication
-- **Settlement Management**: Automated settlement processing
-- **Multi-tenant Architecture**: Support for multiple merchants and customers
-- **Enterprise Authentication**: SAML, OpenID Connect, and Azure AD integration
+This platform provides a complete BNPL solution with the following components:
 
-## Recent Updates
+### Core Services
+- **Payment Processing**: Multi-gateway payment handling (Stripe, Adyen, Nets, Vipps)
+- **Risk Assessment**: Credit scoring and fraud detection
+- **Settlement Management**: Automated merchant settlement processing
+- **Notification System**: Multi-channel notifications (Email, SMS, Push)
+- **Real-time Communication**: WebSocket-based event streaming
 
-The platform has been fully implemented with production-ready components:
-
-### Authentication & Security
-- Complete SAML 2.0 integration with Norwegian identity providers (BankID, FEIDE)
-- OpenID Connect support for Google, Microsoft, and generic providers
-- Azure AD/Entra ID integration with Microsoft Graph API
-- JWT-based authentication with role-based access control
-
-### Web Applications
-- Vue.js 3 Admin Portal with modern UI components and real-time updates
-- Knockout.js Legacy Portal for backward compatibility
-- Responsive design with Bootstrap 5 and Element Plus
-
-### Real-time Services
-- Node.js microservice with Socket.IO for WebSocket connections
-- Redis integration for caching and pub/sub messaging
-- Real-time notification system with multiple delivery channels
-
-### Build & Deployment
-- Gulp-based build system for multi-service orchestration
-- Docker Compose configuration for complete containerization
-- Production-ready Dockerfiles for all services
-- Comprehensive monitoring with Prometheus, Grafana, and ELK stack
-
-## Architecture
-
-### Microservices
-- **Payment API** (.NET 8): Core payment processing and BNPL logic
-- **Risk Assessment API** (.NET 8): Risk evaluation and fraud detection
-- **Notification API** (.NET 8): Email, SMS, and push notifications
-- **Settlement API** (.NET 8): Automated settlement processing
-- **Real-time API** (Node.js): WebSocket connections and real-time events
-
-### Web Applications
-- **Admin Portal** (Vue.js 3): Administrative interface for system management
-- **Legacy Portal** (Knockout.js): Legacy system integration and support
-
-### Infrastructure
-- **SQL Server**: Primary database for transactional data
-- **MongoDB**: Document storage for logs and analytics
-- **Redis**: Caching and session management
-- **Elasticsearch**: Log aggregation and search
-- **Kibana**: Log analysis and visualization
-- **Prometheus**: Metrics collection
-- **Grafana**: Monitoring dashboards
-- **Nginx**: Reverse proxy and load balancing
+### Architecture
+- Microservices-based .NET 8 backend
+- Node.js real-time service with Socket.IO
+- Angular 17 and Vue.js 3 frontend applications
+- Azure Functions for background processing
+- API Gateway with Ocelot
+- Comprehensive monitoring and logging
 
 ## Technology Stack
 
-### Backend
-- **.NET 8**: Primary backend framework
-- **Node.js 18**: Real-time services
-- **Entity Framework Core**: ORM
+### Backend Services
+- **.NET 8.0**: Primary framework for all APIs
+- **Entity Framework Core**: ORM for database operations
 - **MediatR**: CQRS pattern implementation
-- **FluentValidation**: Input validation
+- **FluentValidation**: Request validation
 - **AutoMapper**: Object mapping
 - **Serilog**: Structured logging
 
-### Frontend
-- **Vue.js 3**: Modern admin interface
-- **Knockout.js**: Legacy portal
+### Frontend Applications
+- **Angular 17**: Consumer and Merchant portals
+- **Vue.js 3**: Admin portal
+- **Knockout.js**: Legacy portal (backward compatibility)
+- **TypeScript**: Type-safe development
 - **Bootstrap 5**: UI framework
-- **Chart.js**: Data visualization
-- **Socket.IO**: Real-time communication
 
-### Authentication & Security
-- **JWT**: Token-based authentication
-- **SAML 2.0**: Enterprise SSO
-- **OpenID Connect**: Modern authentication
-- **Azure AD**: Microsoft identity integration
-- **BankID**: Norwegian digital identity
-- **FEIDE**: Norwegian education sector
+### Real-time Services
+- **Node.js 18+**: WebSocket server
+- **Socket.IO**: Real-time bidirectional communication
+- **Express**: HTTP server
 
-### DevOps & Monitoring
-- **Docker**: Containerization
-- **Docker Compose**: Multi-container orchestration
-- **Gulp**: Build automation
-- **ESLint**: Code quality
-- **Jest**: Testing framework
+### Background Processing
+- **Azure Functions v4**: Serverless background jobs
+  - Payment Processor
+  - Payment Collection
+  - Notification Scheduler
+
+### Databases & Caching
+- **SQL Server 2022**: Primary transactional database
+- **MongoDB 7**: Document storage for logs and events
+- **Redis 7**: Caching and session management
+
+### Infrastructure
+- **Docker & Docker Compose**: Containerization
+- **Kubernetes**: Orchestration (production)
+- **Azure**: Cloud infrastructure
+- **Terraform**: Infrastructure as Code
+- **Nginx**: Reverse proxy and load balancing
+
+### Monitoring & Logging
+- **Prometheus**: Metrics collection
+- **Grafana**: Dashboards and visualization
+- **Elasticsearch**: Log storage and search
+- **Kibana**: Log analysis
+- **Application Insights**: Application monitoring
 
 ## Prerequisites
 
-- **Node.js** 18.0.0 or higher
-- **.NET 8 SDK**
+- **.NET 8.0 SDK** or higher
+- **Node.js 18+** and npm
 - **Docker** and **Docker Compose**
+- **SQL Server 2022** (or Docker container)
+- **Redis 7** (or Docker container)
+- **MongoDB 7** (or Docker container)
 - **Git**
 
 ## Quick Start
 
-### 1. Clone the Repository
+### 1. Clone Repository
 ```bash
-git clone https://github.com/yourcompany/bnpl-platform.git
-cd bnpl-platform
+git clone https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform.git
+cd BNPL-Checkout-Debt-Management-Platform
 ```
 
-### 2. Install Dependencies
+### 2. Environment Setup
 ```bash
-# Install root dependencies
-npm install
-
-# Install all service dependencies
-npm run install:all
-```
-
-### 3. Environment Setup
-```bash
-# Copy environment files
+# Copy environment template
 cp .env.example .env
 
-# Edit environment variables
+# Edit with your configuration
 nano .env
 ```
 
-### 4. Start Services
+### 3. Start Infrastructure Services
 ```bash
-# Start all services with Docker Compose
-npm run start:services
-
-# Or use Docker Compose directly
-docker-compose up -d
+# Start databases and supporting services
+docker-compose up -d sqlserver redis mongodb elasticsearch kibana grafana prometheus
 ```
 
-### 5. Access the Platform
-- **Admin Portal**: http://localhost:4202
-- **Legacy Portal**: http://localhost:4203
-- **API Documentation**: http://localhost:5000/swagger
+### 4. Build and Run
+```bash
+# Restore NuGet packages
+dotnet restore
+
+# Build solution
+dotnet build
+
+# Run specific service (example: Payment API)
+cd src/Services/Payment.API
+dotnet run
+```
+
+### 5. Access Services
+- **Payment API**: http://localhost:5000/swagger
+- **Risk API**: http://localhost:5001/swagger
+- **Settlement API**: http://localhost:5002/swagger
+- **Notification API**: http://localhost:5003/swagger
 - **Grafana**: http://localhost:3000 (admin/admin)
 - **Kibana**: http://localhost:5601
 
-## Development
-
-### Build Commands
-```bash
-# Development build
-npm run build:dev
-
-# Production build
-npm run build:prod
-
-# Build specific services
-npm run build:services
-npm run build:web
-```
-
-### Development Server
-```bash
-# Start development environment
-npm run dev
-
-# Watch for changes
-npm run watch
-```
-
-### Testing
-```bash
-# Run all tests
-npm test
-
-# Test specific services
-npm run test:services
-npm run test:web
-```
-
-## Docker
-
-### Build Images
-```bash
-npm run docker:build
-```
-
-### Run Containers
-```bash
-npm run docker:run
-```
-
-### Stop Containers
-```bash
-npm run docker:stop
-```
-
-### View Logs
-```bash
-npm run logs:services
-```
-
-## Monitoring
-
-### Health Checks
-```bash
-npm run health:check
-```
-
-### Metrics
-- **Prometheus**: http://localhost:9090
-- **Grafana**: http://localhost:3000
-
-### Logs
-- **Kibana**: http://localhost:5601
-- **Elasticsearch**: http://localhost:9200
-
-## Authentication
-
-### SAML Configuration
-1. Configure SAML identity providers in `appsettings.json`
-2. Set up certificates for signing and encryption
-3. Configure metadata URLs for each provider
-
-### OpenID Connect
-1. Register applications with identity providers
-2. Configure client IDs and secrets
-3. Set up redirect URIs
-
-### Azure AD
-1. Register application in Azure AD
-2. Configure API permissions
-3. Set up client credentials
-
+## Project Structure
 ## Project Structure
 
 ```
-src/
-├── Services/                 # Microservices
-│   ├── Payment.API/         # Payment processing
-│   ├── RiskAssessment.API/  # Risk evaluation
-│   ├── Notification.API/    # Notifications
-│   ├── Settlement.API/      # Settlement processing
-│   └── RealTime.Node.API/   # Real-time services
-├── Web/                     # Web applications
-│   ├── AdminPortal/         # Vue.js admin interface
-│   └── LegacyPortal/        # Knockout.js legacy portal
-└── Shared/                  # Shared libraries
-    ├── Common/              # Common utilities
-    ├── Models/              # Data models
-    └── Services/            # Shared services
+BNPL-Checkout-Debt-Management-Platform/
+├── .github/
+│   └── workflows/           # CI/CD pipelines
+├── database/
+│   └── init/               # Database initialization scripts
+├── docs/                   # Documentation
+├── infrastructure/
+│   └── terraform/          # Infrastructure as Code
+├── k8s/                    # Kubernetes manifests
+├── monitoring/             # Prometheus & Grafana configs
+├── scripts/                # Build and deployment scripts
+├── src/
+│   ├── Functions/          # Azure Functions
+│   │   ├── NotificationScheduler/
+│   │   ├── PaymentCollection/
+│   │   └── PaymentProcessor/
+│   ├── Gateway/
+│   │   └── API.Gateway/    # Ocelot API Gateway
+│   ├── Services/           # Microservices
+│   │   ├── Notification.API/
+│   │   ├── Payment.API/
+│   │   ├── RealTime.Node.API/
+│   │   ├── Risk.API/
+│   │   └── Settlement.API/
+│   ├── Shared/             # Shared libraries
+│   │   ├── Common/
+│   │   ├── Events/
+│   │   └── Infrastructure/
+│   └── Web/                # Frontend applications
+│       ├── AdminPortal/    # Vue.js 3
+│       ├── ConsumerPortal/ # Angular 17
+│       ├── LegacyPortal/   # Knockout.js
+│       └── MerchantPortal/ # Angular 17
+└── tests/                  # Unit and integration tests
 ```
 
-## Deployment
+## Development
 
-### Production Deployment
-1. Configure production environment variables
-2. Set up SSL certificates
-3. Configure database connections
-4. Deploy with Docker Compose
+### Building the Solution
+```bash
+# Build all projects
+dotnet build
+
+# Build specific service
+cd src/Services/Payment.API
+dotnet build
+
+# Run tests
+dotnet test
+```
+
+### Running Services
+
+#### Backend Services
+```bash
+# Payment API
+cd src/Services/Payment.API
+dotnet run
+
+# Risk API
+cd src/Services/Risk.API
+dotnet run
+
+# Settlement API
+cd src/Services/Settlement.API
+dotnet run
+
+# Notification API
+cd src/Services/Notification.API
+dotnet run
+```
+
+#### Real-time Service
+```bash
+cd src/Services/RealTime.Node.API
+npm install
+npm start
+```
+
+#### Frontend Applications
+```bash
+# Consumer Portal (Angular 17)
+cd src/Web/ConsumerPortal
+npm install
+npm start
+
+# Merchant Portal (Angular 17)
+cd src/Web/MerchantPortal
+npm install
+npm start
+
+# Admin Portal (Vue.js 3)
+cd src/Web/AdminPortal
+npm install
+npm run dev
+```
+
+### Docker Deployment
+```bash
+# Start all services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+## Configuration
+
+### Database Connection Strings
+Configure in `appsettings.json` or environment variables:
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=YourCompanyBNPL_Payment;..."
+  }
+}
+```
 
 ### Environment Variables
-```bash
-# Database
-CONNECTION_STRINGS__DEFAULT_CONNECTION=...
-REDIS_CONNECTION_STRING=...
-MONGODB_CONNECTION_STRING=...
-
-# Authentication
-JWT__KEY=...
-JWT__ISSUER=...
-JWT__AUDIENCE=...
-
-# External Services
-EMAIL__SMTP_SERVER=...
-TWILIO__ACCOUNT_SID=...
-```
+Key environment variables (see `.env.example` for complete list):
+- `ASPNETCORE_ENVIRONMENT`: Development/Staging/Production
+- `ConnectionStrings__DefaultConnection`: SQL Server connection
+- `Redis__Configuration`: Redis connection string
+- `MongoDB__ConnectionString`: MongoDB connection
+- `JWT__SecretKey`: JWT signing key
+- `JWT__Issuer`: Token issuer
+- `JWT__Audience`: Token audience
 
 ## API Documentation
 
-### Swagger Documentation
-- **Payment API**: http://localhost:5000/swagger
-- **Risk Assessment API**: http://localhost:5002/swagger
-- **Notification API**: http://localhost:5003/swagger
-- **Settlement API**: http://localhost:5004/swagger
-
-### WebSocket API
-- **Real-time API**: ws://localhost:5005
+All APIs include Swagger/OpenAPI documentation:
+- **Payment API**: `http://localhost:5000/swagger`
+- **Risk API**: `http://localhost:5001/swagger`
+- **Settlement API**: `http://localhost:5002/swagger`
+- **Notification API**: `http://localhost:5003/swagger`
 
 ## Testing
 
 ### Unit Tests
 ```bash
-# Run .NET tests
-dotnet test
+# Run all unit tests
+dotnet test tests/Unit/
 
-# Run Node.js tests
-npm test
+# Run specific test project
+dotnet test tests/Unit/Payment.API.Tests/
 ```
 
 ### Integration Tests
 ```bash
 # Run integration tests
-npm run test:integration
+dotnet test tests/Integration/
 ```
 
-### End-to-End Tests
+## Monitoring & Logging
+
+### Accessing Monitoring Tools
+- **Grafana**: http://localhost:3000 (default: admin/admin)
+- **Prometheus**: http://localhost:9090
+- **Kibana**: http://localhost:5601
+- **Elasticsearch**: http://localhost:9200
+
+### Application Logs
+Logs are written to:
+- Console (structured JSON)
+- File system (`logs/` directory)
+- Elasticsearch (when configured)
+
+## Deployment
+
+### Azure Deployment
 ```bash
-# Run E2E tests
-npm run test:e2e
+# Deploy infrastructure with Terraform
+cd infrastructure/terraform
+terraform init
+terraform plan
+terraform apply
+
+# Deploy Azure Functions
+./scripts/deploy-functions.sh
 ```
 
-## Performance
-
-### Load Testing
+### Kubernetes Deployment
 ```bash
-# Run load tests
-npm run test:load
+# Apply Kubernetes manifests
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmap.yaml
+kubectl apply -f k8s/secrets.yaml
+kubectl apply -f k8s/
+
+# Check deployment status
+kubectl get pods -n bnpl-platform
+kubectl get services -n bnpl-platform
 ```
 
-### Performance Monitoring
-- **Grafana Dashboards**: Real-time performance metrics
-- **Prometheus**: Metrics collection
-- **Application Insights**: Detailed performance analysis
+## Security Considerations
 
-## Security
+- All API endpoints require authentication (JWT tokens)
+- Sensitive data encrypted at rest and in transit
+- Role-based access control (RBAC) implemented
+- Input validation on all endpoints
+- Rate limiting configured
+- SQL injection prevention through parameterized queries
+- XSS protection enabled
+- CORS configured for known origins
 
-### Security Features
-- **JWT Authentication**: Secure token-based auth
-- **Role-based Access Control**: Granular permissions
-- **Rate Limiting**: API protection
-- **Input Validation**: Comprehensive validation
-- **Audit Logging**: Complete audit trail
-- **Encryption**: Data encryption at rest and in transit
+## Known Limitations
 
-### Security Best Practices
-- Regular security updates
-- Dependency vulnerability scanning
-- Code quality checks
-- Security testing
-- Penetration testing
+1. **Authentication Services**: SAML 2.0, OpenID Connect, and Azure AD authentication temporarily disabled pending library API migration
+2. **Browser Support**: Optimized for modern browsers (Chrome, Firefox, Edge, Safari - latest 2 versions)
+3. **Database**: Currently supports SQL Server only
 
 ## Contributing
 
 1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests
-5. Submit a pull request
-
-### Code Standards
-- Follow ESLint configuration
-- Use TypeScript for new code
-- Write unit tests
-- Document public APIs
-- Follow Git commit conventions
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
@@ -376,38 +354,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-### Documentation
-- [API Documentation](docs/api.md)
-- [Deployment Guide](docs/deployment.md)
-- [Troubleshooting](docs/troubleshooting.md)
-
-### Contact
-- **Email**: support@yourcompany.com
-- **Slack**: #bnpl-platform
-- **Issues**: [GitHub Issues](https://github.com/yourcompany/bnpl-platform/issues)
-
-## Roadmap
-
-### Version 2.0
-- [ ] Machine Learning risk models
-- [ ] Advanced analytics dashboard
-- [ ] Mobile applications
-- [ ] International expansion
-- [ ] Blockchain integration
-
-### Version 1.1
-- [ ] Performance optimizations
-- [ ] Additional payment methods
-- [ ] Enhanced reporting
-- [ ] API rate limiting improvements
+For issues, questions, or contributions:
+- Open an issue on GitHub
+- Review existing documentation in the `/docs` folder
+- Check [AUTH_MIGRATION_REQUIRED.md](AUTH_MIGRATION_REQUIRED.md) for authentication service migration
 
 ## Acknowledgments
 
-- Norwegian fintech community
-- Open source contributors
-- Security researchers
-- Beta testers
-
----
-
-**BNPL Platform** - Empowering Norwegian businesses with flexible payment solutions.
+- Built with .NET 8.0, Angular 17, Vue.js 3, and Node.js
+- Uses industry-standard libraries and frameworks
+- Follows microservices best practices
+- Implements CQRS and event-driven architecture patterns
