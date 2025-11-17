@@ -32,7 +32,9 @@ jobs:
       run: dotnet build MerchantBNPL.sln --configuration Release --no-restore
     
     - name: Run Unit Tests
-      run: dotnet test tests/Unit/**/*.csproj --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+      run: |
+        dotnet test tests/Unit/Payment.API.Tests/Payment.API.Tests.csproj --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
+        dotnet test tests/Unit/Risk.API.Tests/Risk.API.Tests.csproj --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
     
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
