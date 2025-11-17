@@ -26,13 +26,13 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore MerchantBNPL.sln
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build MerchantBNPL.sln --configuration Release --no-restore
     
     - name: Run Unit Tests
-      run: dotnet test tests/Unit/ --no-build --verbosity normal --logger trx --results-directory TestResults
+      run: dotnet test MerchantBNPL.sln --filter "FullyQualifiedName~.Tests.Unit" --no-build --configuration Release --verbosity normal --logger trx --results-directory TestResults
     
     - name: Upload Test Results
       uses: actions/upload-artifact@v4
@@ -75,6 +75,9 @@ jobs:
   # Security Scan
   security-scan:
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      contents: read
     steps:
     - uses: actions/checkout@v4
     
@@ -87,7 +90,7 @@ jobs:
         output: 'trivy-results.sarif'
     
     - name: Upload Trivy results to GitHub Security
-      uses: github/codeql-action/upload-sarif@v3
+      uses: github/codeql-action/upload-sarif@v4
       with:
         sarif_file: 'trivy-results.sarif'
 
