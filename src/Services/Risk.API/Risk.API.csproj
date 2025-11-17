@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>RivertyBNPL.Risk.API</AssemblyName>
-    <RootNamespace>RivertyBNPL.Risk.API</RootNamespace>
+    <AssemblyName>YourCompanyBNPL.Risk.API</AssemblyName>
+    <RootNamespace>YourCompanyBNPL.Risk.API</RootNamespace>
     <UserSecretsId>risk-api-secrets</UserSecretsId>
   </PropertyGroup>
 

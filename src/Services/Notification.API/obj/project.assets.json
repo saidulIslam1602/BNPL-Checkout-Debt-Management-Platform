@@ -5205,7 +5205,7 @@
           "build/net6.0/xunit.runner.visualstudio.props": {}
         }
       },
-      "RivertyBNPL.Common/1.0.0": {
+      "YourCompanyBNPL.Common/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -5221,28 +5221,28 @@
           "System.ComponentModel.Annotations": "5.0.0"
         },
         "compile": {
-          "bin/placeholder/RivertyBNPL.Common.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Common.dll": {}
         },
         "runtime": {
-          "bin/placeholder/RivertyBNPL.Common.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Common.dll": {}
         }
       },
-      "RivertyBNPL.Events/1.0.0": {
+      "YourCompanyBNPL.Events/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
           "MediatR": "12.2.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/RivertyBNPL.Events.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Events.dll": {}
         },
         "runtime": {
-          "bin/placeholder/RivertyBNPL.Events.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Events.dll": {}
         }
       },
-      "RivertyBNPL.Infrastructure/1.0.0": {
+      "YourCompanyBNPL.Infrastructure/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -5264,18 +5264,18 @@
           "Microsoft.Extensions.Http": "8.0.0",
           "Polly": "8.2.0",
           "Polly.Extensions.Http": "3.0.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "RivertyBNPL.Events": "1.0.0",
           "Serilog.AspNetCore": "8.0.0",
           "Serilog.Sinks.ApplicationInsights": "4.0.0",
           "StackExchange.Redis": "2.7.10",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0",
+          "YourCompanyBNPL.Events": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/RivertyBNPL.Infrastructure.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Infrastructure.dll": {}
         },
         "runtime": {
-          "bin/placeholder/RivertyBNPL.Infrastructure.dll": {}
+          "bin/placeholder/YourCompanyBNPL.Infrastructure.dll": {}
         }
       }
     }
@@ -14215,17 +14215,17 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "RivertyBNPL.Common/1.0.0": {
+    "YourCompanyBNPL.Common/1.0.0": {
       "type": "project",
       "path": "../../Shared/Common/Common.csproj",
       "msbuildProject": "../../Shared/Common/Common.csproj"
     },
-    "RivertyBNPL.Events/1.0.0": {
+    "YourCompanyBNPL.Events/1.0.0": {
       "type": "project",
       "path": "../../Shared/Events/Events.csproj",
       "msbuildProject": "../../Shared/Events/Events.csproj"
     },
-    "RivertyBNPL.Infrastructure/1.0.0": {
+    "YourCompanyBNPL.Infrastructure/1.0.0": {
       "type": "project",
       "path": "../../Shared/Infrastructure/Infrastructure.csproj",
       "msbuildProject": "../../Shared/Infrastructure/Infrastructure.csproj"
@@ -14262,9 +14262,6 @@
       "Moq >= 4.20.70",
       "Polly >= 8.2.0",
       "Polly.Extensions.Http >= 3.0.0",
-      "RivertyBNPL.Common >= 1.0.0",
-      "RivertyBNPL.Events >= 1.0.0",
-      "RivertyBNPL.Infrastructure >= 1.0.0",
       "SendGrid >= 9.29.3",
       "Serilog.AspNetCore >= 8.0.0",
       "Serilog.Sinks.Console >= 5.0.1",
@@ -14272,6 +14269,9 @@
       "Swashbuckle.AspNetCore >= 6.5.0",
       "Testcontainers >= 3.7.0",
       "Twilio >= 6.14.1",
+      "YourCompanyBNPL.Common >= 1.0.0",
+      "YourCompanyBNPL.Events >= 1.0.0",
+      "YourCompanyBNPL.Infrastructure >= 1.0.0",
       "xunit >= 2.6.5",
       "xunit.runner.visualstudio >= 2.5.6"
     ]
@@ -14282,11 +14282,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj",
+      "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj",
       "projectName": "YourCompanyBNPL.Notification.API",
-      "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj",
+      "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj",
       "packagesPath": "/home/saidul/.nuget/packages/",
-      "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/obj/",
+      "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -14301,14 +14301,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-              "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+            "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+              "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
             },
-            "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-              "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+            "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+              "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
             },
-            "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-              "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+            "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+              "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
             }
           }
         }
@@ -14500,7 +14500,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -4,7 +4,7 @@
 
 The Payment API has been significantly enhanced with advanced features for enterprise-grade payment processing, fraud detection, tokenization, and settlement management. These enhancements provide a comprehensive solution for BNPL (Buy Now, Pay Later) operations with robust security, compliance, and operational capabilities.
 
-## 🚀 New Features
+##  New Features
 
 ### 1. Advanced Payment Processing Features
 
@@ -80,7 +80,7 @@ The Payment API has been significantly enhanced with advanced features for enter
 - **Daily Summaries**: Daily settlement breakdowns
 - **Currency Analysis**: Multi-currency settlement analytics
 
-## 🛡️ Security Enhancements
+##  Security Enhancements
 
 ### Data Protection
 - **Encryption at Rest**: AES encryption for sensitive payment data
@@ -94,7 +94,7 @@ The Payment API has been significantly enhanced with advanced features for enter
 - **Webhook Security**: HMAC signature verification for webhooks
 - **Audit Trail**: Comprehensive audit logging for all operations
 
-## 📊 New API Endpoints
+##  New API Endpoints
 
 ### Payment Tokens
 ```
@@ -151,7 +151,7 @@ POST   /api/v1/webhooks/retry-failed           # Retry failed webhooks
 - **Customers**: Added fraud flags and token relationships
 - **Merchants**: Added webhook and settlement configurations
 
-## 🔧 Configuration
+##  Configuration
 
 ### Application Settings
 ```json
@@ -226,7 +226,7 @@ var batch = await settlementService.CreateSettlementBatchAsync(batchRequest);
 await settlementService.ProcessSettlementBatchAsync(batch.Data.Id);
 ```
 
-## 🔄 Migration Notes
+##  Migration Notes
 
 ### Database Migration
 The enhanced models require database migration to add new tables and columns. Run the following command:
@@ -239,7 +239,7 @@ dotnet ef database update
 ### Backward Compatibility
 All enhancements are backward compatible with existing API endpoints. New features are additive and don't break existing functionality.
 
-## 🎯 Benefits
+##  Benefits
 
 ### For Merchants
 - **Reduced PCI Scope**: Tokenization reduces PCI compliance requirements

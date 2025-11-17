@@ -1,18 +1,18 @@
 #!/bin/bash
 
-# Riverty BNPL Azure Functions Deployment Script
+# YourCompany BNPL Azure Functions Deployment Script
 # Deploys payment processing functions to Azure with Norwegian market configuration
 
 set -e
 
 # Configuration
-RESOURCE_GROUP="riverty-bnpl-prod"
+RESOURCE_GROUP="yourcompany-bnpl-prod"
 LOCATION="norwayeast"
-FUNCTION_APP_NAME="riverty-payment-processor"
-STORAGE_ACCOUNT="rivertyfunctionsstorage"
-APP_INSIGHTS_NAME="riverty-app-insights"
-SERVICE_BUS_NAMESPACE="riverty-servicebus"
-KEY_VAULT_NAME="riverty-keyvault"
+FUNCTION_APP_NAME="yourcompany-payment-processor"
+STORAGE_ACCOUNT="yourcompanyfunctionsstorage"
+APP_INSIGHTS_NAME="yourcompany-app-insights"
+SERVICE_BUS_NAMESPACE="yourcompany-servicebus"
+KEY_VAULT_NAME="yourcompany-keyvault"
 
 # Colors for output
 RED='\033[0;31m'
@@ -26,23 +26,23 @@ echo "=================================================="
 
 # Check if Azure CLI is installed
 if ! command -v az &> /dev/null; then
-    echo -e "${RED}❌ Azure CLI is not installed. Please install it first.${NC}"
+    echo -e "${RED} Azure CLI is not installed. Please install it first.${NC}"
     exit 1
 fi
 
 # Check if logged in to Azure
 if ! az account show &> /dev/null; then
-    echo -e "${YELLOW}⚠️  Not logged in to Azure. Please login first.${NC}"
+    echo -e "${YELLOW}  Not logged in to Azure. Please login first.${NC}"
     az login
 fi
 
 # Check if .NET is installed
 if ! command -v dotnet &> /dev/null; then
-    echo -e "${RED}❌ .NET SDK is not installed. Please install .NET 8.0 SDK.${NC}"
+    echo -e "${RED} .NET SDK is not installed. Please install .NET 8.0 SDK.${NC}"
     exit 1
 fi
 
-echo -e "${BLUE}📋 Current Azure subscription:${NC}"
+echo -e "${BLUE} Current Azure subscription:${NC}"
 az account show --query "{subscriptionId:id, name:name, user:user.name}" --output table
 
 read -p "Continue with deployment? (y/N): " -n 1 -r
@@ -52,10 +52,10 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     exit 0
 fi
 
-echo -e "${BLUE}🏗️  Creating Azure resources...${NC}"
+echo -e "${BLUE}  Creating Azure resources...${NC}"
 
 # Create resource group
-echo -e "${YELLOW}📦 Creating resource group: $RESOURCE_GROUP${NC}"
+echo -e "${YELLOW} Creating resource group: $RESOURCE_GROUP${NC}"
 az group create \
     --name $RESOURCE_GROUP \
     --location $LOCATION \
@@ -73,7 +73,7 @@ az storage account create \
     --tags Environment=Production Application=RivertyBNPL
 
 # Create Application Insights
-echo -e "${YELLOW}📊 Creating Application Insights: $APP_INSIGHTS_NAME${NC}"
+echo -e "${YELLOW} Creating Application Insights: $APP_INSIGHTS_NAME${NC}"
 az monitor app-insights component create \
     --app $APP_INSIGHTS_NAME \
     --resource-group $RESOURCE_GROUP \
@@ -106,7 +106,7 @@ for topic in "${TOPICS[@]}"; do
 done
 
 # Create Key Vault
-echo -e "${YELLOW}🔐 Creating Key Vault: $KEY_VAULT_NAME${NC}"
+echo -e "${YELLOW} Creating Key Vault: $KEY_VAULT_NAME${NC}"
 az keyvault create \
     --name $KEY_VAULT_NAME \
     --resource-group $RESOURCE_GROUP \
@@ -117,7 +117,7 @@ az keyvault create \
     --tags Environment=Production Application=RivertyBNPL
 
 # Create Function App
-echo -e "${YELLOW}⚡ Creating Function App: $FUNCTION_APP_NAME${NC}"
+echo -e "${YELLOW} Creating Function App: $FUNCTION_APP_NAME${NC}"
 az functionapp create \
     --name $FUNCTION_APP_NAME \
     --resource-group $RESOURCE_GROUP \
@@ -130,7 +130,7 @@ az functionapp create \
     --tags Environment=Production Application=RivertyBNPL Country=Norway
 
 # Configure Function App settings
-echo -e "${YELLOW}⚙️  Configuring Function App settings...${NC}"
+echo -e "${YELLOW}  Configuring Function App settings...${NC}"
 
 # Get connection strings
 STORAGE_CONNECTION=$(az storage account show-connection-string --name $STORAGE_ACCOUNT --resource-group $RESOURCE_GROUP --query connectionString --output tsv)
@@ -171,7 +171,7 @@ az functionapp identity assign \
 PRINCIPAL_ID=$(az functionapp identity show --name $FUNCTION_APP_NAME --resource-group $RESOURCE_GROUP --query principalId --output tsv)
 
 # Grant Key Vault access to the managed identity
-echo -e "${YELLOW}🔐 Granting Key Vault access...${NC}"
+echo -e "${YELLOW} Granting Key Vault access...${NC}"
 az keyvault set-policy \
     --name $KEY_VAULT_NAME \
     --resource-group $RESOURCE_GROUP \
@@ -185,7 +185,7 @@ echo -e "${BLUE}🔨 Building and deploying function...${NC}"
 cd "$(dirname "$0")/../src/Functions/PaymentProcessor"
 
 # Restore packages
-echo -e "${YELLOW}📦 Restoring NuGet packages...${NC}"
+echo -e "${YELLOW} Restoring NuGet packages...${NC}"
 dotnet restore
 
 # Build the project
@@ -193,11 +193,11 @@ echo -e "${YELLOW}🔨 Building project...${NC}"
 dotnet build --configuration Release --no-restore
 
 # Publish the project
-echo -e "${YELLOW}📦 Publishing project...${NC}"
+echo -e "${YELLOW} Publishing project...${NC}"
 dotnet publish --configuration Release --no-build --output ./publish
 
 # Deploy to Azure
-echo -e "${YELLOW}🚀 Deploying to Azure...${NC}"
+echo -e "${YELLOW} Deploying to Azure...${NC}"
 cd publish
 zip -r ../deploy.zip .
 cd ..
@@ -211,9 +211,9 @@ az functionapp deployment source config-zip \
 rm -f deploy.zip
 rm -rf publish
 
-echo -e "${GREEN}✅ Deployment completed successfully!${NC}"
+echo -e "${GREEN} Deployment completed successfully!${NC}"
 echo ""
-echo -e "${BLUE}📋 Deployment Summary:${NC}"
+echo -e "${BLUE} Deployment Summary:${NC}"
 echo "=================================================="
 echo -e "Resource Group: ${YELLOW}$RESOURCE_GROUP${NC}"
 echo -e "Function App: ${YELLOW}$FUNCTION_APP_NAME${NC}"
@@ -223,11 +223,11 @@ echo -e "Service Bus: ${YELLOW}$SERVICE_BUS_NAMESPACE${NC}"
 echo -e "Key Vault: ${YELLOW}$KEY_VAULT_NAME${NC}"
 echo -e "App Insights: ${YELLOW}$APP_INSIGHTS_NAME${NC}"
 echo ""
-echo -e "${BLUE}🔗 Useful URLs:${NC}"
+echo -e "${BLUE} Useful URLs:${NC}"
 echo -e "Function App: ${YELLOW}https://$FUNCTION_APP_NAME.azurewebsites.net${NC}"
 echo -e "Azure Portal: ${YELLOW}https://portal.azure.com/#@/resource/subscriptions/$(az account show --query id --output tsv)/resourceGroups/$RESOURCE_GROUP/overview${NC}"
 echo ""
-echo -e "${BLUE}🛠️  Next Steps:${NC}"
+echo -e "${BLUE}  Next Steps:${NC}"
 echo "1. Configure Norwegian banking API credentials in Key Vault"
 echo "2. Set up database connection string"
 echo "3. Configure payment gateway credentials"
@@ -244,10 +244,10 @@ echo -e "${YELLOW}Testing health endpoint: $FUNCTION_URL${NC}"
 sleep 30 # Wait for function to warm up
 
 if curl -f -s "$FUNCTION_URL" > /dev/null; then
-    echo -e "${GREEN}✅ Health check passed!${NC}"
+    echo -e "${GREEN} Health check passed!${NC}"
 else
-    echo -e "${YELLOW}⚠️  Health check failed. Function may still be starting up.${NC}"
+    echo -e "${YELLOW}  Health check failed. Function may still be starting up.${NC}"
     echo -e "${YELLOW}   Check the Azure portal for logs and status.${NC}"
 fi
 
-echo -e "${GREEN}🎉 Deployment script completed!${NC}"
+echo -e "${GREEN} Deployment script completed!${NC}"

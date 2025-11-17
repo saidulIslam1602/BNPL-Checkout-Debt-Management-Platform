@@ -42,7 +42,7 @@ services:
   # Risk Assessment API Service
   risk-assessment-api:
     build:
-      context: ./src/Services/RiskAssessment.API
+      context: ./src/Services/Risk.API
       dockerfile: Dockerfile
     container_name: yourcompany-risk-assessment-api
     ports:
@@ -50,7 +50,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourCompanyBNPL_RiskAssessment;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=YourCompanyBNPL_Risk;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=true
       - Redis__ConnectionString=redis:6379
       - MongoDB__ConnectionString=mongodb://mongodb:27017
       - MongoDB__DatabaseName=YourCompanyBNPL

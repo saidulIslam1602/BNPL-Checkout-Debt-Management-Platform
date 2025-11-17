@@ -121,7 +121,7 @@ public class SamlController : ControllerBase
                 var userInfo = ExtractUserInfoFromClaims(claims);
 
                 // Create or update user in our system
-                var user = await _userService.CreateOrUpdateUserFromSamlAsync(userInfo);
+                var user = await _userService.CreateUserFromSamlAsync(userInfo);
 
                 // Generate JWT token for API access
                 var token = await _authenticationService.GenerateJwtTokenAsync(user);

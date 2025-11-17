@@ -102,6 +102,21 @@ public enum CreditRating
 }
 
 /// <summary>
+/// Employment status for risk assessment
+/// </summary>
+public enum EmploymentStatus
+{
+    FullTime = 0,      // Full-time employment
+    PartTime = 1,      // Part-time employment
+    SelfEmployed = 2,  // Self-employed/Freelancer
+    Contract = 3,      // Contract worker
+    Unemployed = 4,    // Unemployed
+    Retired = 5,       // Retired
+    Student = 6,       // Student
+    Other = 7          // Other employment status
+}
+
+/// <summary>
 /// Settlement status for merchant payouts
 /// </summary>
 public enum SettlementStatus

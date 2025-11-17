@@ -1,7 +1,6 @@
 using YourCompanyBNPL.Common.Enums;
 using FluentValidation;
 using YourCompanyBNPL.Payment.API.DTOs;
-using YourCompanyBNPL.Common.Enums;
 using YourCompanyBNPL.Common.Constants;
 
 namespace YourCompanyBNPL.Payment.API.Validators;

@@ -65,9 +65,6 @@
           "Moq": "4.20.70",
           "Polly": "8.2.0",
           "Polly.Extensions.Http": "3.0.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "RivertyBNPL.Events": "1.0.0",
-          "RivertyBNPL.Infrastructure": "1.0.0",
           "SendGrid": "9.29.3",
           "Serilog.AspNetCore": "8.0.0",
           "Serilog.Sinks.Console": "5.0.1",
@@ -75,11 +72,14 @@
           "Swashbuckle.AspNetCore": "6.5.0",
           "Testcontainers": "3.7.0",
           "Twilio": "6.14.1",
+          "YourCompanyBNPL.Common": "1.0.0",
+          "YourCompanyBNPL.Events": "1.0.0",
+          "YourCompanyBNPL.Infrastructure": "1.0.0",
           "xunit": "2.6.5",
           "xunit.runner.visualstudio": "2.5.6",
-          "RivertyBNPL.Common.Reference": "1.0.0.0",
-          "RivertyBNPL.Events.Reference": "1.0.0.0",
-          "RivertyBNPL.Infrastructure.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Common.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Events.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Infrastructure.Reference": "1.0.0.0",
           "Microsoft.AspNetCore.Antiforgery": "8.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions.Reference": "8.0.0.0",
           "Microsoft.AspNetCore.Authentication.BearerToken": "8.0.0.0",
@@ -3604,7 +3604,7 @@
         }
       },
       "xunit.runner.visualstudio/2.5.6": {},
-      "RivertyBNPL.Common/1.0.0": {
+      "YourCompanyBNPL.Common/1.0.0": {
         "dependencies": {
           "AutoMapper": "12.0.1",
           "FluentValidation": "11.8.1",
@@ -3618,32 +3618,32 @@
           "System.ComponentModel.Annotations": "5.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Common.dll": {
+          "YourCompanyBNPL.Common.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         },
         "compile": {
-          "RivertyBNPL.Common.dll": {}
+          "YourCompanyBNPL.Common.dll": {}
         }
       },
-      "RivertyBNPL.Events/1.0.0": {
+      "YourCompanyBNPL.Events/1.0.0": {
         "dependencies": {
           "MediatR": "12.2.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Events.dll": {
+          "YourCompanyBNPL.Events.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         },
         "compile": {
-          "RivertyBNPL.Events.dll": {}
+          "YourCompanyBNPL.Events.dll": {}
         }
       },
-      "RivertyBNPL.Infrastructure/1.0.0": {
+      "YourCompanyBNPL.Infrastructure/1.0.0": {
         "dependencies": {
           "Azure.Identity": "1.12.1",
           "Azure.Messaging.ServiceBus": "7.18.1",
@@ -3663,54 +3663,54 @@
           "Microsoft.Extensions.Http": "8.0.0",
           "Polly": "8.2.0",
           "Polly.Extensions.Http": "3.0.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "RivertyBNPL.Events": "1.0.0",
           "Serilog.AspNetCore": "8.0.0",
           "Serilog.Sinks.ApplicationInsights": "4.0.0",
           "StackExchange.Redis": "2.7.10",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0",
+          "YourCompanyBNPL.Events": "1.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Infrastructure.dll": {
+          "YourCompanyBNPL.Infrastructure.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         },
         "compile": {
-          "RivertyBNPL.Infrastructure.dll": {}
+          "YourCompanyBNPL.Infrastructure.dll": {}
         }
       },
-      "RivertyBNPL.Common.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Common.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Common.dll": {
+          "YourCompanyBNPL.Common.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         },
         "compile": {
-          "RivertyBNPL.Common.dll": {}
+          "YourCompanyBNPL.Common.dll": {}
         }
       },
-      "RivertyBNPL.Events.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Events.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Events.dll": {
+          "YourCompanyBNPL.Events.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         },
         "compile": {
-          "RivertyBNPL.Events.dll": {}
+          "YourCompanyBNPL.Events.dll": {}
         }
       },
-      "RivertyBNPL.Infrastructure.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Infrastructure.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Infrastructure.dll": {
+          "YourCompanyBNPL.Infrastructure.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         },
         "compile": {
-          "RivertyBNPL.Infrastructure.dll": {}
+          "YourCompanyBNPL.Infrastructure.dll": {}
         }
       },
       "Microsoft.AspNetCore.Antiforgery/8.0.0.0": {
@@ -7501,32 +7501,32 @@
       "path": "xunit.runner.visualstudio/2.5.6",
       "hashPath": "xunit.runner.visualstudio.2.5.6.nupkg.sha512"
     },
-    "RivertyBNPL.Common/1.0.0": {
+    "YourCompanyBNPL.Common/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Events/1.0.0": {
+    "YourCompanyBNPL.Events/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Infrastructure/1.0.0": {
+    "YourCompanyBNPL.Infrastructure/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Common.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Common.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Events.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Events.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Infrastructure.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Infrastructure.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

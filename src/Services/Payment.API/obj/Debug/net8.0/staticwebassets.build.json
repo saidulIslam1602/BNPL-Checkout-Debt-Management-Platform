@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "6cX7eZONrLqt0MMi+IjG7qyk3uD9v4DbkI+UDITX4zw=",
-  "Source": "RivertyBNPL.Payment.API",
-  "BasePath": "_content/RivertyBNPL.Payment.API",
+  "Hash": "R/J9T12iDOfRUyzsJRaOQY3+6uB1iJpgiP1u2YabgYs=",
+  "Source": "YourCompanyBNPL.Payment.API",
+  "BasePath": "_content/YourCompanyBNPL.Payment.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

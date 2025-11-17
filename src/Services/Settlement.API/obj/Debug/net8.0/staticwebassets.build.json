@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "5fCtmx95ydS8g4jroxQMQXYQKh134vNoSS3/CnLjanU=",
-  "Source": "Settlement.API",
-  "BasePath": "_content/Settlement.API",
+  "Hash": "tGhu3cY9g00YvoZkvE1rW4UOxvPLrEqYsIjQlAoC9GY=",
+  "Source": "YourCompanyBNPL.Settlement.API",
+  "BasePath": "_content/YourCompanyBNPL.Settlement.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

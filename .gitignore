@@ -5,3 +5,46 @@ dist/
 *.log
 *.tmp
 *.temp
+
+# Environment variables and secrets
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+*.pfx
+*.pem
+*.key
+appsettings.*.json.user
+
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# IDE and editor files
+.vs/
+.vscode/settings.json
+.vscode/launch.json
+.idea/
+*.suo
+*.user
+*.sln.docstates
+
+# Azure Functions
+local.settings.json
+__blobstorage__
+__queuestorage__
+__azurite_db*__
+
+# Terraform state
+*.tfstate
+*.tfstate.backup
+.terraform/
+.terraform.lock.hcl
+
+# OS generated files
+.DS_Store
+Thumbs.db

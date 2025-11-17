@@ -4,7 +4,6 @@ using YourCompanyBNPL.Payment.API.Data;
 using YourCompanyBNPL.Payment.API.DTOs;
 using YourCompanyBNPL.Payment.API.Models;
 using YourCompanyBNPL.Common.Models;
-using YourCompanyBNPL.Common.Enums;
 using System.Text.Json;
 
 namespace YourCompanyBNPL.Payment.API.Services;

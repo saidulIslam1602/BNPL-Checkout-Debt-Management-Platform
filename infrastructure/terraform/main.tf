@@ -1,4 +1,4 @@
-# Riverty BNPL Platform - Azure Infrastructure
+# YourCompany BNPL Platform - Azure Infrastructure
 # Production-ready Terraform configuration for Norwegian BNPL platform
 
 terraform {
@@ -24,10 +24,10 @@ terraform {
 
   # Backend configuration for state management
   backend "azurerm" {
-    resource_group_name  = "riverty-terraform-state"
-    storage_account_name = "rivertyterraformstate"
+    resource_group_name  = "yourcompany-terraform-state"
+    storage_account_name = "yourcompanyterraformstate"
     container_name       = "tfstate"
-    key                  = "riverty-bnpl.tfstate"
+    key                  = "yourcompany-bnpl.tfstate"
   }
 }
 
@@ -57,13 +57,13 @@ locals {
   location            = "Norway East"
   location_short      = "noe"
   environment         = var.environment
-  project_name        = "riverty-bnpl"
+  project_name        = "yourcompany-bnpl"
   
   # Common tags for all resources
   common_tags = {
-    Project             = "Riverty BNPL"
+    Project             = "YourCompany BNPL"
     Environment         = var.environment
-    Owner               = "Riverty Platform Team"
+    Owner               = "YourCompany Platform Team"
     Country             = "Norway"
     Compliance          = "PSD2,GDPR"
     CostCenter          = "Engineering"

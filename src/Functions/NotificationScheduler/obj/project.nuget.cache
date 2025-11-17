@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HJ6qi+fMxZk=",
+  "dgSpecHash": "MC+0zrfen9E=",
   "success": true,
-  "projectFilePath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Functions/NotificationScheduler/NotificationScheduler.csproj",
+  "projectFilePath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Functions/NotificationScheduler/NotificationScheduler.csproj",
   "expectedPackageFiles": [
     "/home/saidul/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/saidul/.nuget/packages/azure.core/1.41.0/azure.core.1.41.0.nupkg.sha512",

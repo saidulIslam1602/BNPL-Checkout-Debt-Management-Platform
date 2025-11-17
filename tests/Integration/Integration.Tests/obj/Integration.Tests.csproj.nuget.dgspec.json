@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj": {}
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj": {}
   },
   "projects": {
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj",
         "projectName": "YourCompanyBNPL.Notification.API",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -26,14 +26,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
               }
             }
           }
@@ -225,18 +225,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/Payment.API.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/Payment.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/Payment.API.csproj",
-        "projectName": "RivertyBNPL.Payment.API",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/Payment.API.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/Payment.API.csproj",
+        "projectName": "YourCompanyBNPL.Payment.API",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/Payment.API.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -251,14 +251,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
               }
             }
           }
@@ -302,6 +302,10 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.AspNetCore.Authorization": {
               "target": "Package",
               "version": "[8.0.0, )"
@@ -330,6 +334,18 @@
               "target": "Package",
               "version": "[8.0.0, )"
             },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[5.36.0, )"
+            },
+            "Microsoft.Graph.Auth": {
+              "target": "Package",
+              "version": "[1.0.0-preview.7, )"
+            },
+            "Microsoft.Identity.Web": {
+              "target": "Package",
+              "version": "[2.15.5, )"
+            },
             "Polly": {
               "target": "Package",
               "version": "[8.2.0, )"
@@ -341,6 +357,10 @@
             "Serilog.AspNetCore": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "Sustainsys.Saml2.AspNetCore2": {
+              "target": "Package",
+              "version": "[2.9.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -366,18 +386,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/Risk.API.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/Risk.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/Risk.API.csproj",
-        "projectName": "RivertyBNPL.Risk.API",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/Risk.API.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/Risk.API.csproj",
+        "projectName": "YourCompanyBNPL.Risk.API",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/Risk.API.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -392,14 +412,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
               }
             }
           }
@@ -515,18 +535,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/Settlement.API.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/Settlement.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/Settlement.API.csproj",
-        "projectName": "Settlement.API",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/Settlement.API.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/Settlement.API.csproj",
+        "projectName": "YourCompanyBNPL.Settlement.API",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/Settlement.API.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -541,14 +561,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
               }
             }
           }
@@ -654,18 +674,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj",
-        "projectName": "RivertyBNPL.Common",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
+        "projectName": "YourCompanyBNPL.Common",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -754,18 +774,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj",
-        "projectName": "RivertyBNPL.Events",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj",
+        "projectName": "YourCompanyBNPL.Events",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -780,8 +800,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               }
             }
           }
@@ -826,18 +846,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj",
-        "projectName": "RivertyBNPL.Infrastructure",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/Infrastructure.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj",
+        "projectName": "YourCompanyBNPL.Infrastructure",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Infrastructure/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -852,11 +872,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj"
               }
             }
           }
@@ -981,18 +1001,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj",
         "projectName": "Integration.Tests",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/tests/Integration/Integration.Tests/Integration.Tests.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/tests/Integration/Integration.Tests/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/tests/Integration/Integration.Tests/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -1007,17 +1027,17 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Notification.API/Notification.API.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Notification.API/Notification.API.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/Payment.API.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Payment.API/Payment.API.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/Payment.API.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Payment.API/Payment.API.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/Risk.API.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Risk.API/Risk.API.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/Risk.API.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Risk.API/Risk.API.csproj"
               },
-              "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/Settlement.API.csproj": {
-                "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Services/Settlement.API/Settlement.API.csproj"
+              "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/Settlement.API.csproj": {
+                "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Services/Settlement.API/Settlement.API.csproj"
               }
             }
           }
@@ -1090,7 +1110,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

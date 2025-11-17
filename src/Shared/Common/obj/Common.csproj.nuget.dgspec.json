@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {}
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {}
   },
   "projects": {
-    "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj": {
+    "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj",
-        "projectName": "RivertyBNPL.Common",
-        "projectPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/Common.csproj",
+        "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
+        "projectName": "YourCompanyBNPL.Common",
+        "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
         "packagesPath": "/home/saidul/.nuget/packages/",
-        "outputPath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Common/obj/",
+        "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -100,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.414/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.415/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -5,8 +5,8 @@
     <OutputType>Exe</OutputType>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>RivertyBNPL.Functions.PaymentProcessor</AssemblyName>
-    <RootNamespace>RivertyBNPL.Functions.PaymentProcessor</RootNamespace>
+    <AssemblyName>YourCompanyBNPL.Functions.PaymentProcessor</AssemblyName>
+    <RootNamespace>YourCompanyBNPL.Functions.PaymentProcessor</RootNamespace>
   </PropertyGroup>
   
   <ItemGroup>

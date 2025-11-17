@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Riverty BNPL Platform Build Script
+# YourCompany BNPL Platform Build Script
 # This script helps build and run the platform for development
 
 set -e
@@ -65,13 +65,13 @@ check_prerequisites() {
 build_dotnet() {
     print_status "Building .NET solution..."
     
-    if [ ! -f "RivertyBNPL.sln" ]; then
+    if [ ! -f "MerchantBNPL.sln" ]; then
         print_error "Solution file not found. Make sure you're in the project root directory."
         exit 1
     fi
     
-    dotnet restore RivertyBNPL.sln
-    dotnet build RivertyBNPL.sln --configuration Release --no-restore
+    dotnet restore MerchantBNPL.sln
+    dotnet build MerchantBNPL.sln --configuration Release --no-restore
     
     print_success ".NET solution built successfully"
 }
@@ -139,22 +139,22 @@ run_migrations() {
     # Run migrations for all services
     print_status "Running Payment API migrations..."
     cd src/Services/Payment.API
-    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Payment;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    dotnet ef database update --connection "Server=localhost,1433;Database=YourCompanyBNPL_Payment;User Id=sa;Password=${DB_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=true;MultipleActiveResultSets=true"
     cd ../../..
     
     print_status "Running Risk API migrations..."
     cd src/Services/Risk.API
-    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Risk;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    dotnet ef database update --connection "Server=localhost,1433;Database=YourCompanyBNPL_Risk;User Id=sa;Password=${DB_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=true;MultipleActiveResultSets=true"
     cd ../../..
     
     print_status "Running Settlement API migrations..."
     cd src/Services/Settlement.API
-    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Settlement;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    dotnet ef database update --connection "Server=localhost,1433;Database=YourCompanyBNPL_Settlement;User Id=sa;Password=${DB_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=true;MultipleActiveResultSets=true"
     cd ../../..
     
     print_status "Running Notification API migrations..."
     cd src/Services/Notification.API
-    dotnet ef database update --connection "Server=localhost,1433;Database=RivertyBNPL_Notification;User Id=sa;Password=RivertyBNPL123!;TrustServerCertificate=true;MultipleActiveResultSets=true"
+    dotnet ef database update --connection "Server=localhost,1433;Database=YourCompanyBNPL_Notification;User Id=sa;Password=${DB_SA_PASSWORD:-YourStrong@Passw0rd};TrustServerCertificate=true;MultipleActiveResultSets=true"
     cd ../../..
     
     print_success "Database migrations completed"
@@ -188,14 +188,14 @@ cleanup() {
     docker system prune -f
     
     # Clean .NET build artifacts
-    dotnet clean RivertyBNPL.sln
+    dotnet clean MerchantBNPL.sln
     
     print_success "Cleanup completed"
 }
 
 # Function to show help
 show_help() {
-    echo "Riverty BNPL Platform Build Script"
+    echo "YourCompany BNPL Platform Build Script"
     echo ""
     echo "Usage: $0 [COMMAND]"
     echo ""

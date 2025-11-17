@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>BNPL.API.Gateway</AssemblyName>
-    <RootNamespace>BNPL.API.Gateway</RootNamespace>
+    <AssemblyName>YourCompanyBNPL.API.Gateway</AssemblyName>
+    <RootNamespace>YourCompanyBNPL.API.Gateway</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

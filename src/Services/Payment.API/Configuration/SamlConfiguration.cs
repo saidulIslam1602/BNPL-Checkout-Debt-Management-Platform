@@ -1,7 +1,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Sustainsys.Saml2;
+using Sustainsys.Saml2.AspNetCore2;
 using Sustainsys.Saml2.Configuration;
 using Sustainsys.Saml2.Metadata;
 using System.Security.Cryptography.X509Certificates;
@@ -53,8 +55,8 @@ public static class SamlConfiguration
         options.SPOptions.Logger = new Saml2Logger();
         
         // Configure metadata
-        options.SPOptions.MetadataCacheDuration = TimeSpan.FromHours(1);
-        options.SPOptions.MetadataValidDuration = TimeSpan.FromDays(7);
+        options.SPOptions.MetadataCacheDuration = new Sustainsys.Saml2.XsdDuration(hours: 1);
+        options.SPOptions.MetadataValidDuration = new Sustainsys.Saml2.XsdDuration(days: 7);
     }
 
     private static void ConfigureNorwegianIdentityProviders(Saml2Options options, SamlSettings settings)
@@ -181,15 +183,6 @@ public class FeideSettings
     public string MetadataUrl { get; set; } = "https://idp.feide.no/metadata";
 }
 
-public class AzureAdSettings
-{
-    public bool Enabled { get; set; } = false;
-    public string EntityId { get; set; } = string.Empty;
-    public string MetadataUrl { get; set; } = string.Empty;
-    public string TenantId { get; set; } = string.Empty;
-    public string ClientId { get; set; } = string.Empty;
-}
-
 public class GenericIdpSettings
 {
     public string EntityId { get; set; } = string.Empty;
@@ -204,7 +197,7 @@ public class GenericIdpSettings
 /// <summary>
 /// Custom SAML logger for detailed logging
 /// </summary>
-public class Saml2Logger : ILogger
+public class Saml2Logger : Sustainsys.Saml2.ILoggerAdapter
 {
     private readonly ILogger<Saml2Logger> _logger;
 

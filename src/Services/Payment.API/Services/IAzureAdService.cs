@@ -1,4 +1,10 @@
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
+using YourCompanyBNPL.Payment.API.Models;
+
+// Alias to avoid naming conflicts
+using GraphUser = Microsoft.Graph.Models.User;
+using AppUser = YourCompanyBNPL.Payment.API.Models.User;
 
 namespace YourCompanyBNPL.Payment.API.Services;
 
@@ -12,14 +18,14 @@ public interface IAzureAdService
     /// </summary>
     /// <param name="userId">Azure AD user ID</param>
     /// <returns>User information</returns>
-    Task<User?> GetUserAsync(string userId);
+    Task<GraphUser?> GetUserAsync(string userId);
 
     /// <summary>
     /// Gets user information by email
     /// </summary>
     /// <param name="email">User email address</param>
     /// <returns>User information</returns>
-    Task<User?> GetUserByEmailAsync(string email);
+    Task<GraphUser?> GetUserByEmailAsync(string email);
 
     /// <summary>
     /// Gets user's group memberships
@@ -33,21 +39,21 @@ public interface IAzureAdService
     /// </summary>
     /// <param name="userId">Azure AD user ID</param>
     /// <returns>List of direct reports</returns>
-    Task<List<User>> GetDirectReportsAsync(string userId);
+    Task<List<GraphUser>> GetDirectReportsAsync(string userId);
 
     /// <summary>
     /// Gets user's manager
     /// </summary>
     /// <param name="userId">Azure AD user ID</param>
     /// <returns>Manager information</returns>
-    Task<User?> GetManagerAsync(string userId);
+    Task<GraphUser?> GetManagerAsync(string userId);
 
     /// <summary>
     /// Searches for users
     /// </summary>
     /// <param name="searchTerm">Search term</param>
     /// <returns>List of matching users</returns>
-    Task<List<User>> SearchUsersAsync(string searchTerm);
+    Task<List<GraphUser>> SearchUsersAsync(string searchTerm);
 
     /// <summary>
     /// Gets all users in the organization
@@ -55,7 +61,7 @@ public interface IAzureAdService
     /// <param name="top">Number of users to return</param>
     /// <param name="skip">Number of users to skip</param>
     /// <returns>List of users</returns>
-    Task<List<User>> GetAllUsersAsync(int top = 100, int skip = 0);
+    Task<List<GraphUser>> GetAllUsersAsync(int top = 100, int skip = 0);
 
     /// <summary>
     /// Gets all groups in the organization
@@ -70,7 +76,7 @@ public interface IAzureAdService
     /// </summary>
     /// <param name="user">User information</param>
     /// <returns>Created user</returns>
-    Task<User> CreateUserAsync(User user);
+    Task<GraphUser> CreateUserAsync(GraphUser user);
 
     /// <summary>
     /// Updates user information in Azure AD
@@ -78,7 +84,7 @@ public interface IAzureAdService
     /// <param name="userId">Azure AD user ID</param>
     /// <param name="user">Updated user information</param>
     /// <returns>Updated user</returns>
-    Task<User> UpdateUserAsync(string userId, User user);
+    Task<GraphUser> UpdateUserAsync(string userId, GraphUser user);
 
     /// <summary>
     /// Deletes a user from Azure AD

@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>RivertyBNPL.Payment.API</AssemblyName>
-    <RootNamespace>RivertyBNPL.Payment.API</RootNamespace>
+    <AssemblyName>YourCompanyBNPL.Payment.API</AssemblyName>
+    <RootNamespace>YourCompanyBNPL.Payment.API</RootNamespace>
     <UserSecretsId>payment-api-secrets</UserSecretsId>
   </PropertyGroup>
 
@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="2.15.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0" />
@@ -33,10 +34,28 @@
     <PackageReference Include="AspNetCore.HealthChecks.UI.Client" Version="8.0.0" />
     <PackageReference Include="Polly" Version="8.2.0" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
-    <PackageReference Include="Sustainsys.Saml2.AspNetCore2" Version="2.8.0" />
+    <PackageReference Include="Sustainsys.Saml2.AspNetCore2" Version="2.9.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Graph" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.36.0" />
     <PackageReference Include="Microsoft.Graph.Auth" Version="1.0.0-preview.7" />
+  </ItemGroup>
+
+  <!-- Temporarily exclude authentication files pending library API migration -->
+  <!-- See AUTH_MIGRATION_REQUIRED.md for details -->
+  <ItemGroup>
+    <Compile Remove="Controllers/SamlController.cs" />
+    <Compile Remove="Controllers/OpenIdConnectController.cs" />
+    <Compile Remove="Controllers/AzureAdController.cs" />
+    <Compile Remove="Configuration/SamlConfiguration.cs" />
+    <Compile Remove="Configuration/OpenIdConnectConfiguration.cs" />
+    <Compile Remove="Configuration/AzureAdConfiguration.cs" />
+    <Compile Remove="Services/AzureAdService.cs" />
+    <Compile Remove="Services/IAzureAdService.cs" />
+    <Compile Remove="Services/AuthenticationService.cs" />
+    <Compile Remove="Services/IAuthenticationService.cs" />
+    <Compile Remove="Services/UserService.cs" />
+    <Compile Remove="Services/IUserService.cs" />
+    <Compile Remove="Models/User.cs" />
   </ItemGroup>
 
 </Project>

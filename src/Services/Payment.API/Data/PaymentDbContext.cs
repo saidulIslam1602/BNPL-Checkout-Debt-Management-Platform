@@ -30,6 +30,9 @@ public class PaymentDbContext : DbContext
     public DbSet<SettlementEvent> SettlementEvents { get; set; }
     public DbSet<SettlementSchedule> SettlementSchedules { get; set; }
     public DbSet<SettlementItem> SettlementItems { get; set; }
+    // NOTE: User authentication entities temporarily disabled - requires library API migration
+    // public DbSet<User> Users { get; set; }
+    // public DbSet<UserRole> UserRoles { get; set; }
     
     // Enhanced Payment API entities
     public DbSet<PaymentToken> PaymentTokens { get; set; }

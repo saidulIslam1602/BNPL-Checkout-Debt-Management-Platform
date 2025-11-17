@@ -2,7 +2,6 @@ using YourCompanyBNPL.Common.Enums;
 using System.Text;
 using System.Text.Json;
 using Microsoft.Extensions.Options;
-using YourCompanyBNPL.Common.Enums;
 
 namespace YourCompanyBNPL.Payment.API.Services;
 
@@ -588,8 +587,8 @@ public class PaymentGatewayService : IPaymentGatewayService
                         quantity = 1,
                         unit = "pcs",
                         unitPrice = (int)(request.Amount * 100),
-                        taxRate = CalculateVATRate(request.Amount, request.ProductCategory),
-                        taxAmount = (int)(request.Amount * 100 * CalculateVATRate(request.Amount, request.ProductCategory) / 100),
+                        taxRate = CalculateVATRate(request.Amount, "GENERAL"), // Default category
+                        taxAmount = (int)(request.Amount * 100 * CalculateVATRate(request.Amount, "GENERAL") / 100),
                         grossTotalAmount = (int)(request.Amount * 100),
                         netTotalAmount = (int)(request.Amount * 100 * CalculateNetAmountMultiplier(request.Amount))
                     }
@@ -971,6 +970,85 @@ public class PaymentGatewayService : IPaymentGatewayService
         };
     }
 
+    #region VAT Calculation Methods
+
+    /// <summary>
+    /// Calculate dynamic VAT rate based on amount and product category
+    /// </summary>
+    private static int CalculateVATRate(decimal amount, string? productCategory)
+    {
+        // Base Norwegian VAT rate (25%)
+        decimal baseRate = 25.0m;
+
+        // Category-based adjustments
+        if (!string.IsNullOrEmpty(productCategory))
+        {
+            baseRate = productCategory.ToLowerInvariant() switch
+            {
+                "food" or "groceries" => 15.0m,        // 15% for food items
+                "books" or "newspapers" => 0.0m,       // 0% for books and newspapers
+                "medicine" or "healthcare" => 0.0m,    // 0% for medicine
+                "clothing" or "shoes" => 25.0m,        // 25% for clothing
+                "electronics" or "technology" => 25.0m, // 25% for electronics
+                "automotive" => 25.0m,                 // 25% for automotive
+                "jewelry" => 25.0m,                    // 25% for jewelry
+                _ => 25.0m                             // 25% default
+            };
+        }
+
+        // Amount-based adjustments
+        if (amount > 100000)
+        {
+            baseRate *= 1.0m; // No adjustment for very high amounts
+        }
+        else if (amount > 50000)
+        {
+            baseRate *= 0.98m; // 2% reduction for high amounts
+        }
+        else if (amount < 1000)
+        {
+            baseRate *= 1.02m; // 2% increase for small amounts
+        }
+
+        // Ensure rate is within reasonable bounds (0% to 25%)
+        baseRate = Math.Max(0, Math.Min(25, baseRate));
+
+        return (int)(baseRate * 100); // Convert to basis points
+    }
+
+    /// <summary>
+    /// Calculate net amount multiplier based on amount and business rules
+    /// </summary>
+    private static decimal CalculateNetAmountMultiplier(decimal amount)
+    {
+        // Base net amount calculation (80% of gross)
+        decimal baseMultiplier = 0.8m;
+
+        // Adjust based on amount tiers
+        if (amount > 100000)
+        {
+            baseMultiplier = 0.85m; // 85% for very high amounts
+        }
+        else if (amount > 50000)
+        {
+            baseMultiplier = 0.82m; // 82% for high amounts
+        }
+        else if (amount > 20000)
+        {
+            baseMultiplier = 0.8m; // 80% for medium amounts
+        }
+        else if (amount > 5000)
+        {
+            baseMultiplier = 0.78m; // 78% for small amounts
+        }
+        else
+        {
+            baseMultiplier = 0.75m; // 75% for very small amounts
+        }
+
+        return baseMultiplier;
+    }
+
     #endregion
 }
 
@@ -1093,84 +1171,5 @@ public class VippsPaymentStatusResponse
 }
 
 #endregion
-
-#region VAT Calculation Methods
-
-/// <summary>
-/// Calculate dynamic VAT rate based on amount and product category
-/// </summary>
-private static int CalculateVATRate(decimal amount, string? productCategory)
-{
-    // Base Norwegian VAT rate (25%)
-    decimal baseRate = 25.0m;
-
-    // Category-based adjustments
-    if (!string.IsNullOrEmpty(productCategory))
-    {
-        baseRate = productCategory.ToLowerInvariant() switch
-        {
-            "food" or "groceries" => 15.0m,        // 15% for food items
-            "books" or "newspapers" => 0.0m,       // 0% for books and newspapers
-            "medicine" or "healthcare" => 0.0m,    // 0% for medicine
-            "clothing" or "shoes" => 25.0m,        // 25% for clothing
-            "electronics" or "technology" => 25.0m, // 25% for electronics
-            "automotive" => 25.0m,                 // 25% for automotive
-            "jewelry" => 25.0m,                    // 25% for jewelry
-            _ => 25.0m                             // 25% default
-        };
-    }
-
-    // Amount-based adjustments
-    if (amount > 100000)
-    {
-        baseRate *= 1.0m; // No adjustment for very high amounts
-    }
-    else if (amount > 50000)
-    {
-        baseRate *= 0.98m; // 2% reduction for high amounts
-    }
-    else if (amount < 1000)
-    {
-        baseRate *= 1.02m; // 2% increase for small amounts
-    }
-
-    // Ensure rate is within reasonable bounds (0% to 25%)
-    baseRate = Math.Max(0, Math.Min(25, baseRate));
-
-    return (int)(baseRate * 100); // Convert to basis points
-}
-
-/// <summary>
-/// Calculate net amount multiplier based on amount and business rules
-/// </summary>
-private static decimal CalculateNetAmountMultiplier(decimal amount)
-{
-    // Base net amount calculation (80% of gross)
-    decimal baseMultiplier = 0.8m;
-
-    // Adjust based on amount tiers
-    if (amount > 100000)
-    {
-        baseMultiplier = 0.85m; // 85% for very high amounts
-    }
-    else if (amount > 50000)
-    {
-        baseMultiplier = 0.82m; // 82% for high amounts
-    }
-    else if (amount > 20000)
-    {
-        baseMultiplier = 0.8m; // 80% for medium amounts
-    }
-    else if (amount > 5000)
-    {
-        baseMultiplier = 0.78m; // 78% for small amounts
-    }
-    else
-    {
-        baseMultiplier = 0.75m; // 75% for very small amounts
-    }
-
-    return baseMultiplier;
-}
 
 #endregion

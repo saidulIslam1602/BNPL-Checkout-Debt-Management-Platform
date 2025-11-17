@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "5aw43t+H860=",
+  "dgSpecHash": "tz/or/d32PI=",
   "success": true,
-  "projectFilePath": "/home/saidul/Desktop/Portfolio_Project/BNPL Checkout & Debt Management Platform/src/Shared/Events/Events.csproj",
+  "projectFilePath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Events/Events.csproj",
   "expectedPackageFiles": [
     "/home/saidul/.nuget/packages/automapper/12.0.1/automapper.12.0.1.nupkg.sha512",
     "/home/saidul/.nuget/packages/fluentvalidation/11.8.1/fluentvalidation.11.8.1.nupkg.sha512",

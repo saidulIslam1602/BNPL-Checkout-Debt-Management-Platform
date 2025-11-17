@@ -4,7 +4,7 @@ A comprehensive risk assessment and fraud detection API for the YourCompany BNPL
 
 ## Features
 
-### 🎯 Core Capabilities
+###  Core Capabilities
 
 - **Credit Risk Assessment**: Comprehensive credit evaluation using multiple data sources
 - **Fraud Detection**: Real-time transaction fraud analysis with ML-powered scoring
@@ -13,7 +13,7 @@ A comprehensive risk assessment and fraud detection API for the YourCompany BNPL
 - **Risk Profiling**: Dynamic customer risk profile management
 - **Real-time Analytics**: Risk and fraud analytics with detailed reporting
 
-### 🔒 Security & Compliance
+###  Security & Compliance
 
 - **JWT Authentication**: Secure API access with role-based authorization
 - **Rate Limiting**: Configurable rate limiting to prevent abuse
@@ -21,7 +21,7 @@ A comprehensive risk assessment and fraud detection API for the YourCompany BNPL
 - **Data Privacy**: GDPR-compliant data handling for Norwegian market
 - **Audit Logging**: Comprehensive audit trails for all risk decisions
 
-### 🚀 Performance & Reliability
+###  Performance & Reliability
 
 - **High Availability**: Built for 99.9% uptime with health checks
 - **Scalable Architecture**: Microservices design with horizontal scaling

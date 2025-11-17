@@ -1,10 +1,15 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Graph;
-using Microsoft.Graph.Auth;
+using Microsoft.Graph.Models;
 using Microsoft.Identity.Web;
 using YourCompanyBNPL.Payment.API.Configuration;
+using YourCompanyBNPL.Payment.API.Models;
 using System.Security.Claims;
+
+// Alias to avoid naming conflicts
+using GraphUser = Microsoft.Graph.Models.User;
+using AppUser = YourCompanyBNPL.Payment.API.Models.User;
 
 namespace YourCompanyBNPL.Payment.API.Services;
 
@@ -15,13 +20,13 @@ public class AzureAdService : IAzureAdService
 {
     private readonly ILogger<AzureAdService> _logger;
     private readonly AzureAdSettings _azureAdSettings;
-    private readonly IGraphServiceClient _graphServiceClient;
+    private readonly GraphServiceClient _graphServiceClient;
     private readonly ITokenAcquisition _tokenAcquisition;
 
     public AzureAdService(
         ILogger<AzureAdService> logger,
         IOptions<AzureAdSettings> azureAdSettings,
-        IGraphServiceClient graphServiceClient,
+        GraphServiceClient graphServiceClient,
         ITokenAcquisition tokenAcquisition)
     {
         _logger = logger;
@@ -30,7 +35,7 @@ public class AzureAdService : IAzureAdService
         _tokenAcquisition = tokenAcquisition;
     }
 
-    public async Task<User?> GetUserAsync(string userId)
+    public async Task<GraphUser?> GetUserAsync(string userId)
     {
         try
         {
@@ -51,7 +56,7 @@ public class AzureAdService : IAzureAdService
         }
     }
 
-    public async Task<User?> GetUserByEmailAsync(string email)
+    public async Task<GraphUser?> GetUserByEmailAsync(string email)
     {
         try
         {
@@ -112,7 +117,7 @@ public class AzureAdService : IAzureAdService
         }
     }
 
-    public async Task<List<User>> GetDirectReportsAsync(string userId)
+    public async Task<List<GraphUser>> GetDirectReportsAsync(string userId)
     {
         try
         {
@@ -122,7 +127,7 @@ public class AzureAdService : IAzureAdService
                 .Request()
                 .GetAsync();
 
-            var userList = new List<User>();
+            var userList = new List<GraphUser>();
             foreach (var directoryObject in directReports)
             {
                 if (directoryObject is User user)
@@ -138,11 +143,11 @@ public class AzureAdService : IAzureAdService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting direct reports from Azure AD: {UserId}", userId);
-            return new List<User>();
+            return new List<GraphUser>();
         }
     }
 
-    public async Task<User?> GetManagerAsync(string userId)
+    public async Task<GraphUser?> GetManagerAsync(string userId)
     {
         try
         {
@@ -168,7 +173,7 @@ public class AzureAdService : IAzureAdService
         }
     }
 
-    public async Task<List<User>> SearchUsersAsync(string searchTerm)
+    public async Task<List<GraphUser>> SearchUsersAsync(string searchTerm)
     {
         try
         {
@@ -189,11 +194,11 @@ public class AzureAdService : IAzureAdService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error searching users in Azure AD: {SearchTerm}", searchTerm);
-            return new List<User>();
+            return new List<GraphUser>();
         }
     }
 
-    public async Task<List<User>> GetAllUsersAsync(int top = 100, int skip = 0)
+    public async Task<List<GraphUser>> GetAllUsersAsync(int top = 100, int skip = 0)
     {
         try
         {
@@ -213,7 +218,7 @@ public class AzureAdService : IAzureAdService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error getting all users from Azure AD");
-            return new List<User>();
+            return new List<GraphUser>();
         }
     }
 
@@ -241,7 +246,7 @@ public class AzureAdService : IAzureAdService
         }
     }
 
-    public async Task<User> CreateUserAsync(User user)
+    public async Task<GraphUser> CreateUserAsync(GraphUser user)
     {
         try
         {
@@ -261,7 +266,7 @@ public class AzureAdService : IAzureAdService
         }
     }
 
-    public async Task<User> UpdateUserAsync(string userId, User user)
+    public async Task<GraphUser> UpdateUserAsync(string userId, GraphUser user)
     {
         try
         {

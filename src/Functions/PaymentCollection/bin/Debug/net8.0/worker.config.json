@@ -3,7 +3,7 @@
     "language": "dotnet-isolated",
     "extensions": [ ".dll" ],
     "defaultExecutablePath": "dotnet",
-    "defaultWorkerPath": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "defaultWorkerPath": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "workerIndexing": "true",
     "canUsePlaceholder": true
   }

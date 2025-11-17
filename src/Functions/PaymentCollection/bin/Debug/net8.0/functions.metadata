@@ -1,7 +1,7 @@
 [
   {
     "name": "DailyAutomaticCollection",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunDailyCollection",
     "language": "dotnet-isolated",
     "properties": {
@@ -19,7 +19,7 @@
   },
   {
     "name": "DailyOverdueProcessing",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunOverdueProcessing",
     "language": "dotnet-isolated",
     "properties": {
@@ -37,7 +37,7 @@
   },
   {
     "name": "WeeklySettlementProcessing",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunWeeklySettlement",
     "language": "dotnet-isolated",
     "properties": {
@@ -55,7 +55,7 @@
   },
   {
     "name": "RetryFailedCollections",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunRetryFailedCollections",
     "language": "dotnet-isolated",
     "properties": {
@@ -73,7 +73,7 @@
   },
   {
     "name": "MonthlyProcessing",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunMonthlyProcessing",
     "language": "dotnet-isolated",
     "properties": {
@@ -91,7 +91,7 @@
   },
   {
     "name": "ManualCollectionTrigger",
-    "scriptFile": "RivertyBNPL.PaymentCollection.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.PaymentCollection.Functions.dll",
     "entryPoint": "YourCompanyBNPL.PaymentCollection.Functions.Functions.AutomaticCollectionFunction.RunManualCollection",
     "language": "dotnet-isolated",
     "properties": {

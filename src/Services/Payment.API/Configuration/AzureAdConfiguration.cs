@@ -25,11 +25,10 @@ public static class AzureAdConfiguration
             // Add Microsoft Identity Web
             services.AddMicrosoftIdentityWebApiAuthentication(configuration, "AzureAd")
                 .EnableTokenAcquisitionToCallDownstreamApi()
-                .AddMicrosoftGraph(configuration.GetSection("AzureAd:Graph"))
                 .AddInMemoryTokenCaches();
 
             // Add Microsoft Graph client
-            services.AddScoped<IGraphServiceClient, GraphServiceClient>();
+            services.AddScoped<GraphServiceClient>();
             services.AddScoped<IAzureAdService, AzureAdService>();
         }
 

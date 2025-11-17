@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "5OmSgt1FK3huJxtNo/wvUqA4a6DRXNdmzaq6hrGQP4s=",
-  "Source": "RivertyBNPL.Risk.API",
-  "BasePath": "_content/RivertyBNPL.Risk.API",
+  "Hash": "7u5RfILLOLMqzdcVMpYf1Yv397iTwZtzkWChQU7fC5s=",
+  "Source": "YourCompanyBNPL.Risk.API",
+  "BasePath": "_content/YourCompanyBNPL.Risk.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

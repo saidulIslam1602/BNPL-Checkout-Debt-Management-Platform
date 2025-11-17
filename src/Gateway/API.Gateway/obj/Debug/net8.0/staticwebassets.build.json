@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "vvijYecRcYa29ZK0XOtR8vaOBseYDsaO+9jjaNCO+d0=",
-  "Source": "BNPL.API.Gateway",
-  "BasePath": "_content/BNPL.API.Gateway",
+  "Hash": "TxCM5LDayLw4bNKjzt8j+KqQy//GKpH5JDY95zGi1Zw=",
+  "Source": "YourCompanyBNPL.API.Gateway",
+  "BasePath": "_content/YourCompanyBNPL.API.Gateway",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

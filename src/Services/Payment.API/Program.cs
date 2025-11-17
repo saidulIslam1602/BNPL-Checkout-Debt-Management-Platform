@@ -12,7 +12,7 @@ using YourCompanyBNPL.Payment.API.Data;
 using YourCompanyBNPL.Payment.API.Services;
 using YourCompanyBNPL.Payment.API.Mappings;
 using YourCompanyBNPL.Payment.API.Validators;
-using YourCompanyBNPL.Payment.API.Configuration;
+// using YourCompanyBNPL.Payment.API.Configuration; // Temporarily disabled - auth services excluded
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,8 +63,9 @@ builder.Services.AddScoped<IPaymentWebhookService, PaymentWebhookService>();
 builder.Services.AddScoped<IIdempotencyService, IdempotencyService>();
 builder.Services.AddScoped<IFraudDetectionService, FraudDetectionService>();
 builder.Services.AddScoped<IPaymentTokenizationService, PaymentTokenizationService>();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-builder.Services.AddScoped<IUserService, UserService>();
+// NOTE: Authentication services temporarily disabled - requires library API migration
+// builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+// builder.Services.AddScoped<IUserService, UserService>();
 
 // HTTP clients
 builder.Services.AddHttpClient();
@@ -84,18 +85,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? "default-secret-key-for-development-only"))
         };
-    })
-    .AddSaml2(); // Add SAML authentication
+    });
+    // NOTE: SAML authentication temporarily disabled - requires Sustainsys.Saml2 v2.x API migration
+    // See AUTH_MIGRATION_REQUIRED.md for details
+    // .AddSaml2(); // Add SAML authentication
 
+// NOTE: Authentication services temporarily disabled - requires library API migration
+// See AUTH_MIGRATION_REQUIRED.md for migration guide
 // Add SAML configuration
-builder.Services.AddSamlAuthentication(builder.Configuration);
+// builder.Services.AddSamlAuthentication(builder.Configuration);
 
 // Add OpenID Connect configuration
-builder.Services.AddOpenIdConnectAuthentication(builder.Configuration);
+// builder.Services.AddOpenIdConnectAuthentication(builder.Configuration);
 
 // Add Azure AD configuration
-builder.Services.AddAzureAdAuthentication(builder.Configuration);
-builder.Services.AddAzureAdAuthorization(builder.Configuration);
+// builder.Services.AddAzureAdAuthentication(builder.Configuration);
+// builder.Services.AddAzureAdAuthorization(builder.Configuration);
 
 builder.Services.AddAuthorization(options =>
 {

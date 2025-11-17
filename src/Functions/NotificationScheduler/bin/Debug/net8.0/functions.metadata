@@ -1,7 +1,7 @@
 [
   {
     "name": "PaymentReminderDaily",
-    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.NotificationScheduler.Functions.dll",
     "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunDailyReminders",
     "language": "dotnet-isolated",
     "properties": {
@@ -19,7 +19,7 @@
   },
   {
     "name": "OverduePaymentNotifications",
-    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.NotificationScheduler.Functions.dll",
     "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunOverdueNotifications",
     "language": "dotnet-isolated",
     "properties": {
@@ -37,7 +37,7 @@
   },
   {
     "name": "BNPLInstallmentReminders",
-    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.NotificationScheduler.Functions.dll",
     "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunBNPLReminders",
     "language": "dotnet-isolated",
     "properties": {
@@ -55,7 +55,7 @@
   },
   {
     "name": "CustomerEngagementNotifications",
-    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.NotificationScheduler.Functions.dll",
     "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunCustomerEngagement",
     "language": "dotnet-isolated",
     "properties": {
@@ -73,7 +73,7 @@
   },
   {
     "name": "ManualPaymentReminder",
-    "scriptFile": "RivertyBNPL.NotificationScheduler.Functions.dll",
+    "scriptFile": "YourCompanyBNPL.NotificationScheduler.Functions.dll",
     "entryPoint": "YourCompanyBNPL.NotificationScheduler.Functions.Functions.PaymentReminderFunction.RunManualReminder",
     "language": "dotnet-isolated",
     "properties": {

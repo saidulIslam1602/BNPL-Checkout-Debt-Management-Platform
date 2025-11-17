@@ -192,7 +192,7 @@ This document showcases the advanced template features available in the Notifica
 
 Your payment of {{payment.amount | currency}} is due on {{payment.dueDate | date:'MMM dd'}}. 
 
-{% if overdueDays > 0 %}⚠️ OVERDUE by {{overdueDays}} days. {% endif %}Pay now: {{shortPaymentLink}}
+{% if overdueDays > 0 %} OVERDUE by {{overdueDays}} days. {% endif %}Pay now: {{shortPaymentLink}}
 
 {% if customer.canRequestExtension %}Need more time? Reply EXTEND{% endif %}
 

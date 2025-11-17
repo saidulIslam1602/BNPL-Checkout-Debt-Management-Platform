@@ -2,6 +2,22 @@
 
 A comprehensive fintech solution for Buy Now Pay Later (BNPL) services in Norway, built with modern microservices architecture and industry-standard technologies.
 
+##  Quick Links
+
+- **[Quick Start Guide](QUICK_START.md)** - Get up and running in 5 minutes
+- **[Recent Fixes Summary](FIXES_SUMMARY.md)** - Latest configuration fixes and improvements
+- **[Known Issues](KNOWN_ISSUES.md)** - Pre-existing issues and workarounds
+- **[API Documentation](docs/API_DOCUMENTATION.md)** - Complete API reference
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Production deployment instructions
+
+##  Important Notes
+
+> **Recent Configuration Updates**: All database names, namespaces, and infrastructure resources have been standardized to use `YourCompanyBNPL_*` naming convention. See [FIXES_SUMMARY.md](FIXES_SUMMARY.md) for complete details.
+
+> **Environment Variables Required**: Copy `.env.example` to `.env` and configure your credentials before starting services. See [QUICK_START.md](QUICK_START.md) for setup instructions.
+
+> **Known Compilation Errors**: Some pre-existing code issues require package installations. See [KNOWN_ISSUES.md](KNOWN_ISSUES.md) for remediation steps.
+
 ## Overview
 
 This platform provides a complete BNPL solution including:

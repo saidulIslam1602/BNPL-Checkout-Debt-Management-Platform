@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YourCompanyBNPL.Notification.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f6a68d1c1b4335ef4bc50e24318912a5ef672be7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9104caa14426efb8b023740c12059cd0cdbfa29")]
 [assembly: System.Reflection.AssemblyProductAttribute("YourCompanyBNPL.Notification.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YourCompanyBNPL.Notification.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

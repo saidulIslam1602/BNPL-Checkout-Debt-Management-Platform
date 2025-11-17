@@ -365,10 +365,10 @@ class Application {
 
   start() {
     this.server.listen(this.port, () => {
-      logger.info(`🚀 Real-time API server running on port ${this.port}`)
+      logger.info(` Real-time API server running on port ${this.port}`)
       logger.info(`📚 API documentation available at http://localhost:${this.port}/api-docs`)
       logger.info(`🌍 Environment: ${this.nodeEnv}`)
-      logger.info(`🔗 WebSocket endpoint: ws://localhost:${this.port}`)
+      logger.info(` WebSocket endpoint: ws://localhost:${this.port}`)
     })
   }
 }

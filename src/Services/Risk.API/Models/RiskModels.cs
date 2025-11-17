@@ -72,6 +72,10 @@ public class CreditAssessment : AuditableEntity
     
     public bool HasCollections { get; set; }
     
+    public EmploymentStatus EmploymentStatus { get; set; }
+    
+    public int EmploymentDuration { get; set; }
+    
     public bool IsApproved { get; set; }
     
     [MaxLength(500)]

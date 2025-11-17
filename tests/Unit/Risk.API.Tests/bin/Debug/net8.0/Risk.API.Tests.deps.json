@@ -12,14 +12,14 @@
           "Microsoft.EntityFrameworkCore.InMemory": "8.0.0",
           "Microsoft.NET.Test.Sdk": "17.8.0",
           "Moq": "4.20.70",
-          "RivertyBNPL.Risk.API": "1.0.0",
+          "YourCompanyBNPL.Risk.API": "1.0.0",
           "coverlet.collector": "6.0.0",
           "xunit": "2.6.2",
           "xunit.runner.visualstudio": "2.5.4",
-          "RivertyBNPL.Common.Reference": "1.0.0.0",
-          "RivertyBNPL.Events.Reference": "1.0.0.0",
-          "RivertyBNPL.Infrastructure.Reference": "1.0.0.0",
-          "RivertyBNPL.Risk.API.Reference": "1.0.0.0"
+          "YourCompanyBNPL.Common.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Events.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Infrastructure.Reference": "1.0.0.0",
+          "YourCompanyBNPL.Risk.API.Reference": "1.0.0.0"
         },
         "runtime": {
           "Risk.API.Tests.dll": {}
@@ -2826,7 +2826,7 @@
         }
       },
       "xunit.runner.visualstudio/2.5.4": {},
-      "RivertyBNPL.Common/1.0.0": {
+      "YourCompanyBNPL.Common/1.0.0": {
         "dependencies": {
           "AutoMapper": "12.0.1",
           "FluentValidation": "11.8.1",
@@ -2840,26 +2840,26 @@
           "System.ComponentModel.Annotations": "5.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Common.dll": {
+          "YourCompanyBNPL.Common.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         }
       },
-      "RivertyBNPL.Events/1.0.0": {
+      "YourCompanyBNPL.Events/1.0.0": {
         "dependencies": {
           "MediatR": "12.2.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Events.dll": {
+          "YourCompanyBNPL.Events.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         }
       },
-      "RivertyBNPL.Infrastructure/1.0.0": {
+      "YourCompanyBNPL.Infrastructure/1.0.0": {
         "dependencies": {
           "Azure.Identity": "1.12.1",
           "Azure.Messaging.ServiceBus": "7.18.1",
@@ -2879,21 +2879,21 @@
           "Microsoft.Extensions.Http": "8.0.0",
           "Polly": "8.2.0",
           "Polly.Extensions.Http": "3.0.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "RivertyBNPL.Events": "1.0.0",
           "Serilog.AspNetCore": "8.0.0",
           "Serilog.Sinks.ApplicationInsights": "4.0.0",
           "StackExchange.Redis": "2.7.10",
-          "System.Text.Json": "8.0.5"
+          "System.Text.Json": "8.0.5",
+          "YourCompanyBNPL.Common": "1.0.0",
+          "YourCompanyBNPL.Events": "1.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Infrastructure.dll": {
+          "YourCompanyBNPL.Infrastructure.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         }
       },
-      "RivertyBNPL.Risk.API/1.0.0": {
+      "YourCompanyBNPL.Risk.API/1.0.0": {
         "dependencies": {
           "AspNetCore.HealthChecks.SqlServer": "8.0.0",
           "AspNetCore.HealthChecks.UI.Client": "8.0.0",
@@ -2912,46 +2912,46 @@
           "Microsoft.ML.FastTree": "3.0.1",
           "Polly": "8.2.0",
           "Polly.Extensions.Http": "3.0.0",
-          "RivertyBNPL.Common": "1.0.0",
-          "RivertyBNPL.Events": "1.0.0",
-          "RivertyBNPL.Infrastructure": "1.0.0",
           "Serilog.AspNetCore": "8.0.0",
-          "Swashbuckle.AspNetCore": "6.5.0"
+          "Swashbuckle.AspNetCore": "6.5.0",
+          "YourCompanyBNPL.Common": "1.0.0",
+          "YourCompanyBNPL.Events": "1.0.0",
+          "YourCompanyBNPL.Infrastructure": "1.0.0"
         },
         "runtime": {
-          "RivertyBNPL.Risk.API.dll": {
+          "YourCompanyBNPL.Risk.API.dll": {
             "assemblyVersion": "1.0.0",
             "fileVersion": ""
           }
         }
       },
-      "RivertyBNPL.Common.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Common.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Common.dll": {
+          "YourCompanyBNPL.Common.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
       },
-      "RivertyBNPL.Events.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Events.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Events.dll": {
+          "YourCompanyBNPL.Events.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
       },
-      "RivertyBNPL.Infrastructure.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Infrastructure.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Infrastructure.dll": {
+          "YourCompanyBNPL.Infrastructure.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
         }
       },
-      "RivertyBNPL.Risk.API.Reference/1.0.0.0": {
+      "YourCompanyBNPL.Risk.API.Reference/1.0.0.0": {
         "runtime": {
-          "RivertyBNPL.Risk.API.dll": {
+          "YourCompanyBNPL.Risk.API.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
@@ -4729,42 +4729,42 @@
       "path": "xunit.runner.visualstudio/2.5.4",
       "hashPath": "xunit.runner.visualstudio.2.5.4.nupkg.sha512"
     },
-    "RivertyBNPL.Common/1.0.0": {
+    "YourCompanyBNPL.Common/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Events/1.0.0": {
+    "YourCompanyBNPL.Events/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Infrastructure/1.0.0": {
+    "YourCompanyBNPL.Infrastructure/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Risk.API/1.0.0": {
+    "YourCompanyBNPL.Risk.API/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Common.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Common.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Events.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Events.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Infrastructure.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Infrastructure.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "RivertyBNPL.Risk.API.Reference/1.0.0.0": {
+    "YourCompanyBNPL.Risk.API.Reference/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
