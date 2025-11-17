@@ -72,8 +72,11 @@ export class RiskAssessmentService {
       const amountAdjustment = this.calculateAmountBasedAdjustment(requestedAmount);
       creditScore += amountAdjustment;
 
+      // Estimate annual income based on credit score for approval calculations
+      const estimatedAnnualIncome = creditScore * 500; // Rough estimation
+
       // Calculate dynamic approval limits based on credit score and income
-      const approvalLimits = this.calculateApprovalLimits(creditScore, requestedAmount, annualIncome);
+      const approvalLimits = this.calculateApprovalLimits(creditScore, requestedAmount, estimatedAnnualIncome);
       riskLevel = approvalLimits.riskLevel;
       maxApprovedAmount = approvalLimits.maxApprovedAmount;
       approvalStatus = approvalLimits.approvalStatus;
