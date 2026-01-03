@@ -1,6 +1,5 @@
 using YourCompanyBNPL.Common.Enums;
 using YourCompanyBNPL.Notification.API.Models;
-using YourCompanyBNPL.Common.Enums;
 
 namespace YourCompanyBNPL.Notification.API.Providers;
 

@@ -146,14 +146,14 @@ public class RateLimitingMiddleware
         var rateLimitInfo = await _rateLimitingService.GetRateLimitInfoAsync(key, limit, window);
 
         // Add rate limit headers
-        context.Response.Headers.Add("X-RateLimit-Limit", limit.ToString());
-        context.Response.Headers.Add("X-RateLimit-Remaining", Math.Max(0, limit - rateLimitInfo.RequestCount).ToString());
-        context.Response.Headers.Add("X-RateLimit-Reset", ((DateTimeOffset)rateLimitInfo.WindowStart.Add(rateLimitInfo.Window)).ToUnixTimeSeconds().ToString());
+        context.Response.Headers["X-RateLimit-Limit"] = limit.ToString();
+        context.Response.Headers["X-RateLimit-Remaining"] = Math.Max(0, limit - rateLimitInfo.RequestCount).ToString();
+        context.Response.Headers["X-RateLimit-Reset"] = ((DateTimeOffset)rateLimitInfo.WindowStart.Add(rateLimitInfo.Window)).ToUnixTimeSeconds().ToString();
 
         if (!rateLimitInfo.IsAllowed)
         {
             context.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
-            context.Response.Headers.Add("Retry-After", ((int)rateLimitInfo.TimeUntilReset.TotalSeconds).ToString());
+            context.Response.Headers["Retry-After"] = ((int)rateLimitInfo.TimeUntilReset.TotalSeconds).ToString();
 
             await context.Response.WriteAsync("Rate limit exceeded. Please try again later.");
             return;

@@ -29,8 +29,10 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 // Add services to the container
-builder.Services.AddControllers()
-    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Program>());
+builder.Services.AddControllers();
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // Database
 builder.Services.AddDbContext<RiskDbContext>(options =>

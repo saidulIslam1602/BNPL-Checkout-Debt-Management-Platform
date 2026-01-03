@@ -4,7 +4,6 @@ using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 using YourCompanyBNPL.Notification.API.Models;
-using YourCompanyBNPL.Common.Enums;
 
 namespace YourCompanyBNPL.Notification.API.Providers;
 

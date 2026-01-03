@@ -1,9 +1,9 @@
 {
-  "YourCompanyBNPL.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Common",
-  "YourCompanyBNPL.Events, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Events",
-  "YourCompanyBNPL.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Infrastructure",
-  "YourCompanyBNPL.Notification.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Notification.API",
-  "YourCompanyBNPL.Payment.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Payment.API",
-  "YourCompanyBNPL.Risk.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Risk.API",
-  "YourCompanyBNPL.Settlement.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Portfolio\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Settlement.API"
+  "YourCompanyBNPL.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Common",
+  "YourCompanyBNPL.Events, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Events",
+  "YourCompanyBNPL.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Shared\/Infrastructure",
+  "YourCompanyBNPL.Notification.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Notification.API",
+  "YourCompanyBNPL.Payment.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Payment.API",
+  "YourCompanyBNPL.Risk.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Risk.API",
+  "YourCompanyBNPL.Settlement.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "\/home\/saidul\/Desktop\/Riverty\/BNPL-Checkout-Debt-Management-Platform\/src\/Services\/Settlement.API"
 }

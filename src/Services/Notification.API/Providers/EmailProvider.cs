@@ -3,7 +3,6 @@ using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 using YourCompanyBNPL.Notification.API.Models;
-using YourCompanyBNPL.Common.Enums;
 
 namespace YourCompanyBNPL.Notification.API.Providers;
 

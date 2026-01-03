@@ -176,16 +176,16 @@ public class RateLimitingMiddleware
             rateLimitPolicy.Window);
 
         // Add rate limit headers
-        context.Response.Headers.Add("X-RateLimit-Limit", rateLimitPolicy.Limit.ToString());
-        context.Response.Headers.Add("X-RateLimit-Remaining", rateLimitInfo.RequestsRemaining.ToString());
-        context.Response.Headers.Add("X-RateLimit-Reset", rateLimitInfo.ResetTime.ToUnixTimeSeconds().ToString());
+        context.Response.Headers["X-RateLimit-Limit"] = rateLimitPolicy.Limit.ToString();
+        context.Response.Headers["X-RateLimit-Remaining"] = rateLimitInfo.RequestsRemaining.ToString();
+        context.Response.Headers["X-RateLimit-Reset"] = rateLimitInfo.ResetTime.ToUnixTimeSeconds().ToString();
 
         if (!rateLimitInfo.IsAllowed)
         {
             _logger.LogWarning("Rate limit exceeded for key: {Key}", key);
             
             context.Response.StatusCode = 429;
-            context.Response.Headers.Add("Retry-After", ((int)rateLimitPolicy.Window.TotalSeconds).ToString());
+            context.Response.Headers["Retry-After"] = ((int)rateLimitPolicy.Window.TotalSeconds).ToString();
             
             var errorResponse = new
             {
