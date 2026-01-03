@@ -2,11 +2,11 @@
 
 A production-ready, enterprise-grade Buy Now Pay Later (BNPL) platform built with modern microservices architecture. This comprehensive solution provides payment processing, credit risk assessment, fraud detection, settlement management, and multi-channel notifications specifically designed for the Norwegian market.
 
-## 🎯 Overview
+## Overview
 
 This platform delivers a complete BNPL ecosystem with advanced features for merchants, consumers, and administrators. Built with scalability, security, and compliance in mind.
 
-### ✨ Core Services
+### Core Services
 
 - **Payment API**: Multi-gateway payment processing (Stripe, Adyen, Nets, Vipps) with tokenization, idempotency, and webhook management
 - **Risk API**: ML-powered credit risk assessment and fraud detection with Norwegian credit bureau integration (Experian, Bisnode, Lindorff)
@@ -14,7 +14,7 @@ This platform delivers a complete BNPL ecosystem with advanced features for merc
 - **Notification API**: Multi-channel notifications (Email via SendGrid, SMS via Twilio, Push via Firebase) with templating and scheduling
 - **Real-time API**: WebSocket-based event streaming with Socket.IO for real-time updates
 
-### 🏗️ Architecture Highlights
+### Architecture Highlights
 
 - **Backend**: .NET 8.0 microservices with CQRS pattern using MediatR
 - **Real-time Service**: Node.js 18+ with Socket.IO for WebSocket communication
@@ -23,7 +23,7 @@ This platform delivers a complete BNPL ecosystem with advanced features for merc
 - **API Gateway**: Ocelot for unified API routing and rate limiting
 - **Observability**: Prometheus + Grafana for metrics, ELK stack for logging
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Backend Services (.NET 8.0)
 | Component | Technology | Purpose |
@@ -126,25 +126,23 @@ curl http://localhost:5004/health  # Notification API
 | **Kibana** | http://localhost:5601 | - | Log analysis |
 | **Prometheus** | http://localhost:9090 | - | Metrics collection |
 
-> **💡 Tip**: For detailed setup instructions, see [QUICK_START.md](QUICK_START.md)
-## 📁 Project Structure
+**Note**: For detailed setup instructions, see [QUICK_START.md](QUICK_START.md)
+
+## Project Structure
 
 ```
 BNPL-Checkout-Debt-Management-Platform/
-
-```
-BNPL-Checkout-Debt-Management-Platform/
-├── 📄 Configuration Files
+├── Configuration Files
 │   ├── MerchantBNPL.sln                    # Main solution file (14 projects)
 │   ├── docker-compose.yml                   # Container orchestration
 │   ├── appsettings.template.json            # Configuration template
 │   └── package.json                         # Root npm scripts
 │
-├── 🗄️ database/
+├── database/
 │   └── init/
 │       └── 01-create-databases.sql          # Initializes 4 service databases
 │
-├── 📚 docs/
+├── docs/
 │   ├── API_DOCUMENTATION.md                 # Complete API reference
 │   └── DEPLOYMENT_GUIDE.md                  # Production deployment guide
 │
@@ -155,14 +153,14 @@ BNPL-Checkout-Debt-Management-Platform/
 │       ├── outputs.tf                       # Output values
 │       └── terraform.tfvars.example         # Example variables
 │
-├── ⚙️ k8s/                                   # Kubernetes deployment manifests
+├── k8s/                                     # Kubernetes deployment manifests
 │   ├── namespace.yaml                       # bnpl-platform namespace
 │   ├── configmap.yaml                       # Configuration maps
 │   ├── secrets.yaml                         # Secrets template
 │   ├── ingress.yaml                         # Ingress routing
 │   └── payment-api-deployment.yaml          # Service deployments
 │
-├── 📊 monitoring/
+├── monitoring/
 │   ├── prometheus.yml                       # Metrics collection config
 │   └── grafana/
 │       ├── dashboards/
@@ -170,12 +168,12 @@ BNPL-Checkout-Debt-Management-Platform/
 │       └── datasources/
 │           └── prometheus.yml               # Prometheus datasource
 │
-├── 🔧 scripts/
+├── scripts/
 │   ├── build.sh                             # Build automation
 │   ├── deploy-functions.sh                  # Azure Functions deployment
 │   └── start-application.sh                 # Quick start script
 │
-├── 💻 src/
+├── src/
 │   ├── Functions/                           # Azure Functions (Serverless)
 │   │   ├── NotificationScheduler/           # Port 7073 - Scheduled notifications
 │   │   ├── PaymentCollection/               # Port 7072 - Installment collection
@@ -236,7 +234,7 @@ BNPL-Checkout-Debt-Management-Platform/
 │       └── LegacyPortal/                    # Port 4203 - Knockout.js
 │           └── Scripts/                     # Legacy JavaScript
 │
-└── 🧪 tests/
+└── tests/
     ├── Integration/
     │   └── Integration.Tests/               # End-to-end API tests
     └── Unit/
@@ -244,13 +242,13 @@ BNPL-Checkout-Debt-Management-Platform/
         └── Risk.API.Tests/                  # Risk service tests
 ```
 
-> **Key Points:**
-> - **14 Projects** in solution (5 APIs + 3 Azure Functions + 1 Gateway + 3 Shared + 2 Test projects)
-> - **4 Databases** (one per backend service: Payment, Risk, Settlement, Notification)
-> - **4 Frontend Apps** (Admin, Merchant, Consumer, Legacy)
-> - **Production Ready** with comprehensive monitoring, logging, and deployment automation
+**Key Points:**
+- 14 Projects in solution (5 APIs + 3 Azure Functions + 1 Gateway + 3 Shared + 2 Test projects)
+- 4 Databases (one per backend service: Payment, Risk, Settlement, Notification)
+- 4 Frontend Apps (Admin, Merchant, Consumer, Legacy)
+- Production Ready with comprehensive monitoring, logging, and deployment automation
 
-## 🚀 Development Workflows
+## Development Workflows
 
 ### Building the Solution
 
@@ -370,7 +368,7 @@ docker-compose down -v
 docker-compose up -d --build
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Database Connection Strings
 
@@ -442,9 +440,9 @@ GlobalConfiguration__BaseUrl="http://localhost:7000"
 ApplicationInsights__ConnectionString="InstrumentationKey=..."
 ```
 
-> **💡 Security Tip**: Never commit sensitive credentials to version control. Use Azure Key Vault or environment-specific configurations.
+**Security Note**: Never commit sensitive credentials to version control. Use Azure Key Vault or environment-specific configurations.
 
-## 📖 API Documentation
+## API Documentation
 
 All APIs provide comprehensive Swagger/OpenAPI documentation accessible when services are running:
 
@@ -485,9 +483,9 @@ All APIs provide comprehensive Swagger/OpenAPI documentation accessible when ser
 - Scheduled notifications
 - Delivery tracking and analytics
 
-> **📚 Full API Documentation**: See [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) for detailed endpoint reference, request/response examples, and authentication details.
+**Full API Documentation**: See [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) for detailed endpoint reference, request/response examples, and authentication details.
 
-## 🧪 Testing
+## Testing
 
 ### Unit Tests
 
@@ -551,12 +549,12 @@ curl -X POST http://localhost:7000/risk/api/v1/riskassessment/assess \
 
 **Test Coverage:**
 - ✅ Unit tests for core business logic
-- ✅ Integration tests for API endpoints
-- ✅ Database integration tests with in-memory database
-- ⚠️ Load testing with JMeter/k6 (in progress)
-- ⚠️ End-to-end UI tests with Playwright (planned)
+- Integration tests for API endpoints
+- Database integration tests with in-memory database
+- Load testing with JMeter/k6 (in progress)
+- End-to-end UI tests with Playwright (planned)
 
-## 📊 Monitoring & Observability
+## Monitoring & Observability
 
 ### Access Monitoring Tools
 
@@ -640,7 +638,7 @@ curl http://localhost:5004/health  # Notification API
 - External service availability (payment gateways, credit bureaus)
 - Queue health (background jobs)
 
-## 🚢 Deployment
+## Deployment
 
 ### Azure Cloud Deployment
 
@@ -708,9 +706,9 @@ docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
 docker-compose up -d --scale payment-api=3 --scale risk-api=2
 ```
 
-> **📚 Detailed Deployment Guide**: See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for complete production deployment instructions, CI/CD setup, and troubleshooting.
+**Detailed Deployment Guide**: See [docs/DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for complete production deployment instructions, CI/CD setup, and troubleshooting.
 
-## 🔒 Security Features
+## Security Features
 
 ### Authentication & Authorization
 - **JWT-based Authentication**: All API endpoints require valid JWT tokens
@@ -744,21 +742,21 @@ docker-compose up -d --scale payment-api=3 --scale risk-api=2
 - **Security Alerts**: Automated alerting for suspicious activities
 - **Regular Security Audits**: Automated vulnerability scanning
 
-> **⚠️ Important**: Never commit secrets, API keys, or passwords to version control. Use Azure Key Vault or environment variables for all sensitive configuration.
+**Important**: Never commit secrets, API keys, or passwords to version control. Use Azure Key Vault or environment variables for all sensitive configuration.
 
-## ⚠️ Known Issues & Limitations
+## Known Issues & Limitations
 
 ### Current Status
-✅ **Build Status**: All 14 projects compile successfully with 0 errors  
-✅ **Runtime Ready**: All services start and respond to health checks  
-⚠️ **Warnings**: ~60 nullable reference warnings (non-blocking, C# 8.0+ feature)
+- **Build Status**: All 14 projects compile successfully with 0 errors  
+- **Runtime Ready**: All services start and respond to health checks  
+- **Warnings**: ~60 nullable reference warnings (non-blocking, C# 8.0+ feature)
 
 ### Recent Fixes Applied
-- ✅ **FluentValidation**: Updated Risk.API to use modern `AddValidatorsFromAssemblyContaining<T>()` API
-- ✅ **Header Dictionary**: Fixed potential runtime exceptions in RateLimitingService (ASP0019)
-- ✅ **Code Quality**: Removed duplicate using directives in Notification.API providers
-- ✅ **Service Communication**: Standardized API versioning across all services
-- ✅ **Gateway Routing**: All services properly routed through API Gateway on port 7000
+- **FluentValidation**: Updated Risk.API to use modern `AddValidatorsFromAssemblyContaining<T>()` API
+- **Header Dictionary**: Fixed potential runtime exceptions in RateLimitingService (ASP0019)
+- **Code Quality**: Removed duplicate using directives in Notification.API providers
+- **Service Communication**: Standardized API versioning across all services
+- **Gateway Routing**: All services properly routed through API Gateway on port 7000
 
 ### Limitations
 1. **Payment Gateways**: Integration requires real API credentials from Stripe, Adyen, Nets, Vipps
@@ -771,9 +769,9 @@ docker-compose up -d --scale payment-api=3 --scale risk-api=2
 - **Development**: Uses mock/console providers for external services
 - **Production**: Requires real credentials and proper infrastructure setup
 
-> **📋 For detailed issue tracking and fixes**: See commit history and pull requests
+**Note**: For detailed issue tracking and fixes, see commit history and pull requests
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions to improve the BNPL platform!
 
@@ -824,18 +822,18 @@ We welcome contributions to improve the BNPL platform!
 - Implement proper error handling and logging
 - Follow SOLID principles and clean architecture patterns
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ### MIT License Summary
-- ✅ Commercial use allowed
-- ✅ Modification allowed
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ⚠️ Liability and warranty disclaimers apply
+- Commercial use allowed
+- Modification allowed
+- Distribution allowed
+- Private use allowed
+- Liability and warranty disclaimers apply
 
-## 📞 Support & Documentation
+## Support & Documentation
 
 ### Documentation
 - **Quick Start**: [QUICK_START.md](QUICK_START.md)
@@ -859,7 +857,7 @@ When reporting bugs, please include:
 - Environment details (OS, .NET version, Docker version)
 - Relevant log output
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 ### Technologies & Frameworks
 - **Microsoft**: .NET 8.0, ASP.NET Core, Entity Framework Core, Azure
@@ -881,10 +879,10 @@ When reporting bugs, please include:
 
 ---
 
-**Built with ❤️ for the Norwegian fintech ecosystem**
+**Built for the Norwegian fintech ecosystem**
 
 **Repository**: [github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform](https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform)
 
 **Last Updated**: January 2026  
 **Version**: 1.0.0  
-**Status**: ✅ Production Ready
+**Status**: Production Ready

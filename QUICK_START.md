@@ -1,8 +1,8 @@
-# 🚀 Quick Start Guide - BNPL Platform
+# Quick Start Guide - BNPL Platform
 
 Get the BNPL Checkout & Debt Management Platform (Riverty) up and running in less than 10 minutes!
 
-## 📋 Prerequisites
+## Prerequisites
 
 Ensure you have these tools installed:
 
@@ -18,7 +18,7 @@ Ensure you have these tools installed:
 - **Disk**: 10GB free space
 - **OS**: Windows 10/11, macOS 12+, or Linux (Ubuntu 20.04+)
 
-## ⚡ Quick Setup (5 Minutes)
+## Quick Setup (5 Minutes)
 
 ### Step 1: Clone Repository
 
@@ -42,12 +42,12 @@ docker-compose ps
 ```
 
 **Expected Services Running:**
-- ✅ SQL Server (Port 1433)
-- ✅ Redis (Port 6379)
-- ✅ MongoDB (Port 27017)
-- ✅ Elasticsearch (Port 9200)
-- ✅ Prometheus (Port 9090)
-- ✅ Grafana (Port 3001)
+- SQL Server (Port 1433)
+- Redis (Port 6379)
+- MongoDB (Port 27017)
+- Elasticsearch (Port 9200)
+- Prometheus (Port 9090)
+- Grafana (Port 3001)
 
 ### Step 3: Build Solution
 
@@ -98,7 +98,7 @@ curl http://localhost:3000/health  # Real-time API
 }
 ```
 
-## 🌐 Access the Platform
+## Access the Platform
 
 ### Backend Services & APIs
 
@@ -129,7 +129,7 @@ curl http://localhost:3000/health  # Real-time API
 | **Kibana** | http://localhost:5601 | - | Log analysis & search |
 | **Elasticsearch** | http://localhost:9200 | - | Centralized log storage |
 
-## 🔧 Development Mode (Hot Reload)
+## Development Mode (Hot Reload)
 
 For active development with automatic reloading:
 
@@ -162,17 +162,17 @@ cd src/Web/MerchantPortal && npm install && npm start
 cd src/Web/ConsumerPortal && npm install && npm start
 ```
 
-## 🧪 Testing Your Setup
+## Testing Your Setup
 
 ### 1. Verify All Health Checks
 
 ```bash
 # Check all backend services
-echo "Testing API Gateway..." && curl -s http://localhost:7000/health | grep -q "Healthy" && echo "✅ API Gateway" || echo "❌ API Gateway"
-echo "Testing Payment API..." && curl -s http://localhost:5001/health | grep -q "Healthy" && echo "✅ Payment API" || echo "❌ Payment API"
-echo "Testing Risk API..." && curl -s http://localhost:5002/health | grep -q "Healthy" && echo "✅ Risk API" || echo "❌ Risk API"
-echo "Testing Settlement API..." && curl -s http://localhost:5003/health | grep -q "Healthy" && echo "✅ Settlement API" || echo "❌ Settlement API"
-echo "Testing Notification API..." && curl -s http://localhost:5004/health | grep -q "Healthy" && echo "✅ Notification API" || echo "❌ Notification API"
+echo "Testing API Gateway..." && curl -s http://localhost:7000/health | grep -q "Healthy" && echo "[OK] API Gateway" || echo "[FAIL] API Gateway"
+echo "Testing Payment API..." && curl -s http://localhost:5001/health | grep -q "Healthy" && echo "[OK] Payment API" || echo "[FAIL] Payment API"
+echo "Testing Risk API..." && curl -s http://localhost:5002/health | grep -q "Healthy" && echo "[OK] Risk API" || echo "[FAIL] Risk API"
+echo "Testing Settlement API..." && curl -s http://localhost:5003/health | grep -q "Healthy" && echo "[OK] Settlement API" || echo "[FAIL] Settlement API"
+echo "Testing Notification API..." && curl -s http://localhost:5004/health | grep -q "Healthy" && echo "[OK] Notification API" || echo "[FAIL] Notification API"
 ```
 
 ### 2. Explore API Documentation
@@ -205,7 +205,7 @@ curl http://localhost:7000/notification/api/v1/health
    - Search application logs
    - Create custom visualizations
 
-## ⚙️ Environment Configuration (Optional)
+## Environment Configuration (Optional)
 
 For production-like setup, configure environment variables:
 
@@ -226,9 +226,7 @@ cp appsettings.template.json src/Services/Payment.API/appsettings.Development.js
 - **Payment Gateway Keys**: Stripe, Adyen, Nets, Vipps credentials
 - **Credit Bureau Keys**: Norwegian credit bureau API credentials
 
-## 🐛 Troubleshooting
-
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues and Solutions
 
@@ -399,21 +397,21 @@ docker system prune -f --volumes
    curl http://localhost:5001/health
    ```
 
-## ✅ Platform Status & Next Steps
+## Platform Status & Next Steps
 
-### ✅ What's Working
+### What's Working
 
-- ✅ **Build**: All 14 projects compile with 0 errors
-- ✅ **Services**: All APIs start and respond to health checks
-- ✅ **Database**: 4 SQL Server databases initialized
-- ✅ **Caching**: Redis configured and operational
-- ✅ **Logging**: Elasticsearch + Kibana setup
-- ✅ **Monitoring**: Prometheus + Grafana dashboards
-- ✅ **Gateway**: Ocelot API Gateway routing all services
-- ✅ **Real-time**: Socket.IO WebSocket server running
-- ✅ **Frontend**: All 4 portals build and run
+- **Build**: All 14 projects compile with 0 errors
+- **Services**: All APIs start and respond to health checks
+- **Database**: 4 SQL Server databases initialized
+- **Caching**: Redis configured and operational
+- **Logging**: Elasticsearch + Kibana setup
+- **Monitoring**: Prometheus + Grafana dashboards
+- **Gateway**: Ocelot API Gateway routing all services
+- **Real-time**: Socket.IO WebSocket server running
+- **Frontend**: All 4 portals build and run
 
-### 🎯 Next Steps
+### Next Steps
 
 1. **Configure External Services** (For Production):
    - Set up SendGrid for email notifications
@@ -439,7 +437,7 @@ docker system prune -f --volumes
    - Configure CI/CD pipelines
    - Enable production monitoring
 
-## 📚 Additional Resources
+## Additional Resources
 
 - **Full Documentation**: [README.md](README.md)
 - **API Reference**: [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
@@ -449,7 +447,7 @@ docker system prune -f --volumes
 - **Notification API Guide**: [src/Services/Notification.API/README.md](src/Services/Notification.API/README.md)
 - **Merchant Portal Guide**: [src/Web/MerchantPortal/README.md](src/Web/MerchantPortal/README.md)
 
-## 🆘 Getting Help
+## Getting Help
 
 - **GitHub Issues**: [Report a bug](https://github.com/saidulIslam1602/BNPL-Checkout-Debt-Management-Platform/issues)
 - **Documentation**: Check the `/docs` folder
@@ -457,8 +455,8 @@ docker system prune -f --volumes
 
 ---
 
-**🎉 Congratulations!** You now have a fully functional BNPL platform running locally.
+**Congratulations!** You now have a fully functional BNPL platform running locally.
 
 **Last Updated**: January 2026  
 **Version**: 1.0.0  
-**Status**: ✅ Production Ready
+**Status**: Production Ready
