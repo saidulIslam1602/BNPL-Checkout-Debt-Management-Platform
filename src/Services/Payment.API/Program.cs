@@ -173,10 +173,12 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:4200",  // Angular dev server
-                "http://localhost:4201",  // Consumer portal
+                "http://localhost:4200",  // MerchantPortal - Angular dev server
+                "http://localhost:4201",  // ConsumerPortal - Angular dev server
+                "http://localhost:4202",  // AdminPortal - Vue.js dev server
                 "https://merchant.yourcompany.com",
-                "https://consumer.yourcompany.com"
+                "https://consumer.yourcompany.com",
+                "https://admin.yourcompany.com"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()

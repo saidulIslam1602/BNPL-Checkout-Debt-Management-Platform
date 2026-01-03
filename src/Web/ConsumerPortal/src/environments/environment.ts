@@ -1,7 +1,7 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:5001/api',
-  wsUrl: 'wss://localhost:5001/ws',
+  apiUrl: 'https://localhost:7000',
+  wsUrl: 'ws://localhost:5005',
   appName: 'YourCompany Consumer Portal',
   version: '1.0.0',
   features: {

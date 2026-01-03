@@ -1088,11 +1088,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
+      "projectUniqueName": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
       "projectName": "YourCompanyBNPL.Common",
-      "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
+      "projectPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj",
       "packagesPath": "/home/saidul/.nuget/packages/",
-      "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/obj/",
+      "outputPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/saidul/.nuget/NuGet/NuGet.Config"

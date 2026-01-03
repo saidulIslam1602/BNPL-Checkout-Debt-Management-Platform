@@ -8107,11 +8107,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/API.Gateway.csproj",
+      "projectUniqueName": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/API.Gateway.csproj",
       "projectName": "YourCompanyBNPL.API.Gateway",
-      "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/API.Gateway.csproj",
+      "projectPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/API.Gateway.csproj",
       "packagesPath": "/home/saidul/.nuget/packages/",
-      "outputPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/obj/",
+      "outputPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Gateway/API.Gateway/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/saidul/.nuget/NuGet/NuGet.Config"
@@ -8126,11 +8126,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
-              "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
+            "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj": {
+              "projectPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Common/Common.csproj"
             },
-            "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
-              "projectPath": "/home/saidul/Desktop/Portfolio/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
+            "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj": {
+              "projectPath": "/home/saidul/Desktop/Riverty/BNPL-Checkout-Debt-Management-Platform/src/Shared/Infrastructure/Infrastructure.csproj"
             }
           }
         }

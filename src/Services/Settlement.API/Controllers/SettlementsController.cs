@@ -6,7 +6,7 @@ using YourCompanyBNPL.Settlement.API.Services;
 namespace YourCompanyBNPL.Settlement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [Authorize]
 public class SettlementsController : ControllerBase
 {
@@ -139,7 +139,7 @@ public class SettlementsController : ControllerBase
 }
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 [Authorize]
 public class MerchantAccountsController : ControllerBase
 {
@@ -212,7 +212,7 @@ public class MerchantAccountsController : ControllerBase
 }
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/[controller]")]
 public class HealthController : ControllerBase
 {
     /// <summary>

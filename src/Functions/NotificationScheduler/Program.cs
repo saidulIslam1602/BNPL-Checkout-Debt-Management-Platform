@@ -45,7 +45,7 @@ var host = new HostBuilder()
         // External service clients
         services.AddHttpClient<INotificationApiClient, NotificationApiClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:NotificationApi:BaseUrl") ?? "https://localhost:7001");
+            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:NotificationApi:BaseUrl") ?? "https://localhost:7003");
             var apiKey = configuration.GetValue<string>("Services:NotificationApi:ApiKey");
             if (!string.IsNullOrEmpty(apiKey))
             {
@@ -55,7 +55,7 @@ var host = new HostBuilder()
 
         services.AddHttpClient<IPaymentApiClient, PaymentApiClient>(client =>
         {
-            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:PaymentApi:BaseUrl") ?? "https://localhost:7002");
+            client.BaseAddress = new Uri(configuration.GetValue<string>("Services:PaymentApi:BaseUrl") ?? "https://localhost:7001");
             var apiKey = configuration.GetValue<string>("Services:PaymentApi:ApiKey");
             if (!string.IsNullOrEmpty(apiKey))
             {
